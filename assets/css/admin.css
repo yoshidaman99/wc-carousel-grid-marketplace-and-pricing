@@ -1,0 +1,110 @@
+.wc-cgmp-admin-wrap {
+    max-width: 900px;
+    margin: 20px 0;
+}
+
+.wc-cgmp-admin-header {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+.wc-cgmp-settings-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+}
+
+.wc-cgmp-settings-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.wc-cgmp-shortcode-info {
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.wc-cgmp-shortcode-info code {
+    display: block;
+    background: #282828;
+    color: #f8f8f2;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 5px 0;
+    overflow-x: auto;
+}
+
+.wc-cgmp-mt-2 {
+    margin-top: 15px;
+}
+
+.wc-cgmp-meta-box {
+    padding: 10px 0;
+}
+
+.wc-cgmp-meta-box .wc-cgmp-field {
+    margin-bottom: 15px;
+}
+
+.wc-cgmp-meta-box .description {
+    display: block;
+    color: #666;
+    margin-top: 5px;
+}
+
+.wc-cgmp-tiers-wrap {
+    margin-top: 15px;
+}
+
+.wc-cgmp-tier-row {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.wc-cgmp-tier-heading {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.wc-cgmp-tier-level {
+    font-weight: normal;
+    color: #888;
+    font-size: 12px;
+}
+
+.wc-cgmp-tier-fields .wc-cgmp-field {
+    margin-bottom: 10px;
+}
+
+.wc-cgmp-tier-fields .wc-cgmp-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.wc-cgmp-field-half {
+    display: inline-block;
+    width: 48%;
+    margin-right: 2%;
+}
+
+.wc-cgmp-tier-fields input[type="text"],
+.wc-cgmp-tier-fields input[type="number"],
+.wc-cgmp-tier-fields textarea {
+    width: 100%;
+}
+
+.wc-cgmp-tier-entry { border-left: 4px solid #22c55e; }
+.wc-cgmp-tier-mid { border-left: 4px solid #3b82f6; }
+.wc-cgmp-tier-expert { border-left: 4px solid #a855f7; }

@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# WordPress
+*.log
+wp-content/
+debug.log
+
+# Testing
+tests/
+phpunit.xml
+phpunit.xml.dist
+.phpunit.result.cache
+coverage/
+
+# Misc
+*.bak
+*.tmp
+.env
+.env.local

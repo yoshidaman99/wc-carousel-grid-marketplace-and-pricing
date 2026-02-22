@@ -1,0 +1,575 @@
+(function($) {
+    'use strict';
+
+    var WC_CGMP_Marketplace = {
+        debug: wc_cgmp_ajax?.debug || false,
+        isLoading: true,
+        initialized: false,
+
+        log: function(...args) {
+            if (this.debug) {
+                console.log('[WC_CGMP]', ...args);
+            }
+        },
+
+        currentCategory: 0,
+        currentTier: 1,
+        currentOffset: 0,
+        limit: 12,
+
+        init: function() {
+            if (this.initialized) {
+                return;
+            }
+            this.initialized = true;
+            
+            this.bindEvents();
+            this.initCarousel();
+            this.initDefaultTier();
+            this.syncInitialPrices();
+            this.syncAllPanelsFromDropdowns();
+        },
+
+        syncAllPanelsFromDropdowns: function() {
+            $('.wc-cgmp-pricing-panel').each(function() {
+                WC_CGMP_Marketplace.syncPanelFromDropdown($(this));
+            });
+            WC_CGMP_Marketplace.log('All panels synced from dropdowns');
+        },
+
+        syncInitialPrices: function() {
+            var $activeBtn = $('.wc-cgmp-tier-btn.active');
+            var $marketplace = $('.wc-cgmp-marketplace');
+            
+            if ($activeBtn.length) {
+                var activeTier = parseInt($activeBtn.data('tier')) || 0;
+                if (activeTier > 0) {
+                    this.updateAllPricingPanels(activeTier);
+                }
+            }
+            
+            this.hideLoading();
+        },
+
+        showLoading: function() {
+            var $marketplace = $('.wc-cgmp-marketplace');
+            $marketplace.addClass('wc-cgmp-loading').removeClass('wc-cgmp-loaded');
+            $marketplace.find('.wc-cgmp-loading-overlay').removeClass('hidden');
+            this.isLoading = true;
+        },
+
+        hideLoading: function() {
+            var $marketplace = $('.wc-cgmp-marketplace');
+            
+            setTimeout(function() {
+                $marketplace.removeClass('wc-cgmp-loading').addClass('wc-cgmp-loaded');
+                $marketplace.find('.wc-cgmp-loading-overlay').addClass('hidden');
+                WC_CGMP_Marketplace.isLoading = false;
+            }, 100);
+        },
+
+        initDefaultTier: function() {
+            var $activeBtn = $('.wc-cgmp-tier-btn.active');
+            if ($activeBtn.length === 0) {
+                $('.wc-cgmp-tier-btn.wc-cgmp-tier-entry').addClass('active');
+            }
+        },
+
+        bindEvents: function() {
+            $(document).on('click', '.wc-cgmp-category-item', this.filterByCategory);
+            $(document).on('click', '.wc-cgmp-tier-btn', this.filterByTier);
+            $(document).on('click', '.wc-cgmp-add-to-cart', this.addToCart);
+            $(document).on('click', '.wc-cgmp-headcount-btn', this.updateQuantity);
+            $(document).on('change', '.wc-cgmp-quantity-input', this.updateTotal);
+            $(document).on('change', '.wc-cgmp-tier-select', this.updateTierPrice);
+            $(document).on('change', '.wc-cgmp-switch-input', this.updatePriceType);
+            $(document).on('click', '.wc-cgmp-load-more', this.loadMore);
+            $(document).on('input', '.wc-cgmp-search-input', this.debounce(this.searchProducts, 300));
+        },
+
+        filterByCategory: function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var categoryId = $this.data('category');
+
+            WC_CGMP_Marketplace.currentCategory = categoryId;
+            WC_CGMP_Marketplace.currentOffset = 0;
+
+            $('.wc-cgmp-category-item').removeClass('active');
+            $this.addClass('active');
+
+            WC_CGMP_Marketplace.loadProducts();
+        },
+
+        filterByTier: function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var tier = $this.data('tier');
+
+            WC_CGMP_Marketplace.currentTier = tier;
+            WC_CGMP_Marketplace.currentOffset = 0;
+
+            $('.wc-cgmp-tier-btn').removeClass('active');
+            $this.addClass('active');
+
+            WC_CGMP_Marketplace.loadProducts();
+        },
+
+        syncPanelFromDropdown: function($panel) {
+            var $select = $panel.find('.wc-cgmp-tier-select');
+            var $btn = $panel.find('.wc-cgmp-add-to-cart');
+            
+            if ($select.length === 0 || $btn.length === 0) {
+                return;
+            }
+            
+            var tierLevel = parseInt($select.val()) || 0;
+            if (tierLevel > 0) {
+                $btn.attr('data-tier-level', tierLevel);
+                WC_CGMP_Marketplace.log('Panel synced from dropdown', {
+                    product_id: $panel.data('product-id'),
+                    tier_level: tierLevel
+                });
+            }
+        },
+
+        updateAllPricingPanels: function(tierLevel) {
+            var visibleCount = 0;
+            
+            WC_CGMP_Marketplace.log('updateAllPricingPanels called with tierLevel:', tierLevel);
+            
+            $('.wc-cgmp-card').each(function() {
+                var $card = $(this);
+                var $panel = $card.find('.wc-cgmp-pricing-panel');
+                var $badge = $card.find('.wc-cgmp-tier-badge');
+                var $cardDesc = $card.find('.wc-cgmp-card-desc');
+                
+                var hourlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-hourly')) || 0;
+                var monthlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-monthly')) || 0;
+                var tierName = $panel.data('tier-' + tierLevel + '-name') || '';
+                var tierDescription = $panel.data('tier-' + tierLevel + '-description') || '';
+                
+                if (hourlyPrice <= 0 && monthlyPrice <= 0) {
+                    $card.hide();
+                    return;
+                }
+                
+                $card.show();
+                visibleCount++;
+                
+                var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : 'monthly';
+                var newPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
+                
+                $panel.find('.wc-cgmp-price-main')
+                    .data('price', newPrice)
+                    .html(WC_CGMP_Marketplace.formatPrice(newPrice));
+                
+                if (priceType === 'monthly') {
+                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice) + '/hr');
+                } else {
+                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice) + '/mo');
+                }
+                
+                $panel.find('.wc-cgmp-total-price').data('monthly-price', monthlyPrice);
+                
+                var badgeClass = ['entry', 'mid', 'expert'][tierLevel - 1] || 'default';
+                $badge
+                    .removeClass('entry mid expert default')
+                    .addClass(badgeClass)
+                    .text(tierName);
+                
+                $panel.find('.wc-cgmp-tier-description').text(tierDescription);
+                
+                var $btn = $panel.find('.wc-cgmp-add-to-cart');
+                if ($btn.length) {
+                    $btn.attr('data-tier-level', tierLevel);
+                }
+                
+                $panel.find('.wc-cgmp-quantity-input').trigger('change');
+            });
+            
+            WC_CGMP_Marketplace.log('updateAllPricingPanels complete. Visible cards:', visibleCount);
+            WC_CGMP_Marketplace.updateSectionHeader(visibleCount);
+        },
+
+        loadProducts: function() {
+            var $grid = $('.wc-cgmp-grid');
+            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit')) || WC_CGMP_Marketplace.limit;
+
+            this.showLoading();
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'WC_CGMP_filter_products',
+                    nonce: wc_cgmp_ajax.nonce,
+                    category: WC_CGMP_Marketplace.currentCategory,
+                    tier: WC_CGMP_Marketplace.currentTier,
+                    limit: limit,
+                    offset: WC_CGMP_Marketplace.currentOffset,
+                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
+                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                },
+                beforeSend: function() {
+                    $grid.addClass('loading');
+                },
+                success: function(response) {
+                    if (response.success) {
+                        if (WC_CGMP_Marketplace.currentOffset === 0) {
+                            $grid.html(response.data.html);
+                        } else {
+                            $grid.append(response.data.html);
+                        }
+                        WC_CGMP_Marketplace.updateSectionHeader(response.data.count);
+                        WC_CGMP_Marketplace.syncAllPanelsFromDropdowns();
+                        
+                        if (WC_CGMP_Marketplace.currentTier > 0) {
+                            WC_CGMP_Marketplace.updateAllPricingPanels(WC_CGMP_Marketplace.currentTier);
+                        }
+                    }
+                },
+                complete: function() {
+                    $grid.removeClass('loading');
+                    WC_CGMP_Marketplace.hideLoading();
+                }
+            });
+        },
+
+        loadMore: function(e) {
+            e.preventDefault();
+            var $grid = $('.wc-cgmp-grid');
+            var $btn = $(this);
+            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit')) || WC_CGMP_Marketplace.limit;
+
+            WC_CGMP_Marketplace.currentOffset += limit;
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'WC_CGMP_load_more',
+                    nonce: wc_cgmp_ajax.nonce,
+                    category: WC_CGMP_Marketplace.currentCategory,
+                    tier: WC_CGMP_Marketplace.currentTier,
+                    limit: limit,
+                    offset: WC_CGMP_Marketplace.currentOffset,
+                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
+                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                },
+                beforeSend: function() {
+                    $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $grid.append(response.data.html);
+                        if (!response.data.has_more) {
+                            $('.wc-cgmp-load-more').hide();
+                        }
+                        WC_CGMP_Marketplace.syncAllPanelsFromDropdowns();
+                        if (WC_CGMP_Marketplace.currentTier > 0) {
+                            WC_CGMP_Marketplace.updateAllPricingPanels(WC_CGMP_Marketplace.currentTier);
+                        }
+                    }
+                },
+                complete: function() {
+                    $btn.removeClass('loading').text('Load More');
+                }
+            });
+        },
+
+        searchProducts: function(e) {
+            var search = $(e.target).val();
+            var $grid = $('.wc-cgmp-grid');
+
+            if (search.length < 2) {
+                WC_CGMP_Marketplace.currentOffset = 0;
+                WC_CGMP_Marketplace.loadProducts();
+                return;
+            }
+
+            WC_CGMP_Marketplace.showLoading();
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'WC_CGMP_search_products',
+                    nonce: wc_cgmp_ajax.nonce,
+                    search: search,
+                    limit: 12,
+                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
+                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $grid.html(response.data.html);
+                        WC_CGMP_Marketplace.updateSectionHeader(response.data.count);
+                        WC_CGMP_Marketplace.syncAllPanelsFromDropdowns();
+                        if (WC_CGMP_Marketplace.currentTier > 0) {
+                            WC_CGMP_Marketplace.updateAllPricingPanels(WC_CGMP_Marketplace.currentTier);
+                        }
+                    }
+                },
+                complete: function() {
+                    WC_CGMP_Marketplace.hideLoading();
+                }
+            });
+        },
+
+        addToCart: function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var $card = $btn.closest('.wc-cgmp-card');
+            var $panel = $btn.closest('.wc-cgmp-pricing-panel');
+
+            var productId = $btn.data('product-id');
+            var tierLevelAttr = $btn.attr('data-tier-level');
+            var tierLevel = parseInt(tierLevelAttr) || 0;
+            var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : ($panel.data('default-price-type') || 'monthly');
+            var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+
+            // Extract tier details for WELP compatibility
+            var tierName = $panel.data('tier-' + tierLevel + '-name') || '';
+            var hourlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-hourly')) || 0;
+            var monthlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-monthly')) || 0;
+            var selectedPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
+
+            WC_CGMP_Marketplace.log('=== ADD TO CART CLICKED ===');
+            WC_CGMP_Marketplace.log('Button data-tier-level attr:', tierLevelAttr);
+            WC_CGMP_Marketplace.log('Parsed tierLevel:', tierLevel);
+            WC_CGMP_Marketplace.log('ProductId:', productId);
+            WC_CGMP_Marketplace.log('PriceType:', priceType);
+            WC_CGMP_Marketplace.log('Quantity:', quantity);
+            WC_CGMP_Marketplace.log('Tier Name:', tierName);
+            WC_CGMP_Marketplace.log('Selected Price:', selectedPrice);
+            
+            var $dropdown = $panel.find('.wc-cgmp-tier-select');
+            if ($dropdown.length) {
+                WC_CGMP_Marketplace.log('Dropdown value:', $dropdown.val());
+                WC_CGMP_Marketplace.log('Dropdown selected option:', $dropdown.find('option:selected').text());
+            }
+
+            var hasTiers = $card.data('has-tiers') || $panel.data('has-tiers');
+            WC_CGMP_Marketplace.log('hasTiers:', hasTiers);
+            
+            if (hasTiers === 'true' || hasTiers === true) {
+                if (tierLevel <= 0) {
+                    WC_CGMP_Marketplace.log('ERROR: tierLevel is 0 or negative, aborting');
+                    alert(wc_cgmp_ajax.i18n.select_tier || 'Please select an experience level.');
+                    return;
+                }
+
+                WC_CGMP_Marketplace.log('Tier prices - hourly:', hourlyPrice, 'monthly:', monthlyPrice, 'selected:', selectedPrice);
+
+                if (selectedPrice <= 0) {
+                    var errorMsg = priceType === 'monthly'
+                        ? 'Monthly pricing is not available for this experience level.'
+                        : 'Hourly pricing is not available for this experience level.';
+                    WC_CGMP_Marketplace.log('ERROR: selectedPrice is 0 or negative');
+                    alert(wc_cgmp_ajax.i18n.invalid_price_type || errorMsg);
+                    return;
+                }
+            }
+
+            var ajaxData = {
+                action: 'WC_CGMP_add_to_cart',
+                nonce: wc_cgmp_ajax.nonce,
+                product_id: productId,
+                quantity: quantity,
+                tier_level: tierLevel,
+                price_type: priceType,
+                // WELP-expected field names for Cart_Integration::add_tier_to_cart()
+                welp_selected_tier: tierLevel,
+                welp_tier_name: tierName,
+                welp_tier_price: selectedPrice,
+                welp_price_type: priceType
+            };
+            
+            WC_CGMP_Marketplace.log('Sending AJAX with data:', ajaxData);
+
+            $btn.addClass('loading');
+            $btn.find('.wc-cgmp-btn-text').text('Adding...');
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: ajaxData,
+            success: function(response) {
+                    WC_CGMP_Marketplace.log('AJAX success response:', response);
+                    if (response.success) {
+                        $btn.find('.wc-cgmp-btn-text').text(wc_cgmp_ajax.i18n.added_to_cart);
+                        
+                        // Trigger WooCommerce fragment refresh for menu cart
+                        $(document.body).trigger('wc_fragment_refresh');
+
+                        // Update mini-cart directly with cart_data from response (no extra AJAX)
+                        if (response.data.cart_data && typeof window.cartQuoteUpdateMiniCart === 'function') {
+                            window.cartQuoteUpdateMiniCart(response.data.cart_data);
+                        } else if (typeof window.cartQuoteRefreshMiniCart === 'function') {
+                            // Fallback: use old refresh method if cart_data not available
+                            window.cartQuoteRefreshMiniCart({ full: true });
+                        }
+
+                        setTimeout(function() {
+                            $btn.find('.wc-cgmp-btn-text').text('Add to Cart');
+                        }, 2000);
+                    } else {
+                        WC_CGMP_Marketplace.log('AJAX returned success:false:', response.data);
+                        alert(response.data.message || wc_cgmp_ajax.i18n.error);
+                        $btn.find('.wc-cgmp-btn-text').text('Add to Cart');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    WC_CGMP_Marketplace.log('AJAX error:', {xhr: xhr, status: status, error: error});
+                    alert('Error: ' + error);
+                    $btn.find('.wc-cgmp-btn-text').text('Add to Cart');
+                },
+                complete: function() {
+                    $btn.removeClass('loading');
+                }
+            });
+        },
+
+        updateQuantity: function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var $input = $btn.siblings('.wc-cgmp-quantity-input');
+            var action = $btn.data('action');
+            var currentVal = parseInt($input.val()) || 1;
+
+            if (action === 'increase') {
+                $input.val(Math.min(currentVal + 1, 99));
+            } else if (action === 'decrease') {
+                $input.val(Math.max(currentVal - 1, 1));
+            }
+
+            $input.trigger('change');
+        },
+
+        updateTotal: function(e) {
+            var $input = $(this);
+            var $panel = $input.closest('.wc-cgmp-pricing-panel');
+            var quantity = parseInt($input.val()) || 1;
+            
+            var hasTiers = $panel.data('has-tiers');
+            var price = 0;
+            
+            if (hasTiers === 'false' || hasTiers === false) {
+                price = parseFloat($panel.data('product-price')) || 0;
+            } else {
+                price = parseFloat($panel.find('.wc-cgmp-total-price').data('monthly-price')) || 0;
+            }
+            
+            var total = price * quantity;
+
+            $panel.find('.wc-cgmp-total-price').data('total', total);
+
+            var formattedTotal = WC_CGMP_Marketplace.formatPrice(total);
+            $panel.find('.wc-cgmp-total-price').html(formattedTotal + (hasTiers ? '/mo' : ''));
+        },
+
+        updateTierPrice: function(e) {
+            var $select = $(this);
+            var $panel = $select.closest('.wc-cgmp-pricing-panel');
+            var $option = $select.find('option:selected');
+            var $btn = $panel.find('.wc-cgmp-add-to-cart');
+
+            var newTierLevel = parseInt($select.val()) || 0;
+            var hourlyPrice = parseFloat($option.data('hourly')) || 0;
+            var monthlyPrice = parseFloat($option.data('monthly')) || 0;
+            var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : 'monthly';
+
+            var price = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
+
+            $panel.find('.wc-cgmp-price-main').data('price', price);
+            $panel.find('.wc-cgmp-price-main').html(WC_CGMP_Marketplace.formatPrice(price));
+
+            $btn.attr('data-tier-level', newTierLevel);
+            
+            WC_CGMP_Marketplace.log('Dropdown changed - tier level updated', {
+                product_id: $panel.data('product-id'),
+                new_tier_level: newTierLevel,
+                button_data_tier_level: $btn.attr('data-tier-level'),
+                hourly_price: hourlyPrice,
+                monthly_price: monthlyPrice
+            });
+
+            $panel.find('.wc-cgmp-quantity-input').trigger('change');
+        },
+
+        updatePriceType: function(e) {
+            var $input = $(this);
+            var $panel = $input.closest('.wc-cgmp-pricing-panel');
+            var priceType = $input.is(':checked') ? 'hourly' : 'monthly';
+
+            $panel.find('.wc-cgmp-switch-label').removeClass('active');
+            $panel.find('.wc-cgmp-switch-label').eq(priceType === 'hourly' ? 2 : 0).addClass('active');
+
+            $panel.find('.wc-cgmp-add-to-cart').data('price-type', priceType);
+
+            var currentTier = parseInt($panel.find('.wc-cgmp-add-to-cart').data('tier-level')) || 1;
+            var hourlyPrice = parseFloat($panel.data('tier-' + currentTier + '-hourly')) || 0;
+            var monthlyPrice = parseFloat($panel.data('tier-' + currentTier + '-monthly')) || 0;
+            var newPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
+            
+            $panel.find('.wc-cgmp-price-main')
+                .data('price', newPrice)
+                .html(WC_CGMP_Marketplace.formatPrice(newPrice));
+            
+            $panel.find('.wc-cgmp-total-price').data('monthly-price', monthlyPrice);
+            
+            if (priceType === 'monthly') {
+                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice) + '/hr');
+            } else {
+                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice) + '/mo');
+            }
+            
+            $panel.find('.wc-cgmp-quantity-input').trigger('change');
+        },
+
+        updateSectionHeader: function(count) {
+            var text = count === 1 
+                ? '1 role available' 
+                : count + ' roles available';
+            $('.wc-cgmp-section-count').text(text);
+        },
+
+        formatPrice: function(price) {
+            return '$' + price.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        },
+
+        debounce: function(func, wait) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    func.apply(context, args);
+                }, wait);
+            };
+        },
+
+        initCarousel: function() {
+            var $grid = $('.wc-cgmp-grid.wc-cgmp-hybrid');
+
+            if ($grid.length && $(window).width() <= 768) {
+                $grid.attr('data-carousel', 'true');
+            }
+        }
+    };
+
+    $(document).ready(function() {
+        WC_CGMP_Marketplace.init();
+    });
+
+    $(window).on('elementor/frontend/init', function() {
+        elementorFrontend.hooks.addAction('frontend/element_ready/WC_CGMP_marketplace.default', function($scope) {
+            WC_CGMP_Marketplace.init();
+        });
+    });
+
+})(jQuery);

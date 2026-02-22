@@ -1,0 +1,208 @@
+<?php
+/**
+ * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
+ * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
+ * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
+ * Version: 1.1.0
+ * Author: Jerel Yoshida
+ * Author URI: https://github.com/Jerel-R-Yoshida
+ * Text Domain: wc-carousel-grid-marketplace-and-pricing
+ * Domain Path: /languages
+ * Requires at least: 5.8
+ * Requires PHP: 7.4
+ * WC requires at least: 6.0
+ * WC tested up to: 8.0
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+defined('ABSPATH') || exit;
+
+define('WC_CGMP_VERSION', '1.1.0');
+define('WC_CGMP_PLUGIN_FILE', __FILE__);
+define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
+define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
+define('WC_CGMP_DB_VERSION', '1.1.0');
+
+if (!function_exists('wc_cgmp_autoloader')) {
+    function wc_cgmp_autoloader($class) {
+        $prefix = 'WC_CGMP\\';
+        $base_dir = WC_CGMP_PLUGIN_DIR . 'src/';
+
+        $len = strlen($prefix);
+        if (strncmp($prefix, $class, $len) !== 0) {
+            return;
+        }
+
+        $relative_class = substr($class, $len);
+        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+        if (file_exists($file)) {
+            require $file;
+        }
+    }
+
+    spl_autoload_register('wc_cgmp_autoloader');
+}
+
+function wc_cgmp(): WC_CGMP\Core\Plugin {
+    return WC_CGMP\Core\Plugin::get_instance();
+}
+
+function wc_cgmp_is_enabled(int $product_id): bool {
+    return get_post_meta($product_id, '_wc_cgmp_enabled', true) === 'yes'
+        || get_post_meta($product_id, '_welp_enabled', true) === 'yes';
+}
+
+function wc_cgmp_get_tiers(int $product_id): array {
+    return wc_cgmp()->get_service('repository')->get_tiers_by_product($product_id);
+}
+
+function wc_cgmp_is_popular(int $product_id): bool {
+    $method = get_option('wc_cgmp_popular_method', 'auto');
+
+    if ($method === 'manual' || $method === 'both') {
+        if (get_post_meta($product_id, '_wc_cgmp_popular', true) === 'yes') {
+            return true;
+        }
+    }
+
+    if ($method === 'auto' || $method === 'both') {
+        $plugin = wc_cgmp();
+        $repository = $plugin->get_service('repository');
+        if ($repository) {
+            return $repository->is_popular_auto($product_id);
+        }
+    }
+
+    return false;
+}
+
+function wc_cgmp_format_price(float $price, string $type = ''): string {
+    $formatted = wc_price($price);
+
+    if ($type === 'monthly') {
+        return $formatted . '<span class="wc-cgmp-price-period">/mo</span>';
+    } elseif ($type === 'hourly') {
+        return $formatted . '<span class="wc-cgmp-price-period">/hr</span>';
+    }
+
+    return $formatted;
+}
+
+function wc_cgmp_log(string $message, array $context = []): void {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        $logger = wc_cgmp()->get_service('logger');
+        if ($logger) {
+            $logger->debug($message, $context);
+        }
+    }
+}
+
+function welp_is_enabled(int $product_id): bool {
+    return wc_cgmp_is_enabled($product_id);
+}
+
+function welp_get_instance() {
+    return wc_cgmp();
+}
+
+function welp_log() {
+    return wc_cgmp()->get_service('logger');
+}
+
+function welp_debug(string $message, array $context = []): void {
+    wc_cgmp_log($message, $context);
+}
+
+function welp_db_error(string $operation, string $error, array $context = []): void {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        $logger = wc_cgmp()->get_service('logger');
+        if ($logger) {
+            $logger->db_error($operation, $error, $context);
+        }
+    }
+}
+
+function wc_cgm(): WC_CGMP\Core\Plugin {
+    return wc_cgmp();
+}
+
+function wc_cgm_is_marketplace_product(int $product_id): bool {
+    return wc_cgmp_is_enabled($product_id);
+}
+
+function wc_cgm_get_tiers(int $product_id): array {
+    return wc_cgmp_get_tiers($product_id);
+}
+
+function wc_cgm_log(string $message, array $context = []): void {
+    wc_cgmp_log($message, $context);
+}
+
+function wc_cgmp_check_elementor(): bool {
+    $active_plugins = (array) get_option('active_plugins', []);
+    $network_active_plugins = (array) get_site_option('active_sitewide_plugins', []);
+    
+    $all_plugins = array_merge($active_plugins, array_keys($network_active_plugins));
+    
+    return in_array('elementor/elementor.php', $all_plugins, true)
+        || array_key_exists('elementor/elementor.php', $network_active_plugins);
+}
+
+add_action('plugins_loaded', 'wc_cgmp_init', 11);
+
+function wc_cgmp_init() {
+    if (!class_exists('WooCommerce')) {
+        add_action('admin_notices', function() {
+            echo '<div class="error"><p>';
+            echo '<strong>WooCommerce Carousel/Grid Marketplace & Pricing</strong> requires WooCommerce to be installed and active.';
+            echo '</p></div>';
+        });
+        return;
+    }
+
+    wc_cgmp();
+    
+    if (wc_cgmp_check_elementor()) {
+        add_action('elementor/elements/categories_registered', 'wc_cgmp_register_elementor_category');
+        add_action('elementor/widgets/register', 'wc_cgmp_register_elementor_widgets');
+    }
+}
+
+function wc_cgmp_register_elementor_category($elements_manager): void {
+    $elements_manager->add_category(
+        'yosh-tools',
+        [
+            'title' => __('Yosh Tools', 'wc-carousel-grid-marketplace-and-pricing'),
+            'icon'  => 'fa fa-plug',
+        ]
+    );
+}
+
+function wc_cgmp_register_elementor_widgets($widgets_manager): void {
+    if (!class_exists('\Elementor\Widget_Base')) {
+        return;
+    }
+    
+    require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Widgets/Marketplace_Widget.php';
+    $widgets_manager->register(new \WC_CGMP\Elementor\Widgets\Marketplace_Widget());
+}
+
+register_activation_hook(__FILE__, function() {
+    if (!class_exists('WooCommerce')) {
+        deactivate_plugins(WC_CGMP_PLUGIN_BASENAME);
+        wp_die('WooCommerce Carousel/Grid Marketplace & Pricing requires WooCommerce to be installed and active.');
+    }
+
+    $activator = new WC_CGMP\Core\Activator();
+    $activator->activate();
+});
+
+register_deactivation_hook(__FILE__, function() {
+    $deactivator = new WC_CGMP\Core\Deactivator();
+    $deactivator->deactivate();
+});
