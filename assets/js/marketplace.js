@@ -300,6 +300,7 @@
                     action: 'WC_CGMP_search_products',
                     nonce: wc_cgmp_ajax.nonce,
                     search: search,
+                    tier: WC_CGMP_Marketplace.currentTier,
                     limit: 12,
                     show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
                     show_tier_description: $grid.data('show-tier-description') ?? 'true'
