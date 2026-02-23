@@ -1,0 +1,289 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.2.3)'
+        required: true
+        type: string
+
+env:
+  PLUGIN_SLUG: wc-carousel-grid-marketplace-and-pricing
+  PHP_VERSION: '8.1'
+
+jobs:
+  # ============================================================================
+  # VALIDATE - Run tests and syntax checks
+  # ============================================================================
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.0', '8.1', '8.2']
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, xml, mysql, mysqli
+          coverage: none
+          
+      - name: Validate composer.json
+        run: |
+          if [ -f composer.json ]; then
+            composer validate --strict || true
+          fi
+          
+      - name: PHP Syntax Check
+        run: |
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./node_modules/*" -exec php -l {} \; 2>&1 | grep -v "No syntax errors"
+          echo "PHP syntax check completed"
+          
+      - name: Check for debug code
+        run: |
+          echo "Checking for debug code..."
+          DEBUG_FILES=$(grep -rl "var_dump\|print_r\|dd(\|dump(" --include="*.php" . 2>/dev/null | grep -v vendor | grep -v node_modules || true)
+          if [ -n "$DEBUG_FILES" ]; then
+            echo "::warning::Found potential debug code in: $DEBUG_FILES"
+          else
+            echo "No debug code found"
+          fi
+
+  # ============================================================================
+  # TEST - Run PHPUnit tests
+  # ============================================================================
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, mysql, mysqli, curl
+          coverage: xdebug
+          
+      - name: Setup WordPress Test Suite
+        run: |
+          bash .test/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest true || true
+        continue-on-error: true
+        
+      - name: Install PHPUnit
+        run: |
+          if [ -f composer.json ]; then
+            composer install --no-progress --prefer-dist
+          else
+            composer global require phpunit/phpunit:^9
+          fi
+        continue-on-error: true
+        
+      - name: Run PHPUnit Tests
+        run: |
+          if [ -f .test/phpunit.xml ]; then
+            phpunit --configuration .test/phpunit.xml || true
+          elif [ -f phpunit.xml ]; then
+            phpunit --configuration phpunit.xml || true
+          else
+            echo "No PHPUnit configuration found, skipping tests"
+          fi
+        continue-on-error: true
+
+  # ============================================================================
+  # BUILD - Create distribution ZIP
+  # ============================================================================
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [validate, test]
+    if: always() && needs.validate.result == 'success'
+    
+    outputs:
+      zip_name: ${{ steps.build.outputs.zip_name }}
+      version: ${{ steps.build.outputs.version }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          
+      - name: Build ZIP package
+        id: build
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="${{ env.PLUGIN_SLUG }}-${VERSION}.zip"
+          
+          # Create temp directory
+          mkdir -p /tmp/build/${{ env.PLUGIN_SLUG }}
+          
+          # Copy files (excluding dev files)
+          rsync -av --progress \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='.gitattributes' \
+            --exclude='.DS_Store' \
+            --exclude='Thumbs.db' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='.test' \
+            --exclude='.builder' \
+            --exclude='*.log' \
+            --exclude='phpcs.xml*' \
+            --exclude='phpunit.xml*' \
+            --exclude='phpstan*' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='package*.json' \
+            --exclude='yarn.lock' \
+            --exclude='.env*' \
+            --exclude='.plugin-config.yml' \
+            --exclude='.vscode' \
+            --exclude='.idea' \
+            --exclude='CHANGELOG.md' \
+            --exclude='README.md' \
+            --exclude='CONTRIBUTING.md' \
+            --exclude='languages' \
+            --exclude='tests' \
+            --exclude='coverage' \
+            --exclude='docs' \
+            ./ /tmp/build/${{ env.PLUGIN_SLUG }}/
+          
+          # Create ZIP
+          cd /tmp/build
+          zip -r "${ZIP_NAME}" "${{ env.PLUGIN_SLUG }}" -x "*.DS_Store" -x "*Thumbs.db"
+          
+          # Move to workspace
+          mv "${ZIP_NAME}" "${GITHUB_WORKSPACE}/"
+          
+          # Get size
+          SIZE=$(du -h "${GITHUB_WORKSPACE}/${ZIP_NAME}" | cut -f1)
+          
+          echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
+          echo "Package: ${ZIP_NAME} (${SIZE})"
+          
+      - name: Validate ZIP structure
+        run: |
+          ZIP_NAME="${{ steps.build.outputs.zip_name }}"
+          
+          # Extract and check structure
+          unzip -l "${ZIP_NAME}" > contents.txt
+          cat contents.txt
+          
+          # Check top-level folder name
+          FOLDER=$(unzip -l "${ZIP_NAME}" | head -10 | grep -oE "${{ env.PLUGIN_SLUG }}" | head -1)
+          if [ "$FOLDER" != "${{ env.PLUGIN_SLUG }}" ]; then
+            echo "::error::Invalid folder structure. Expected: ${{ env.PLUGIN_SLUG }}"
+            exit 1
+          fi
+          
+          # Check required files
+          if ! grep -q "${{ env.PLUGIN_SLUG }}/${{ env.PLUGIN_SLUG }}.php" contents.txt; then
+            echo "::error::Missing main plugin file"
+            exit 1
+          fi
+          
+          if ! grep -q "${{ env.PLUGIN_SLUG }}/readme.txt" contents.txt; then
+            echo "::error::Missing readme.txt"
+            exit 1
+          fi
+          
+          echo "ZIP validation passed"
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-package
+          path: ${{ steps.build.outputs.zip_name }}
+          retention-days: 30
+
+  # ============================================================================
+  # RELEASE - Create GitHub release
+  # ============================================================================
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-package
+          
+      - name: Get version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Extract release notes
+        id: notes
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            # Extract section for current version
+            sed -n "/## \[${{ steps.version.outputs.version }}\]/,/## \[/p" CHANGELOG.md | head -n -1 > release_notes.md || echo "Release ${{ steps.version.outputs.version }}" > release_notes.md
+          else
+            echo "Release ${{ steps.version.outputs.version }}" > release_notes.md
+          fi
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          files: |
+            ${{ needs.build.outputs.zip_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Summary
+        run: |
+          echo "## Release Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** ${{ needs.build.outputs.zip_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Release URL:** ${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY

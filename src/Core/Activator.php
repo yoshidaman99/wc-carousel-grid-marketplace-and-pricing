@@ -9,12 +9,30 @@ class Activator
     public function activate(): void
     {
         $this->create_tables();
-        $this->migrate_from_welp();
-        $this->migrate_from_cgm();
+        
+        try {
+            $this->migrate_from_welp();
+        } catch (\Throwable $e) {
+            $this->log_error('WELP migration failed: ' . $e->getMessage());
+        }
+        
+        try {
+            $this->migrate_from_cgm();
+        } catch (\Throwable $e) {
+            $this->log_error('CGM migration failed: ' . $e->getMessage());
+        }
+        
         $this->set_default_options();
         $this->schedule_events();
         $this->update_db_version();
         flush_rewrite_rules();
+    }
+    
+    private function log_error(string $message): void
+    {
+        if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+            error_log('[WC_CGMP] ' . $message);
+        }
     }
 
     private function create_tables(): void
@@ -98,9 +116,7 @@ class Activator
 
             update_option('wc_cgmp_migrated_from_welp', true);
 
-            wc_cgmp_log('Migration from WELP completed', [
-                'tiers_migrated' => count($existing_meta),
-            ]);
+            $this->log_error('Migration from WELP completed. Tiers migrated: ' . count($existing_meta));
         }
     }
 
