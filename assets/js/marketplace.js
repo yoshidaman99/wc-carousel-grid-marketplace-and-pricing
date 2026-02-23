@@ -107,7 +107,11 @@
         filterByTier: function(e) {
             e.preventDefault();
             var $this = $(this);
-            var tier = $this.data('tier');
+            var tier = parseInt($this.data('tier')) || 1;
+
+            if (tier === WC_CGMP_Marketplace.currentTier) {
+                return;
+            }
 
             WC_CGMP_Marketplace.currentTier = tier;
             WC_CGMP_Marketplace.currentOffset = 0;
@@ -115,7 +119,7 @@
             $('.wc-cgmp-tier-btn').removeClass('active');
             $this.addClass('active');
 
-            WC_CGMP_Marketplace.loadProducts();
+            WC_CGMP_Marketplace.updateAllPricingPanels(tier);
         },
 
         syncPanelFromDropdown: function($panel) {
@@ -147,10 +151,10 @@
                 var $badge = $card.find('.wc-cgmp-tier-badge');
                 var $cardDesc = $card.find('.wc-cgmp-card-desc');
                 
-                var hourlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-hourly')) || 0;
-                var monthlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-monthly')) || 0;
-                var tierName = $panel.data('tier-' + tierLevel + '-name') || '';
-                var tierDescription = $panel.data('tier-' + tierLevel + '-description') || '';
+                var hourlyPrice = parseFloat($panel.attr('data-tier-' + tierLevel + '-hourly')) || 0;
+                var monthlyPrice = parseFloat($panel.attr('data-tier-' + tierLevel + '-monthly')) || 0;
+                var tierName = $panel.attr('data-tier-' + tierLevel + '-name') || '';
+                var tierDescription = $panel.attr('data-tier-' + tierLevel + '-description') || '';
                 
                 if (hourlyPrice <= 0 && monthlyPrice <= 0) {
                     $card.hide();
@@ -182,6 +186,11 @@
                     .text(tierName);
                 
                 $panel.find('.wc-cgmp-tier-description').text(tierDescription);
+                
+                var $dropdown = $panel.find('.wc-cgmp-tier-select');
+                if ($dropdown.length && $dropdown.find('option[value="' + tierLevel + '"]').length) {
+                    $dropdown.val(tierLevel);
+                }
                 
                 var $btn = $panel.find('.wc-cgmp-add-to-cart');
                 if ($btn.length) {
@@ -334,9 +343,9 @@
             var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
 
             // Extract tier details for WELP compatibility
-            var tierName = $panel.data('tier-' + tierLevel + '-name') || '';
-            var hourlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-hourly')) || 0;
-            var monthlyPrice = parseFloat($panel.data('tier-' + tierLevel + '-monthly')) || 0;
+            var tierName = $panel.attr('data-tier-' + tierLevel + '-name') || '';
+            var hourlyPrice = parseFloat($panel.attr('data-tier-' + tierLevel + '-hourly')) || 0;
+            var monthlyPrice = parseFloat($panel.attr('data-tier-' + tierLevel + '-monthly')) || 0;
             var selectedPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
 
             WC_CGMP_Marketplace.log('=== ADD TO CART CLICKED ===');
@@ -354,7 +363,7 @@
                 WC_CGMP_Marketplace.log('Dropdown selected option:', $dropdown.find('option:selected').text());
             }
 
-            var hasTiers = $card.data('has-tiers') || $panel.data('has-tiers');
+            var hasTiers = $card.attr('data-has-tiers') || $panel.attr('data-has-tiers');
             WC_CGMP_Marketplace.log('hasTiers:', hasTiers);
             
             if (hasTiers === 'true' || hasTiers === true) {
@@ -456,7 +465,7 @@
             var $panel = $input.closest('.wc-cgmp-pricing-panel');
             var quantity = parseInt($input.val()) || 1;
             
-            var hasTiers = $panel.data('has-tiers');
+            var hasTiers = $panel.attr('data-has-tiers');
             var price = 0;
             
             if (hasTiers === 'false' || hasTiers === false) {
@@ -512,9 +521,9 @@
 
             $panel.find('.wc-cgmp-add-to-cart').data('price-type', priceType);
 
-            var currentTier = parseInt($panel.find('.wc-cgmp-add-to-cart').data('tier-level')) || 1;
-            var hourlyPrice = parseFloat($panel.data('tier-' + currentTier + '-hourly')) || 0;
-            var monthlyPrice = parseFloat($panel.data('tier-' + currentTier + '-monthly')) || 0;
+            var currentTier = parseInt($panel.find('.wc-cgmp-add-to-cart').attr('data-tier-level')) || 1;
+            var hourlyPrice = parseFloat($panel.attr('data-tier-' + currentTier + '-hourly')) || 0;
+            var monthlyPrice = parseFloat($panel.attr('data-tier-' + currentTier + '-monthly')) || 0;
             var newPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
             
             $panel.find('.wc-cgmp-price-main')
