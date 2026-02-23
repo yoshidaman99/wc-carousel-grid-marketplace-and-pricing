@@ -7,8 +7,9 @@ dist/
 build/
 *.min.js
 *.min.css
+*.map
 
-# IDE
+# IDE & Editors
 .idea/
 .vscode/
 *.swp
@@ -18,6 +19,12 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
+
+# AI Builder / Development
+.opencode/
+.builder/
+__pycache__/
+.cache/
 
 # WordPress
 *.log
@@ -29,10 +36,20 @@ tests/
 phpunit.xml
 phpunit.xml.dist
 .phpunit.result.cache
+.phpunit.cache/
 coverage/
+phpcs-report.xml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Distribution (created locally for releases)
+*.zip
+*.tar.gz
 
 # Misc
 *.bak
 *.tmp
-.env
-.env.local
+nul

@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-R-Yoshida
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
@@ -18,14 +18,14 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.1.0');
+define('WC_CGMP_VERSION', '1.1.1');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
 define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
-define('WC_CGMP_DB_VERSION', '1.1.0');
+define('WC_CGMP_DB_VERSION', '1.1.1');
 
 if (!function_exists('wc_cgmp_autoloader')) {
     function wc_cgmp_autoloader($class) {

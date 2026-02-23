@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 
 == Changelog ==
 
+= 1.1.1 =
+* Update .gitignore with AI Builder patterns and improved organization
+
 = 1.1.0 =
 * Initial release - Merged WooCommerce Carousel/Grid Marketplace and WooCommerce Experience Level Pricing
 * Combined tier pricing database with marketplace display
@@ -74,6 +77,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Backward compatibility for existing integrations
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Maintenance release with improved development file patterns.
 
 = 1.1.0 =
 Initial release of the combined plugin. If upgrading from separate WELP or CGM plugins, your data will be automatically migrated.
