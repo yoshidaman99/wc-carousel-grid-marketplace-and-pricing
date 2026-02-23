@@ -2,7 +2,7 @@
 defined('ABSPATH') || exit;
 
 $atts = $atts ?? [];
-$default_tier = (int) ($atts['tier'] ?? 1);
+$default_tier = (int) ($atts['selected_tier'] ?? $atts['tier'] ?? 1);
 if ($default_tier === 0) {
     $default_tier = 1;
 }

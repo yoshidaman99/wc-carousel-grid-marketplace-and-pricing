@@ -8,16 +8,32 @@ $specialization = $specialization ?? '';
 $tiers = $tiers ?? [];
 $atts = $atts ?? [];
 
-$selected_tier = isset($atts['selected_tier']) ? (int) $atts['selected_tier'] : 1;
+$selected_tier = isset($atts['selected_tier']) ? (int) $atts['selected_tier'] : 0;
 $tier_badges = [1 => 'Entry', 2 => 'Mid', 3 => 'Expert'];
 $tier_classes = [1 => 'entry', 2 => 'mid', 3 => 'expert'];
 
-$default_tier = !empty($tiers) ? $tiers[0] : null;
-foreach ($tiers as $tier) {
-    if ($tier->hourly_price > 0 || $tier->monthly_price > 0) {
-        $default_tier = $tier;
-        break;
+$default_tier = null;
+
+if ($selected_tier > 0) {
+    foreach ($tiers as $tier) {
+        if ((int) $tier->tier_level === $selected_tier && (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0)) {
+            $default_tier = $tier;
+            break;
+        }
     }
+}
+
+if (!$default_tier) {
+    foreach ($tiers as $tier) {
+        if (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0) {
+            $default_tier = $tier;
+            break;
+        }
+    }
+}
+
+if (!$default_tier && !empty($tiers)) {
+    $default_tier = $tiers[0];
 }
 ?>
 
