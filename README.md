@@ -132,6 +132,9 @@ If upgrading from the separate plugins:
 
 ## Changelog
 
+### 1.1.1 - 2026-02-23
+* Update .gitignore with AI Builder patterns and improved organization
+
 ### 1.1.0 - 2026-02-23
 * **Initial Release** - Merged WooCommerce Carousel/Grid Marketplace and WooCommerce Experience Level Pricing into a single unified plugin
 * Combined tier pricing database with marketplace display
