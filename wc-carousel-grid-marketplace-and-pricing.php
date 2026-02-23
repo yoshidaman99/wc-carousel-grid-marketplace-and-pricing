@@ -18,14 +18,14 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.2.2');
+define('WC_CGMP_VERSION', '1.2.3');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
 define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
-define('WC_CGMP_DB_VERSION', '1.2.2');
+define('WC_CGMP_DB_VERSION', '1.2.3');
 
 if (!function_exists('wc_cgmp_autoloader')) {
     function wc_cgmp_autoloader($class) {
