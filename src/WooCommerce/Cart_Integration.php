@@ -246,6 +246,7 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'selected_tier' => $tier,
         ];
 
         ob_start();
@@ -435,6 +436,7 @@ class Cart_Integration
 
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
         $limit = isset($_POST['limit']) ? absint($_POST['limit']) : 12;
+        $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
 
         if (strlen($search) < 2) {
             wp_send_json_success(['html' => '', 'count' => 0]);
@@ -449,6 +451,7 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'selected_tier' => $tier,
         ];
 
         ob_start();
