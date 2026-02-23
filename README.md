@@ -132,6 +132,9 @@ If upgrading from the separate plugins:
 
 ## Changelog
 
+### 1.1.3 - 2026-02-23
+* Fix: Zip file now uses forward slashes for Linux server compatibility
+
 ### 1.1.2 - 2026-02-23
 * Fix: Added explicit require for Activator/Deactivator classes to prevent autoloader issues during plugin activation
 

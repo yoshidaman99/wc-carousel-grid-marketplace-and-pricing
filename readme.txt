@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix: Zip file now uses forward slashes for Linux server compatibility
+
 = 1.1.2 =
 * Fix: Added explicit require for Activator/Deactivator classes to prevent autoloader issues during plugin activation
 
@@ -80,6 +83,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Backward compatibility for existing integrations
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+Critical fix for zip file path separators - now works on Linux servers.
 
 = 1.1.2 =
 Critical fix for plugin activation errors on some server configurations.
