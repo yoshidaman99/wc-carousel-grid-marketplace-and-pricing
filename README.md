@@ -132,6 +132,10 @@ If upgrading from the separate plugins:
 
 ## Changelog
 
+### 1.1.4 - 2026-02-23
+* Fix: Fixed fatal error in wc_cgmp_log() - added wc_cgmp_logger() helper function
+* Fix: Removed trailing whitespace from template files
+
 ### 1.1.3 - 2026-02-23
 * Fix: Zip file now uses forward slashes for Linux server compatibility
 

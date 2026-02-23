@@ -21,7 +21,7 @@ class Repository
     public function insert_tiers(int $product_id, array $tiers): bool
     {
         $success = true;
-        wc_cgmp_log()->start_timer('insert_tiers');
+        wc_cgmp_logger()->start_timer('insert_tiers');
 
         foreach ($tiers as $tier) {
             $existing = $this->get_tier($product_id, (int) $tier['tier_level']);
@@ -55,7 +55,7 @@ class Repository
 
             if ($result === false) {
                 $success = false;
-                wc_cgmp_log()->db_error(
+                wc_cgmp_logger()->db_error(
                     $operation . ' tier',
                     $this->wpdb->last_error ?: 'Unknown database error',
                     [
@@ -67,7 +67,7 @@ class Repository
         }
 
         if ($success) {
-            wc_cgmp_log()->stop_timer('insert_tiers', 'insert_tiers completed');
+            wc_cgmp_logger()->stop_timer('insert_tiers', 'insert_tiers completed');
         }
 
         return $success;
@@ -83,7 +83,7 @@ class Repository
         );
 
         if ($results === false) {
-            wc_cgmp_log()->db_error('SELECT tiers by product', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('SELECT tiers by product', $this->wpdb->last_error, [
                 'product_id' => $product_id,
             ]);
             return [];
@@ -103,7 +103,7 @@ class Repository
         );
 
         if ($result === false) {
-            wc_cgmp_log()->db_error('SELECT tier', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('SELECT tier', $this->wpdb->last_error, [
                 'product_id' => $product_id,
                 'tier_level' => $tier_level,
             ]);
@@ -122,13 +122,13 @@ class Repository
         );
 
         if ($result === false) {
-            wc_cgmp_log()->db_error('DELETE tiers', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('DELETE tiers', $this->wpdb->last_error, [
                 'product_id' => $product_id,
             ]);
             return false;
         }
 
-        wc_cgmp_log()->info('Tiers deleted', ['product_id' => $product_id]);
+        wc_cgmp_logger()->info('Tiers deleted', ['product_id' => $product_id]);
         return true;
     }
 
@@ -144,7 +144,7 @@ class Repository
         );
 
         if ($result === false) {
-            wc_cgmp_log()->db_error('SELECT price range', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('SELECT price range', $this->wpdb->last_error, [
                 'product_id' => $product_id,
                 'price_type' => $price_type,
             ]);
@@ -171,7 +171,7 @@ class Repository
         );
 
         if ($result === false) {
-            wc_cgmp_log()->db_error('SELECT available price types', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('SELECT available price types', $this->wpdb->last_error, [
                 'product_id' => $product_id,
             ]);
             return [];
@@ -199,7 +199,7 @@ class Repository
     ): bool {
         $order = \wc_get_order($order_id);
         if (!$order) {
-            wc_cgmp_log()->warning('Order not found for tier sale recording', [
+            wc_cgmp_logger()->warning('Order not found for tier sale recording', [
                 'order_id' => $order_id,
                 'product_id' => $product_id,
             ]);
@@ -230,7 +230,7 @@ class Repository
         );
 
         if ($result === false) {
-            wc_cgmp_log()->db_error('INSERT tier sale', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('INSERT tier sale', $this->wpdb->last_error, [
                 'order_id' => $order_id,
                 'product_id' => $product_id,
                 'tier_level' => $tier_level,
@@ -238,7 +238,7 @@ class Repository
             return false;
         }
 
-        wc_cgmp_log()->info('Tier sale recorded', [
+        wc_cgmp_logger()->info('Tier sale recorded', [
             'order_id' => $order_id,
             'product_id' => $product_id,
             'tier_level' => $tier_level,
@@ -300,7 +300,7 @@ class Repository
         $results = $this->wpdb->get_results($sql);
 
         if ($results === false) {
-            wc_cgmp_log()->db_error('SELECT sales by tier', $this->wpdb->last_error, $args);
+            wc_cgmp_logger()->db_error('SELECT sales by tier', $this->wpdb->last_error, $args);
             return [];
         }
 
@@ -362,7 +362,7 @@ class Repository
         $results = $this->wpdb->get_results($sql);
 
         if ($results === false) {
-            wc_cgmp_log()->db_error('SELECT sales by product', $this->wpdb->last_error, $args);
+            wc_cgmp_logger()->db_error('SELECT sales by product', $this->wpdb->last_error, $args);
             return [];
         }
 
@@ -376,7 +376,7 @@ class Repository
         );
 
         if ($results === false) {
-            wc_cgmp_log()->db_error('SELECT tier names', $this->wpdb->last_error);
+            wc_cgmp_logger()->db_error('SELECT tier names', $this->wpdb->last_error);
             return [];
         }
 
@@ -393,7 +393,7 @@ class Repository
         );
 
         if ($count === false) {
-            wc_cgmp_log()->db_error('COUNT tiers', $this->wpdb->last_error, [
+            wc_cgmp_logger()->db_error('COUNT tiers', $this->wpdb->last_error, [
                 'product_id' => $product_id,
             ]);
             return false;

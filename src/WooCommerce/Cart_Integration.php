@@ -345,7 +345,7 @@ class Cart_Integration
             $cart_items = [];
             foreach (WC()->cart->get_cart() as $item_key => $cart_item) {
                 $product = $cart_item['data'];
-                
+
                 $tier_data = isset($cart_item['wc_cgmp_tier']) ? [
                     'tier_level' => $cart_item['wc_cgmp_tier']['level'] ?? '',
                     'tier_name' => $cart_item['wc_cgmp_tier']['name'] ?? '',

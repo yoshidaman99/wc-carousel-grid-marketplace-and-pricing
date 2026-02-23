@@ -19,7 +19,7 @@ class Handlers
         check_ajax_referer('wc_cgmp_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
-            wc_cgmp_log()->warning('Unauthorized save_tiers attempt', [
+            wc_cgmp_logger()->warning('Unauthorized save_tiers attempt', [
                 'user_id' => get_current_user_id(),
             ]);
             wp_send_json_error(['message' => __('Unauthorized', 'wc-carousel-grid-marketplace-and-pricing')]);
@@ -62,7 +62,7 @@ class Handlers
         $result = $repository->insert_tiers($product_id, $processed_tiers);
 
         if ($result) {
-            wc_cgmp_log()->info('Tiers saved successfully', [
+            wc_cgmp_logger()->info('Tiers saved successfully', [
                 'product_id' => $product_id,
                 'tier_count' => count($processed_tiers),
             ]);
