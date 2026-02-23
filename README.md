@@ -132,6 +132,14 @@ If upgrading from the separate plugins:
 
 ## Changelog
 
+### 1.1.5 - 2026-02-23
+* Feature: Redesigned product metabox with professional styling
+* Feature: Added tier icons (medal, star, crown) for visual distinction
+* Feature: Added live price preview in tier cards
+* Feature: Added tooltips with help text on all fields
+* Feature: Added collapsible Display Options section
+* Feature: Added color-coded tier headers (green/blue/purple)
+
 ### 1.1.4 - 2026-02-23
 * Fix: Fixed fatal error in wc_cgmp_log() - added wc_cgmp_logger() helper function
 * Fix: Removed trailing whitespace from template files
