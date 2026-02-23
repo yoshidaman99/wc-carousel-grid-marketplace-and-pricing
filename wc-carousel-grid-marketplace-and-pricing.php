@@ -195,34 +195,15 @@ function wc_cgmp_init() {
     wc_cgmp();
 }
 
-add_action('elementor/loaded', 'wc_cgmp_init_elementor');
+add_action('plugins_loaded', 'wc_cgmp_init_elementor', 5);
 
 function wc_cgmp_init_elementor(): void {
-    if (!class_exists('\Elementor\Plugin')) {
+    if (!did_action('elementor/loaded') && !class_exists('\Elementor\Plugin')) {
         return;
     }
 
     require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Elementor_Integration.php';
     \WC_CGMP\Elementor\Elementor_Integration::get_instance();
-}
-
-function wc_cgmp_register_elementor_category($elements_manager): void {
-    $elements_manager->add_category(
-        'yosh-tools',
-        [
-            'title' => __('Yosh Tools', 'wc-carousel-grid-marketplace-and-pricing'),
-            'icon'  => 'fa fa-plug',
-        ]
-    );
-}
-
-function wc_cgmp_register_elementor_widgets($widgets_manager): void {
-    if (!class_exists('\Elementor\Widget_Base')) {
-        return;
-    }
-    
-    require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Widgets/Marketplace_Widget.php';
-    $widgets_manager->register(new \WC_CGMP\Elementor\Widgets\Marketplace_Widget());
 }
 
 register_activation_hook(__FILE__, function() {
