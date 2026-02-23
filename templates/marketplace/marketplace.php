@@ -17,7 +17,7 @@ $class = $atts['class'] ?? '';
 ?>
 
 <?php if (!empty($admin_notice)) : ?>
-<?php echo $admin_notice; ?>
+<?php echo wp_kses_post($admin_notice); ?>
 <?php endif; ?>
 
 <div class="wc-cgmp-marketplace wc-cgmp-loading <?php echo esc_attr($class); ?>"
