@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 
 == Changelog ==
 
+= 1.1.6 =
+* Changed: Updated .gitignore to exclude local development files from distribution
+
 = 1.1.5 =
 * Feature: Redesigned product metabox with professional styling
 * Feature: Added tier icons (medal, star, crown) for visual distinction
@@ -95,6 +98,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Backward compatibility for existing integrations
 
 == Upgrade Notice ==
+
+= 1.1.6 =
+Maintenance release - updates .gitignore for cleaner distribution builds.
 
 = 1.1.5 =
 UI refresh with professional metabox styling, tier icons, live price preview, and tooltips.

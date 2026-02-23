@@ -55,5 +55,12 @@ phpcs-report.xml
 nul
 
 # Build scripts - local-only
+.gitignore
 .gitignore.bak
 .gitignore.example
+AGENTS.md
+README.md
+/languages/
+CHANGELOG.md
+
+
