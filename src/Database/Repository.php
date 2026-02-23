@@ -67,6 +67,7 @@ class Repository
         }
 
         if ($success) {
+            wp_cache_delete('wc_cgmp_products', 'wc_cgmp');
             wc_cgmp_logger()->stop_timer('insert_tiers', 'insert_tiers completed');
         }
 

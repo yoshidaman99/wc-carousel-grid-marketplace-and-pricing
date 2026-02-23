@@ -57,7 +57,7 @@ class Marketplace
 
         $default_tier = null;
         foreach ($tiers as $tier) {
-            if ($tier->hourly_price > 0 || $tier->monthly_price > 0) {
+            if (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0) {
                 $default_tier = $tier;
                 break;
             }
@@ -65,6 +65,7 @@ class Marketplace
         if (!$default_tier && !empty($tiers)) {
             $default_tier = $tiers[0];
         }
+        $default_tier_level = $default_tier ? (int) $default_tier->tier_level : 0;
 
         $tiers_with_prices = 0;
         foreach ($tiers as $tier) {
@@ -105,7 +106,7 @@ class Marketplace
              data-has-tiers="<?php echo $has_tiers ? 'true' : 'false'; ?>"
              data-has-multiple-tiers="<?php echo $has_multiple_tiers ? 'true' : 'false'; ?>"
              data-product-price="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
-             data-default-tier="<?php echo esc_attr($default_tier->tier_level ?? 0); ?>"
+             data-default-tier="<?php echo esc_attr($default_tier_level); ?>"
              data-default-price-type="<?php echo esc_attr($default_price_type); ?>"
              <?php foreach ([1, 2, 3] as $level) : ?>
              data-tier-<?php echo esc_attr($level); ?>-hourly="<?php echo esc_attr($tier_data[$level]['hourly']); ?>"
@@ -168,7 +169,7 @@ class Marketplace
                         data-tier-name="<?php echo esc_attr($tier->tier_name); ?>"
                         data-hourly="<?php echo esc_attr($hourly); ?>"
                         data-monthly="<?php echo esc_attr($monthly); ?>"
-                        <?php selected($tier->tier_level, $default_tier->tier_level ?? 1); ?>>
+                        <?php selected($tier->tier_level, $default_tier_level); ?>>
                         <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
                     </option>
                     <?php endforeach; ?>
@@ -201,7 +202,7 @@ class Marketplace
             <button type="button"
                      class="wc-cgmp-add-to-cart"
                      data-product-id="<?php echo esc_attr($product_id); ?>"
-                     data-tier-level="<?php echo esc_attr($default_tier->tier_level ?? 0); ?>"
+                     data-tier-level="<?php echo esc_attr($default_tier_level); ?>"
                      data-price-type="<?php echo esc_attr($default_price_type); ?>">
                 <span class="dashicons dashicons-cart"></span>
                 <span class="wc-cgmp-btn-text"><?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>

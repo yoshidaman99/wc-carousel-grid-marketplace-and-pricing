@@ -33,8 +33,14 @@ class Elementor_Integration
         add_action('elementor/frontend/after_register_scripts', [$this, 'register_scripts']);
     }
 
-    public function register_category($elements_manager): void
+    public function register_category(): void
     {
+        $elements_manager = \Elementor\Plugin::instance()->elements_manager;
+
+        if (!$elements_manager || !method_exists($elements_manager, 'add_category')) {
+            return;
+        }
+
         $elements_manager->add_category(
             'yosh-tools',
             [
