@@ -32,7 +32,7 @@ class Frontend_Manager
             'order' => 'DESC',
             'show_sidebar' => get_option('wc_cgmp_show_sidebar', true) ? 'true' : 'false',
             'show_filter' => get_option('wc_cgmp_show_filter_bar', true) ? 'true' : 'false',
-            'show_search' => 'false',
+            'show_search' => 'true',
             'show_tier_description' => 'true',
             'show_tier_badge' => 'true',
             'show_sort' => 'true',

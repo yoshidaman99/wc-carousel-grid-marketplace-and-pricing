@@ -230,7 +230,7 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::SWITCHER,
             'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
             'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
-            'default' => 'no',
+            'default' => 'yes',
         ]);
 
         $this->add_control('show_tier_description', [
