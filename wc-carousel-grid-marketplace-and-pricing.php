@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-R-Yoshida
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
@@ -18,14 +18,14 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.2.0');
+define('WC_CGMP_VERSION', '1.2.1');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
 define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
-define('WC_CGMP_DB_VERSION', '1.2.0');
+define('WC_CGMP_DB_VERSION', '1.2.1');
 
 if (!function_exists('wc_cgmp_autoloader')) {
     function wc_cgmp_autoloader($class) {
@@ -176,13 +176,8 @@ function wc_cgm_log(string $message, array $context = []): void {
 }
 
 function wc_cgmp_check_elementor(): bool {
-    $active_plugins = (array) get_option('active_plugins', []);
-    $network_active_plugins = (array) get_site_option('active_sitewide_plugins', []);
-    
-    $all_plugins = array_merge($active_plugins, array_keys($network_active_plugins));
-    
-    return in_array('elementor/elementor.php', $all_plugins, true)
-        || array_key_exists('elementor/elementor.php', $network_active_plugins);
+    return class_exists('\Elementor\Plugin') 
+        || (did_action('elementor/loaded') && class_exists('\Elementor\Widget_Base'));
 }
 
 add_action('plugins_loaded', 'wc_cgmp_init', 11);
@@ -198,11 +193,17 @@ function wc_cgmp_init() {
     }
 
     wc_cgmp();
-    
-    if (wc_cgmp_check_elementor()) {
-        add_action('elementor/elements/categories_registered', 'wc_cgmp_register_elementor_category');
-        add_action('elementor/widgets/register', 'wc_cgmp_register_elementor_widgets');
+}
+
+add_action('elementor/loaded', 'wc_cgmp_init_elementor');
+
+function wc_cgmp_init_elementor(): void {
+    if (!class_exists('\Elementor\Plugin')) {
+        return;
     }
+
+    require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Elementor_Integration.php';
+    \WC_CGMP\Elementor\Elementor_Integration::get_instance();
 }
 
 function wc_cgmp_register_elementor_category($elements_manager): void {
