@@ -53,3 +53,7 @@ phpcs-report.xml
 *.bak
 *.tmp
 nul
+
+# Build scripts - local-only
+.gitignore.bak
+.gitignore.example
