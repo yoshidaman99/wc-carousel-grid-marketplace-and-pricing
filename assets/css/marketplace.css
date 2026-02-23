@@ -157,12 +157,15 @@
 
 /* ============================================
    Tier Filter Button Styles with Hover Effects
+   All values controlled via Elementor
    ============================================ */
 
 .wc-cgmp-tier-btn {
     --wc-cgmp-tier-entry: #22c55e;
     --wc-cgmp-tier-mid: #3b82f6;
     --wc-cgmp-tier-expert: #a855f7;
+    --wc-cgmp-tier-all: #6b7280;
+    --wc-cgmp-tier-transition: 0.3s;
     
     padding: 8px 16px;
     border: 1px solid var(--wc-cgmp-tier-border, #e5e7eb);
@@ -171,13 +174,12 @@
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--wc-cgmp-tier-transition, 0.3s) cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--wc-cgmp-tier-text, #6b7280);
     position: relative;
     overflow: hidden;
 }
 
-/* Ripple effect background */
 .wc-cgmp-tier-btn::after {
     content: '';
     position: absolute;
@@ -202,66 +204,73 @@
     border-color: var(--wc-cgmp-tier-hover-border, #d1d5db);
     background: var(--wc-cgmp-tier-hover-bg, #f9fafb);
     color: var(--wc-cgmp-tier-hover-text, #374151);
-    transform: translateY(-1px);
+    transform: var(--wc-cgmp-tier-hover-transform, translateY(-1px));
+    box-shadow: var(--wc-cgmp-tier-hover-shadow, none);
 }
 
-/* Entry Tier Hover */
-.wc-cgmp-tier-btn[data-tier="1"]:hover {
-    border-color: var(--wc-cgmp-tier-entry, #22c55e);
-    color: var(--wc-cgmp-tier-entry, #22c55e);
-    box-shadow: 0 4px 12px -4px rgba(34, 197, 94, 0.3);
-}
-
-/* Mid Tier Hover */
-.wc-cgmp-tier-btn[data-tier="2"]:hover {
-    border-color: var(--wc-cgmp-tier-mid, #3b82f6);
-    color: var(--wc-cgmp-tier-mid, #3b82f6);
-    box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.3);
-}
-
-/* Expert Tier Hover */
-.wc-cgmp-tier-btn[data-tier="3"]:hover {
-    border-color: var(--wc-cgmp-tier-expert, #a855f7);
-    color: var(--wc-cgmp-tier-expert, #a855f7);
-    box-shadow: 0 4px 12px -4px rgba(168, 85, 247, 0.3);
-}
-
-/* Active States */
 .wc-cgmp-tier-btn.active {
-    background: var(--wc-cgmp-tier-active-bg, var(--wc-cgmp-secondary, #a855f7));
-    border-color: var(--wc-cgmp-tier-active-bg, var(--wc-cgmp-secondary, #a855f7));
     color: var(--wc-cgmp-tier-active-text, #ffffff);
-    box-shadow: 0 4px 12px -4px rgba(168, 85, 247, 0.4);
 }
 
+/* Entry Tier - Hover State */
+.wc-cgmp-tier-btn[data-tier="1"]:hover {
+    border-color: var(--wc-cgmp-tier-entry-hover-border, var(--wc-cgmp-tier-entry, #22c55e));
+    background: var(--wc-cgmp-tier-entry-hover-bg, var(--wc-cgmp-tier-hover-bg, #f9fafb));
+    color: var(--wc-cgmp-tier-entry-hover-text, var(--wc-cgmp-tier-entry, #22c55e));
+    box-shadow: var(--wc-cgmp-tier-entry-hover-shadow, 0 4px 12px -4px rgba(34, 197, 94, 0.3));
+}
+
+/* Entry Tier - Active State */
 .wc-cgmp-tier-btn.active[data-tier="1"] {
-    background: var(--wc-cgmp-tier-entry, #22c55e);
-    border-color: var(--wc-cgmp-tier-entry, #22c55e);
-    box-shadow: 0 4px 12px -4px rgba(34, 197, 94, 0.4);
+    background: var(--wc-cgmp-tier-entry-active-bg, var(--wc-cgmp-tier-entry, #22c55e));
+    border-color: var(--wc-cgmp-tier-entry-active-border, var(--wc-cgmp-tier-entry-active-bg, var(--wc-cgmp-tier-entry, #22c55e)));
+    box-shadow: var(--wc-cgmp-tier-entry-active-shadow, 0 4px 12px -4px rgba(34, 197, 94, 0.4));
 }
 
+/* Mid Tier - Hover State */
+.wc-cgmp-tier-btn[data-tier="2"]:hover {
+    border-color: var(--wc-cgmp-tier-mid-hover-border, var(--wc-cgmp-tier-mid, #3b82f6));
+    background: var(--wc-cgmp-tier-mid-hover-bg, var(--wc-cgmp-tier-hover-bg, #f9fafb));
+    color: var(--wc-cgmp-tier-mid-hover-text, var(--wc-cgmp-tier-mid, #3b82f6));
+    box-shadow: var(--wc-cgmp-tier-mid-hover-shadow, 0 4px 12px -4px rgba(59, 130, 246, 0.3));
+}
+
+/* Mid Tier - Active State */
 .wc-cgmp-tier-btn.active[data-tier="2"] {
-    background: var(--wc-cgmp-tier-mid, #3b82f6);
-    border-color: var(--wc-cgmp-tier-mid, #3b82f6);
-    box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.4);
+    background: var(--wc-cgmp-tier-mid-active-bg, var(--wc-cgmp-tier-mid, #3b82f6));
+    border-color: var(--wc-cgmp-tier-mid-active-border, var(--wc-cgmp-tier-mid-active-bg, var(--wc-cgmp-tier-mid, #3b82f6)));
+    box-shadow: var(--wc-cgmp-tier-mid-active-shadow, 0 4px 12px -4px rgba(59, 130, 246, 0.4));
 }
 
+/* Expert Tier - Hover State */
+.wc-cgmp-tier-btn[data-tier="3"]:hover {
+    border-color: var(--wc-cgmp-tier-expert-hover-border, var(--wc-cgmp-tier-expert, #a855f7));
+    background: var(--wc-cgmp-tier-expert-hover-bg, var(--wc-cgmp-tier-hover-bg, #f9fafb));
+    color: var(--wc-cgmp-tier-expert-hover-text, var(--wc-cgmp-tier-expert, #a855f7));
+    box-shadow: var(--wc-cgmp-tier-expert-hover-shadow, 0 4px 12px -4px rgba(168, 85, 247, 0.3));
+}
+
+/* Expert Tier - Active State */
 .wc-cgmp-tier-btn.active[data-tier="3"] {
-    background: var(--wc-cgmp-tier-expert, #a855f7);
-    border-color: var(--wc-cgmp-tier-expert, #a855f7);
-    box-shadow: 0 4px 12px -4px rgba(168, 85, 247, 0.4);
+    background: var(--wc-cgmp-tier-expert-active-bg, var(--wc-cgmp-tier-expert, #a855f7));
+    border-color: var(--wc-cgmp-tier-expert-active-border, var(--wc-cgmp-tier-expert-active-bg, var(--wc-cgmp-tier-expert, #a855f7)));
+    box-shadow: var(--wc-cgmp-tier-expert-active-shadow, 0 4px 12px -4px rgba(168, 85, 247, 0.4));
 }
 
-/* "All Tiers" button */
+/* All Tiers Button (tier 0) - Hover State */
 .wc-cgmp-tier-btn[data-tier="0"]:hover {
-    border-color: #6b7280;
-    color: #374151;
+    border-color: var(--wc-cgmp-tier-all-hover-border, var(--wc-cgmp-tier-all, #6b7280));
+    background: var(--wc-cgmp-tier-all-hover-bg, var(--wc-cgmp-tier-hover-bg, #f9fafb));
+    color: var(--wc-cgmp-tier-all-hover-text, #374151);
+    box-shadow: var(--wc-cgmp-tier-all-hover-shadow, none);
 }
 
+/* All Tiers Button (tier 0) - Active State */
 .wc-cgmp-tier-btn.active[data-tier="0"] {
-    background: #6b7280;
-    border-color: #6b7280;
-    color: #ffffff;
+    background: var(--wc-cgmp-tier-all-active-bg, var(--wc-cgmp-tier-all, #6b7280));
+    border-color: var(--wc-cgmp-tier-all-active-border, var(--wc-cgmp-tier-all-active-bg, var(--wc-cgmp-tier-all, #6b7280)));
+    color: var(--wc-cgmp-tier-all-active-text, #ffffff);
+    box-shadow: var(--wc-cgmp-tier-all-active-shadow, none);
 }
 
 .wc-cgmp-section-header {
