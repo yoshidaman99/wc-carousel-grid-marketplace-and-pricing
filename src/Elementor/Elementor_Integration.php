@@ -56,14 +56,14 @@ class Elementor_Integration
 
     public function register_styles(): void
     {
-        wp_register_style(
+        \wp_register_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
             [],
             WC_CGMP_VERSION
         );
 
-        wp_register_style(
+        \wp_register_style(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/css/frontend.css',
             ['wc-cgmp-marketplace'],
@@ -73,7 +73,7 @@ class Elementor_Integration
 
     public function register_scripts(): void
     {
-        wp_register_script(
+        \wp_register_script(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/js/marketplace.js',
             ['jquery'],
@@ -81,20 +81,20 @@ class Elementor_Integration
             true
         );
 
-        wp_localize_script('wc-cgmp-marketplace', 'wc_cgmp_ajax', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wc_cgmp_frontend_nonce'),
-            'debug' => (defined('WP_DEBUG') && WP_DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG),
+        \wp_localize_script('wc-cgmp-marketplace', 'wc_cgmp_ajax', [
+            'ajax_url' => \admin_url('admin-ajax.php'),
+            'nonce' => \wp_create_nonce('wc_cgmp_frontend_nonce'),
+            'debug' => (\defined('WP_DEBUG') && \WP_DEBUG) || (\defined('SCRIPT_DEBUG') && \SCRIPT_DEBUG),
             'i18n' => [
-                'added_to_cart' => __('Added to cart!', 'wc-carousel-grid-marketplace-and-pricing'),
-                'error' => __('An error occurred.', 'wc-carousel-grid-marketplace-and-pricing'),
-                'select_tier' => __('Please select an experience level.', 'wc-carousel-grid-marketplace-and-pricing'),
-                'invalid_tier' => __('Invalid experience level.', 'wc-carousel-grid-marketplace-and-pricing'),
-                'invalid_price_type' => __('Invalid pricing option.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'added_to_cart' => \__('Added to cart!', 'wc-carousel-grid-marketplace-and-pricing'),
+                'error' => \__('An error occurred.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'select_tier' => \__('Please select an experience level.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'invalid_tier' => \__('Invalid experience level.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'invalid_price_type' => \__('Invalid pricing option.', 'wc-carousel-grid-marketplace-and-pricing'),
             ],
         ]);
 
-        wp_register_script(
+        \wp_register_script(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
             ['jquery', 'wc-cgmp-marketplace'],
@@ -106,14 +106,14 @@ class Elementor_Integration
     public function enqueue_editor_styles(): void
     {
         $this->register_styles();
-        wp_enqueue_style('wc-cgmp-marketplace');
-        wp_enqueue_style('wc-cgmp-frontend');
+        \wp_enqueue_style('wc-cgmp-marketplace');
+        \wp_enqueue_style('wc-cgmp-frontend');
     }
 
     public function enqueue_editor_scripts(): void
     {
         $this->register_scripts();
-        wp_enqueue_script('wc-cgmp-marketplace');
-        wp_enqueue_script('wc-cgmp-frontend');
+        \wp_enqueue_script('wc-cgmp-marketplace');
+        \wp_enqueue_script('wc-cgmp-frontend');
     }
 }
