@@ -70,8 +70,11 @@
 
         initDefaultTier: function() {
             var $activeBtn = $('.wc-cgmp-tier-btn.active');
-            if ($activeBtn.length === 0) {
+            if ($activeBtn.length) {
+                this.currentTier = parseInt($activeBtn.data('tier')) || 1;
+            } else {
                 $('.wc-cgmp-tier-btn.wc-cgmp-tier-entry').addClass('active');
+                this.currentTier = 1;
             }
         },
 
