@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,25 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+
+= 1.2.4 =
+* Fix: Plugin activation error caused by early Plugin class instantiation
+* Fix: Version header mismatch between file header and constant
+* Added: GitHub Actions workflow for automated releases with validation
+* Added: Build scripts for consistent ZIP package creation
+
+= 1.2.3 =
+* Changed: Cleaned up plugin folder - moved development files to builder
+
+= 1.2.2 =
+* Changed: Cleaned up plugin folder - moved dev files to builder
+
+= 1.2.1 =
+* Fix: IDE compatibility fixes for Intelephense
+* Changed: Bumped version and updated changelog
+
+= 1.2.0 =
+* Feature: Added 54 Elementor style controls for buttons, toggles, tier filters, pricing panels
 
 = 1.1.6 =
 * Changed: Updated .gitignore to exclude local development files from distribution
