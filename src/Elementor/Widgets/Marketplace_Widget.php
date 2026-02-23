@@ -1452,21 +1452,140 @@ class Marketplace_Widget extends Widget_Base
         ?>
         <#
         var shadowClass = '';
-        if (settings.card_shadow !== 'none') {
+        if (settings.card_shadow && settings.card_shadow !== 'none') {
             shadowClass = 'wc-cgmp-shadow-' + settings.card_shadow;
         }
+
+        var showSidebar = settings.show_sidebar === 'yes';
+        var showFilter = settings.show_filter === 'yes';
+        var showSearch = settings.show_search === 'yes';
+        var showTierDesc = settings.show_tier_description !== 'no';
+        var showTierBadge = settings.show_tier_badge !== 'no';
+        var columns = settings.columns || '3';
+        var defaultTier = settings.default_tier || '1';
+
+        var tierLabels = { '0': 'All', '1': 'Entry', '2': 'Mid', '3': 'Expert' };
+        var tierColors = {
+            '1': '#22c55e',
+            '2': '#3b82f6',
+            '3': '#a855f7'
+        };
+
+        var mockProducts = [
+            { name: 'Senior Developer', tier: 1, price: 1500, hourly: 25, popular: true, desc: 'Experienced full-stack developer with expertise in modern frameworks.' },
+            { name: 'UX Designer', tier: 2, price: 2500, hourly: 40, popular: false, desc: 'Creative designer specializing in user experience and interface design.' },
+            { name: 'Solutions Architect', tier: 3, price: 4000, hourly: 65, popular: true, desc: 'Expert architect for enterprise-level system design and cloud infrastructure.' }
+        ];
         #>
-        <div class="wc-cgmp-marketplace elementor-placeholder {{shadowClass}}">
-            <div class="wc-cgmp-placeholder-content">
-                <span class="elementor-widget-empty-icon">
-                    <i class="eicon-products"></i>
-                </span>
-                <span><?php esc_html_e('WC Marketplace', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                <small style="display: block; margin-top: 5px; color: #72777c;">
-                    <?php esc_html_e('Showing marketplace-enabled products', 'wc-carousel-grid-marketplace-and-pricing'); ?>
-                </small>
+        <div class="wc-cgmp-marketplace wc-cgmp-editor-preview {{shadowClass}}" style="display: flex; gap: 20px;">
+            <#
+            if (showSidebar) {
+            #>
+            <div class="wc-cgmp-sidebar elementor-editor-sidebar" style="width: 220px; flex-shrink: 0; background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #374151;"><?php esc_html_e('Categories', 'wc-carousel-grid-marketplace-and-pricing'); ?></h4>
+                <div class="wc-cgmp-category-item active" style="padding: 8px 12px; margin-bottom: 4px; border-radius: 6px; background: #22c55e; color: #fff; font-size: 13px; cursor: pointer;"><?php esc_html_e('All Services', 'wc-carousel-grid-marketplace-and-pricing'); ?></div>
+                <div class="wc-cgmp-category-item" style="padding: 8px 12px; margin-bottom: 4px; border-radius: 6px; background: #f3f4f6; color: #374151; font-size: 13px; cursor: pointer;"><?php esc_html_e('Development', 'wc-carousel-grid-marketplace-and-pricing'); ?></div>
+                <div class="wc-cgmp-category-item" style="padding: 8px 12px; margin-bottom: 4px; border-radius: 6px; background: #f3f4f6; color: #374151; font-size: 13px; cursor: pointer;"><?php esc_html_e('Design', 'wc-carousel-grid-marketplace-and-pricing'); ?></div>
+                <div class="wc-cgmp-category-item" style="padding: 8px 12px; margin-bottom: 4px; border-radius: 6px; background: #f3f4f6; color: #374151; font-size: 13px; cursor: pointer;"><?php esc_html_e('Marketing', 'wc-carousel-grid-marketplace-and-pricing'); ?></div>
+                <div class="wc-cgmp-category-item" style="padding: 8px 12px; border-radius: 6px; background: #f3f4f6; color: #374151; font-size: 13px; cursor: pointer;"><?php esc_html_e('Consulting', 'wc-carousel-grid-marketplace-and-pricing'); ?></div>
+            </div>
+            <#
+            }
+            #>
+            <div class="wc-cgmp-main-content" style="flex: 1;">
+                <#
+                if (showFilter || showSearch) {
+                #>
+                <div class="wc-cgmp-filter-bar elementor-editor-filter" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 12px 16px; background: #fff; border-radius: 8px; border: 1px solid #e5e7eb; flex-wrap: wrap;">
+                    <#
+                    if (showFilter) {
+                    #>
+                    <div class="wc-cgmp-tier-filter" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="wc-cgmp-tier-btn elementor-editor-btn" data-tier="0" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #f3f4f6; color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;"><?php esc_html_e('All', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
+                        <button class="wc-cgmp-tier-btn elementor-editor-btn active" data-tier="1" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #22c55e; background: #22c55e; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;"><?php esc_html_e('Entry', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
+                        <button class="wc-cgmp-tier-btn elementor-editor-btn" data-tier="2" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;"><?php esc_html_e('Mid', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
+                        <button class="wc-cgmp-tier-btn elementor-editor-btn" data-tier="3" style="padding: 6px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;"><?php esc_html_e('Expert', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
+                    </div>
+                    <#
+                    }
+                    if (showSearch) {
+                    #>
+                    <div class="wc-cgmp-search" style="margin-left: auto;">
+                        <input type="text" placeholder="<?php esc_attr_e('Search services...', 'wc-carousel-grid-marketplace-and-pricing'); ?>" style="padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; width: 180px; outline: none;" disabled>
+                    </div>
+                    <#
+                    }
+                    #>
+                </div>
+                <#
+                }
+                #>
+                <div class="wc-cgmp-grid elementor-editor-grid" style="display: grid; grid-template-columns: repeat({{columns}}, 1fr); gap: 20px;">
+                    <#
+                    mockProducts.forEach(function(product, index) {
+                        var tierColor = tierColors[product.tier] || '#6b7280';
+                        var tierLabel = tierLabels[product.tier.toString()] || 'Entry';
+                    #>
+                    <div class="wc-cgmp-card elementor-editor-card" style="background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; position: relative;">
+                        <#
+                        if (product.popular) {
+                        #>
+                        <span class="wc-cgmp-badge-popular" style="position: absolute; top: 12px; right: 12px; background: #f59e0b; color: #fff; font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;"><?php esc_html_e('Popular', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                        <#
+                        }
+                        #>
+                        <h3 class="wc-cgmp-card-title" style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px;">
+                            {{product.name}}
+                            <#
+                            if (showTierBadge) {
+                            #>
+                            <span class="wc-cgmp-tier-badge" style="font-size: 10px; padding: 2px 8px; border-radius: 4px; background: {{tierColor}}; color: #fff; font-weight: 500;">{{tierLabel}}</span>
+                            <#
+                            }
+                            #>
+                        </h3>
+                        <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5;">{{product.desc}}</p>
+                        <div class="wc-cgmp-pricing-panel" data-tier="{{product.tier}}" style="background: {{product.tier === 1 ? '#f0fdf4' : product.tier === 2 ? '#eff6ff' : '#faf5ff'}}; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div class="wc-cgmp-pricing-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span class="wc-cgmp-price-main" style="font-size: 20px; font-weight: 700; color: #1f2937;">${{product.price.toLocaleString()}}<span class="wc-cgmp-price-period" style="font-size: 12px; color: #6b7280; font-weight: 400;">/mo</span></span>
+                                <span class="wc-cgmp-price-hourly" style="font-size: 14px; color: #6b7280;">${{product.hourly}}/hr</span>
+                            </div>
+                            <div class="wc-cgmp-headcount" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 12px; color: #6b7280;"><?php esc_html_e('Headcount:', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <button style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; font-size: 14px;">-</button>
+                                    <span style="font-weight: 500; min-width: 20px; text-align: center;">1</span>
+                                    <button style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; font-size: 14px;">+</button>
+                                </div>
+                            </div>
+                            <div class="wc-cgmp-total-row" style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.05);">
+                                <span class="wc-cgmp-total-label" style="font-size: 12px; color: #6b7280;"><?php esc_html_e('Total:', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                                <span class="wc-cgmp-total-price" style="font-size: 16px; font-weight: 600; color: #22c55e;">${{product.price.toLocaleString()}}</span>
+                            </div>
+                        </div>
+                        <button class="wc-cgmp-add-to-cart elementor-editor-btn" style="width: 100%; padding: 10px 16px; background: #22c55e; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            <?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                        </button>
+                    </div>
+                    <#
+                    });
+                    #>
+                </div>
             </div>
         </div>
+        <style>
+        .wc-cgmp-editor-preview .elementor-editor-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+        }
+        .wc-cgmp-editor-preview .elementor-editor-sidebar .wc-cgmp-category-item:hover {
+            background: #e5e7eb !important;
+        }
+        .wc-cgmp-editor-preview .elementor-editor-sidebar .wc-cgmp-category-item.active:hover {
+            background: #16a34a !important;
+        }
+        </style>
         <?php
     }
 
