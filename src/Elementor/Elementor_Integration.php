@@ -23,8 +23,8 @@ class Elementor_Integration
 
     private function init_hooks(): void
     {
-        add_action('elementor/elements/categories_registered', [$this, 'register_category']);
-        add_action('elementor/widgets/register', [$this, 'register_widgets']);
+        add_action('elementor/init', [$this, 'register_category'], 5);
+        add_action('elementor/widgets/register', [$this, 'register_widgets'], 5);
         
         add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueue_editor_styles']);
         add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_editor_scripts']);
