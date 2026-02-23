@@ -55,11 +55,24 @@ class Marketplace
             ];
         }
 
+        $selected_tier = !empty($atts['selected_tier']) ? (int) $atts['selected_tier'] : 0;
         $default_tier = null;
-        foreach ($tiers as $tier) {
-            if (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0) {
-                $default_tier = $tier;
-                break;
+        
+        if ($selected_tier > 0) {
+            foreach ($tiers as $tier) {
+                if ((int) $tier->tier_level === $selected_tier && (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0)) {
+                    $default_tier = $tier;
+                    break;
+                }
+            }
+        }
+        
+        if (!$default_tier) {
+            foreach ($tiers as $tier) {
+                if (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0) {
+                    $default_tier = $tier;
+                    break;
+                }
             }
         }
         if (!$default_tier && !empty($tiers)) {

@@ -73,7 +73,7 @@ $class = $atts['class'] ?? '';
 
         <div class="wc-cgmp-grid <?php echo $layout === 'hybrid' ? 'wc-cgmp-hybrid' : ''; ?>"
              data-current-category="0"
-             data-current-tier="0"
+             data-current-tier="<?php echo esc_attr($atts['selected_tier'] ?? $atts['tier'] ?? 0); ?>"
              data-show-tier-badge="<?php echo esc_attr($atts['show_tier_badge'] ?? 'true'); ?>"
              data-show-tier-description="<?php echo esc_attr($atts['show_tier_description'] ?? 'true'); ?>"
              data-show-search="<?php echo esc_attr($atts['show_search'] ?? 'false'); ?>"

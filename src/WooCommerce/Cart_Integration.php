@@ -410,6 +410,7 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'selected_tier' => $tier,
         ];
 
         ob_start();
