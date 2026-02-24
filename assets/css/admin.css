@@ -511,8 +511,53 @@
 
 .wc-cgmp-button-section {
     margin-top: 20px;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 20px;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.wc-cgmp-button-header {
+    padding: 14px 18px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dcdcdc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wc-cgmp-button-header:hover {
+    background: #f0f0f0;
+}
+
+.wc-cgmp-button-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e1e1e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wc-cgmp-button-toggle-icon {
+    width: 18px;
+    height: 18px;
+    color: #666;
+    transition: transform 0.2s;
+}
+
+.wc-cgmp-button-section.collapsed .wc-cgmp-button-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.wc-cgmp-button-body {
+    padding: 18px;
+}
+
+.wc-cgmp-button-section.collapsed .wc-cgmp-button-body {
+    display: none;
 }
 
 .wc-cgmp-url-input {
