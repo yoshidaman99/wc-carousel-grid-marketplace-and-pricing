@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.3.9
+Stable tag: 1.3.9-dev
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -149,6 +149,11 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Maintenance release - dev workflow validation and preparation for next feature release
 * Updated version numbers for consistency
 * Test infrastructure prepared for comprehensive testing
+
+= 1.3.9-dev =
+* Development build - added dev suffix for testing
+* Preparing for next feature release
+* Master workflow validation with dev versioning
 
 == Upgrade Notice ==
 
