@@ -19,6 +19,9 @@ if (!isset($learn_more_url)) {
 if (!isset($apply_now_url)) {
     $apply_now_url = '';
 }
+if (!isset($action_buttons_enabled)) {
+    $action_buttons_enabled = '';
+}
 ?>
 <div class="wc-cgmp-metabox">
     <div class="wc-cgmp-enable-section">
@@ -224,37 +227,86 @@ if (!isset($apply_now_url)) {
             </span>
         </div>
         <div class="wc-cgmp-button-body">
-            <div class="wc-cgmp-field">
-                <label for="_wc_cgmp_learn_more_url">
-                    <?php esc_html_e('Learn More URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+            <div class="wc-cgmp-field wc-cgmp-checkbox-field">
+                <label class="wc-cgmp-checkbox-label">
+                    <input type="checkbox" 
+                           id="_wc_cgmp_action_buttons_enabled" 
+                           name="_wc_cgmp_action_buttons_enabled" 
+                           value="yes" 
+                           <?php checked($action_buttons_enabled, 'yes'); ?>
+                           class="wc-cgmp-action-buttons-toggle">
+                    <span class="wc-cgmp-checkbox-text">
+                        <?php esc_html_e('Enable Action Buttons', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    </span>
                     <span class="wc-cgmp-tooltip">
                         <?php echo wc_cgmp_get_help_icon(); ?>
-                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['learn_more_url']); ?></span>
+                        <span class="wc-cgmp-tooltip-text"><?php esc_html_e('When enabled, Learn More and Apply Now buttons will display on the product page.', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                     </span>
                 </label>
-                <input type="url"
-                       id="_wc_cgmp_learn_more_url"
-                       name="_wc_cgmp_learn_more_url"
-                       value="<?php echo esc_attr($learn_more_url); ?>"
-                       placeholder="https://example.com/learn-more"
-                       class="wc-cgmp-url-input">
             </div>
 
-            <div class="wc-cgmp-field">
-                <label for="_wc_cgmp_apply_now_url">
-                    <?php esc_html_e('Apply Now URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
-                    <span class="wc-cgmp-tooltip">
-                        <?php echo wc_cgmp_get_help_icon(); ?>
-                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['apply_now_url']); ?></span>
-                    </span>
-                </label>
-                <input type="url"
-                       id="_wc_cgmp_apply_now_url"
-                       name="_wc_cgmp_apply_now_url"
-                       value="<?php echo esc_attr($apply_now_url); ?>"
-                       placeholder="https://example.com/apply-now"
-                       class="wc-cgmp-url-input">
+            <div class="wc-cgmp-action-buttons-urls" <?php echo ($action_buttons_enabled === 'yes') ? '' : 'style="opacity: 0.5; pointer-events: none;"'; ?>>
+                <div class="wc-cgmp-field">
+                    <label for="_wc_cgmp_learn_more_url">
+                        <?php esc_html_e('Learn More URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                        <span class="wc-cgmp-tooltip">
+                            <?php echo wc_cgmp_get_help_icon(); ?>
+                            <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['learn_more_url']); ?></span>
+                        </span>
+                    </label>
+                    <input type="url"
+                           id="_wc_cgmp_learn_more_url"
+                           name="_wc_cgmp_learn_more_url"
+                           value="<?php echo esc_attr($learn_more_url); ?>"
+                           placeholder="https://example.com/learn-more"
+                           class="wc-cgmp-url-input"
+                           <?php echo ($action_buttons_enabled !== 'yes') ? 'disabled' : ''; ?>>
+                </div>
+
+                <div class="wc-cgmp-field">
+                    <label for="_wc_cgmp_apply_now_url">
+                        <?php esc_html_e('Apply Now URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                        <span class="wc-cgmp-tooltip">
+                            <?php echo wc_cgmp_get_help_icon(); ?>
+                            <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['apply_now_url']); ?></span>
+                        </span>
+                    </label>
+                    <input type="url"
+                           id="_wc_cgmp_apply_now_url"
+                           name="_wc_cgmp_apply_now_url"
+                           value="<?php echo esc_attr($apply_now_url); ?>"
+                           placeholder="https://example.com/apply-now"
+                           class="wc-cgmp-url-input"
+                           <?php echo ($action_buttons_enabled !== 'yes') ? 'disabled' : ''; ?>>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+jQuery(document).ready(function($) {
+    var $toggle = $('#_wc_cgmp_action_buttons_enabled');
+    var $urlsContainer = $('.wc-cgmp-action-buttons-urls');
+    var $urlInputs = $urlsContainer.find('input[type="url"]');
+    
+    function toggleUrlFields() {
+        if ($toggle.is(':checked')) {
+            $urlsContainer.css({
+                'opacity': '1',
+                'pointer-events': 'auto'
+            });
+            $urlInputs.prop('disabled', false);
+        } else {
+            $urlsContainer.css({
+                'opacity': '0.5',
+                'pointer-events': 'none'
+            });
+            $urlInputs.prop('disabled', true);
+        }
+    }
+    
+    $toggle.on('change', toggleUrlFields);
+    toggleUrlFields();
+});
+</script>
