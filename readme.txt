@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,10 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+
+= 1.3.6 =
+* Fix: Corrected tier name field mapping in admin metabox
+* Fix: Display custom tier name in product card badge
 
 = 1.3.5 =
 * Fix: Corrected text domain in product-card.php template
