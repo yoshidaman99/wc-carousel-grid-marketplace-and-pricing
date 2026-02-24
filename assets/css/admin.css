@@ -109,8 +109,8 @@
 }
 
 .wc-cgmp-section-title svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     color: #666;
 }
 
@@ -306,7 +306,7 @@
 }
 
 .wc-cgmp-display-header {
-    padding: 14px 18px;
+    padding: 12px 18px;
     background: #f8f9fa;
     border-bottom: 1px solid #dcdcdc;
     display: flex;
@@ -330,10 +330,11 @@
 }
 
 .wc-cgmp-display-toggle-icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     color: #666;
     transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 .wc-cgmp-display-section.collapsed .wc-cgmp-display-toggle-icon {
@@ -518,7 +519,7 @@
 }
 
 .wc-cgmp-button-header {
-    padding: 14px 18px;
+    padding: 12px 18px;
     background: #f8f9fa;
     border-bottom: 1px solid #dcdcdc;
     display: flex;
@@ -542,10 +543,11 @@
 }
 
 .wc-cgmp-button-toggle-icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     color: #666;
     transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 .wc-cgmp-button-section.collapsed .wc-cgmp-button-toggle-icon {
