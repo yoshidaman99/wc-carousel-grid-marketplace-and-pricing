@@ -1062,6 +1062,213 @@ class Marketplace_Widget extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('tier_badge_style_section', [
+            'label' => __('Tier Badges', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+            'condition' => ['show_tier_badge' => 'yes'],
+        ]);
+
+        $this->add_control('tier_badge_entry_heading', [
+            'label' => __('Entry Tier Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+        ]);
+
+        $this->add_control('tier_badge_entry_bg', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#dcfce7',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.entry' => 'background-color: {{VALUE}}; --wc-cgmp-badge-entry-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_entry_text', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#166534',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.entry' => 'color: {{VALUE}}; --wc-cgmp-badge-entry-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_entry_border', [
+            'label' => __('Border Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#86efac',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.entry' => 'border-color: {{VALUE}}; --wc-cgmp-badge-entry-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_entry_hover_bg', [
+            'label' => __('Hover Background', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-entry-hover-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_entry_hover_text', [
+            'label' => __('Hover Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-entry-hover-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_entry_hover_border', [
+            'label' => __('Hover Border', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-entry-hover-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_heading', [
+            'label' => __('Mid Tier Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('tier_badge_mid_bg', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#dbeafe',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.mid' => 'background-color: {{VALUE}}; --wc-cgmp-badge-mid-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_text', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1e40af',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.mid' => 'color: {{VALUE}}; --wc-cgmp-badge-mid-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_border', [
+            'label' => __('Border Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#93c5fd',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.mid' => 'border-color: {{VALUE}}; --wc-cgmp-badge-mid-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_hover_bg', [
+            'label' => __('Hover Background', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-mid-hover-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_hover_text', [
+            'label' => __('Hover Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-mid-hover-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_mid_hover_border', [
+            'label' => __('Hover Border', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-mid-hover-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_heading', [
+            'label' => __('Expert Tier Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('tier_badge_expert_bg', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#f3e8ff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.expert' => 'background-color: {{VALUE}}; --wc-cgmp-badge-expert-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_text', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#7c3aed',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.expert' => 'color: {{VALUE}}; --wc-cgmp-badge-expert-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_border', [
+            'label' => __('Border Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#c4b5fd',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge.expert' => 'border-color: {{VALUE}}; --wc-cgmp-badge-expert-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_hover_bg', [
+            'label' => __('Hover Background', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-expert-hover-bg: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_hover_text', [
+            'label' => __('Hover Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-expert-hover-text: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_expert_hover_border', [
+            'label' => __('Hover Border', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-badge-expert-hover-border: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('tier_badge_transition_heading', [
+            'label' => __('Transition Effects', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('tier_badge_transition', [
+            'label' => __('Transition Duration', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['s', 'ms'],
+            'range' => [
+                's' => ['min' => 0.1, 'max' => 1, 'step' => 0.05],
+                'ms' => ['min' => 100, 'max' => 1000, 'step' => 50],
+            ],
+            'default' => ['size' => 0.2, 'unit' => 's'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-tier-badge' => 'transition: all {{SIZE}}{{UNIT}} ease;',
+            ],
+        ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section('toggle_style_section', [
             'label' => __('Toggle Switch', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_STYLE,
