@@ -9,7 +9,7 @@
 
         bindEvents: function() {
             $(document).on('change', '#_wc_cgmp_enabled', this.toggleMarketplace);
-            $(document).on('click', '.wc-cgmp-display-header', this.toggleDisplaySection);
+            $(document).on('click', '.wc-cgmp-display-header, .wc-cgmp-button-header', this.toggleSection);
             $(document).on('input', '.wc-cgmp-price-input', this.updatePricePreview);
             $(document).on('input', '.wc-cgmp-tier-name-input', this.updateTierHeader);
             $(document).on('input', '.wc-cgmp-url-input', this.validateUrlInput);
@@ -32,8 +32,8 @@
             }
         },
 
-        toggleDisplaySection: function() {
-            var $section = $(this).closest('.wc-cgmp-display-section');
+        toggleSection: function() {
+            var $section = $(this).closest('.wc-cgmp-display-section, .wc-cgmp-button-section');
             $section.toggleClass('collapsed');
         },
 

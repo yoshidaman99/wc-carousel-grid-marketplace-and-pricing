@@ -214,16 +214,16 @@ if (!isset($apply_now_url)) {
     </div>
 
     <div class="wc-cgmp-button-section <?php echo $enabled ? '' : 'collapsed'; ?>" <?php echo $enabled ? '' : 'style="display:none;"'; ?>>
-        <div class="wc-cgmp-display-header">
-            <span class="wc-cgmp-display-title">
+        <div class="wc-cgmp-button-header">
+            <span class="wc-cgmp-button-title">
                 <?php echo wc_cgmp_get_chevron_icon(); ?>
                 <?php esc_html_e('Action Buttons', 'wc-carousel-grid-marketplace-and-pricing'); ?>
             </span>
-            <span class="wc-cgmp-display-toggle-icon">
+            <span class="wc-cgmp-button-toggle-icon">
                 <?php echo wc_cgmp_get_chevron_icon(); ?>
             </span>
         </div>
-        <div class="wc-cgmp-display-body">
+        <div class="wc-cgmp-button-body">
             <div class="wc-cgmp-field">
                 <label for="_wc_cgmp_learn_more_url">
                     <?php esc_html_e('Learn More URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
