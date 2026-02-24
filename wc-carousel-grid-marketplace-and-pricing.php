@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.3.8');
+define('WC_CGMP_VERSION', '1.3.9');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
