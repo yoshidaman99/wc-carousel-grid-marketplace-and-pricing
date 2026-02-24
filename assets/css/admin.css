@@ -504,3 +504,35 @@
     margin: 5px 0;
     overflow-x: auto;
 }
+
+/* ============================================
+   Action Buttons Section in Admin
+   ============================================ */
+
+.wc-cgmp-button-section {
+    margin-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+}
+
+.wc-cgmp-url-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.wc-cgmp-url-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wc-cgmp-url-input.invalid-url {
+    border-color: #ef4444;
+}
+
+.wc-cgmp-url-input.invalid-url:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}

@@ -12,19 +12,23 @@
             $(document).on('click', '.wc-cgmp-display-header', this.toggleDisplaySection);
             $(document).on('input', '.wc-cgmp-price-input', this.updatePricePreview);
             $(document).on('input', '.wc-cgmp-tier-name-input', this.updateTierHeader);
+            $(document).on('input', '.wc-cgmp-url-input', this.validateUrlInput);
         },
 
         toggleMarketplace: function() {
             var checked = $(this).is(':checked');
             var $section = $('.wc-cgmp-tier-pricing-section');
             var $displaySection = $('.wc-cgmp-display-section');
+            var $buttonSection = $('.wc-cgmp-button-section');
             
             if (checked) {
                 $section.slideDown(200);
                 $displaySection.slideDown(200);
+                $buttonSection.slideDown(200);
             } else {
                 $section.slideUp(200);
                 $displaySection.slideUp(200);
+                $buttonSection.slideUp(200);
             }
         },
 
@@ -85,6 +89,25 @@
             var placeholder = $(this).attr('placeholder');
             
             $header.text(value || placeholder);
+        },
+
+        validateUrlInput: function() {
+            var url = $(this).val().trim();
+            
+            if (url && !wc_cgmp_admin.isValidURL(url)) {
+                $(this).addClass('invalid-url');
+            } else {
+                $(this).removeClass('invalid-url');
+            }
+        },
+
+        isValidURL: function(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
         },
 
         placeholderText: 'Enter prices to preview'

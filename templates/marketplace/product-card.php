@@ -68,4 +68,30 @@ if (!$default_tier && !empty($tiers)) {
     </p>
 
     <?php echo \WC_CGMP\Frontend\Marketplace::render_pricing_panel($product, $tiers, $atts); ?>
+
+    <?php
+    $learn_more_url = wc_cgmp_get_learn_more_url($product_id);
+    $apply_now_url = wc_cgmp_get_apply_now_url($product_id);
+
+    if ($learn_more_url || $apply_now_url) : ?>
+    <div class="wc-cgmp-action-buttons">
+        <?php if ($learn_more_url) : ?>
+            <a href="<?php echo esc_url($learn_more_url); ?>"
+               class="wc-cgmp-button wc-cgmp-button-learn-more"
+               target="_blank"
+               rel="noopener noreferrer">
+                <?php esc_html_e('Learn More', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+            </a>
+        <?php endif; ?>
+
+        <?php if ($apply_now_url) : ?>
+            <a href="<?php echo esc_url($apply_now_url); ?>"
+               class="wc-cgmp-button wc-cgmp-button-apply-now"
+               target="_blank"
+               rel="noopener noreferrer">
+                <?php esc_html_e('Apply Now', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+            </a>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 </div>

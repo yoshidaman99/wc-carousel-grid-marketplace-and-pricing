@@ -295,3 +295,50 @@
     border-radius: var(--wc-cgmp-radius-sm, 8px);
     padding: 16px;
 }
+
+/* ============================================
+   Single Product Action Buttons
+   ============================================ */
+
+.wc-cgmp-single-product-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.wc-cgmp-single-product-buttons .wc-cgmp-button {
+    flex: 1;
+    max-width: 250px;
+    text-align: center;
+}
+
+.wc-cgmp-single-product-buttons .wc-cgmp-button-learn-more {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.wc-cgmp-single-product-buttons .wc-cgmp-button-learn-more:hover {
+    background-color: #2563eb;
+}
+
+.wc-cgmp-single-product-buttons .wc-cgmp-button-apply-now {
+    background-color: #10b981;
+    color: white;
+}
+
+.wc-cgmp-single-product-buttons .wc-cgmp-button-apply-now:hover {
+    background-color: #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wc-cgmp-single-product-buttons {
+        flex-direction: column;
+    }
+
+    .wc-cgmp-single-product-buttons .wc-cgmp-button {
+        max-width: 100%;
+    }
+}

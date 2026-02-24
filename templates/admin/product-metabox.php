@@ -9,7 +9,16 @@ $tooltips = [
     'description' => __('Brief description shown to customers when selecting this tier.', 'wc-carousel-grid-marketplace-and-pricing'),
     'popular' => __('Displays a "Popular" badge on this product in the marketplace view.', 'wc-carousel-grid-marketplace-and-pricing'),
     'specialization' => __('Optional text displayed on the product card (e.g., "Senior Developer").', 'wc-carousel-grid-marketplace-and-pricing'),
+    'learn_more_url' => __('URL for the Learn More button. Leave empty to hide the button.', 'wc-carousel-grid-marketplace-and-pricing'),
+    'apply_now_url' => __('URL for the Apply Now button. Leave empty to hide the button.', 'wc-carousel-grid-marketplace-and-pricing'),
 ];
+
+if (!isset($learn_more_url)) {
+    $learn_more_url = '';
+}
+if (!isset($apply_now_url)) {
+    $apply_now_url = '';
+}
 ?>
 <div class="wc-cgmp-metabox">
     <div class="wc-cgmp-enable-section">
@@ -200,6 +209,51 @@ $tooltips = [
                            value="<?php echo esc_attr($specialization); ?>"
                            placeholder="<?php esc_attr_e('e.g., Senior Developer, Full-Stack Developer', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wc-cgmp-button-section <?php echo $enabled ? '' : 'collapsed'; ?>" <?php echo $enabled ? '' : 'style="display:none;"'; ?>>
+        <div class="wc-cgmp-display-header">
+            <span class="wc-cgmp-display-title">
+                <?php echo wc_cgmp_get_chevron_icon(); ?>
+                <?php esc_html_e('Action Buttons', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+            </span>
+            <span class="wc-cgmp-display-toggle-icon">
+                <?php echo wc_cgmp_get_chevron_icon(); ?>
+            </span>
+        </div>
+        <div class="wc-cgmp-display-body">
+            <div class="wc-cgmp-field">
+                <label for="_wc_cgmp_learn_more_url">
+                    <?php esc_html_e('Learn More URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    <span class="wc-cgmp-tooltip">
+                        <?php echo wc_cgmp_get_help_icon(); ?>
+                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['learn_more_url']); ?></span>
+                    </span>
+                </label>
+                <input type="url"
+                       id="_wc_cgmp_learn_more_url"
+                       name="_wc_cgmp_learn_more_url"
+                       value="<?php echo esc_attr($learn_more_url); ?>"
+                       placeholder="https://example.com/learn-more"
+                       class="wc-cgmp-url-input">
+            </div>
+
+            <div class="wc-cgmp-field">
+                <label for="_wc_cgmp_apply_now_url">
+                    <?php esc_html_e('Apply Now URL', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    <span class="wc-cgmp-tooltip">
+                        <?php echo wc_cgmp_get_help_icon(); ?>
+                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['apply_now_url']); ?></span>
+                    </span>
+                </label>
+                <input type="url"
+                       id="_wc_cgmp_apply_now_url"
+                       name="_wc_cgmp_apply_now_url"
+                       value="<?php echo esc_attr($apply_now_url); ?>"
+                       placeholder="https://example.com/apply-now"
+                       class="wc-cgmp-url-input">
             </div>
         </div>
     </div>

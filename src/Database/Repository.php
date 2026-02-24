@@ -706,6 +706,51 @@ class Repository
         return $value ?: '';
     }
 
+    public function get_learn_more_url(int $product_id): string
+    {
+        $url = get_post_meta($product_id, WC_CGMP_META_LEARN_MORE_URL, true);
+        return $url ?: '';
+    }
+
+    public function get_apply_now_url(int $product_id): string
+    {
+        $url = get_post_meta($product_id, WC_CGMP_META_APPLY_NOW_URL, true);
+        return $url ?: '';
+    }
+
+    public function get_button_urls(int $product_id): array
+    {
+        return [
+            'learn_more' => $this->get_learn_more_url($product_id),
+            'apply_now' => $this->get_apply_now_url($product_id),
+        ];
+    }
+
+    public function update_button_urls(int $product_id, array $urls): bool
+    {
+        $success = true;
+
+        if (isset($urls['learn_more'])) {
+            $result = update_post_meta(
+                $product_id,
+                WC_CGMP_META_LEARN_MORE_URL,
+                esc_url_raw($urls['learn_more'])
+            );
+            $success = $success && ($result !== false);
+        }
+
+        if (isset($urls['apply_now'])) {
+            $result = update_post_meta(
+                $product_id,
+                WC_CGMP_META_APPLY_NOW_URL,
+                esc_url_raw($urls['apply_now'])
+            );
+            $success = $success && ($result !== false);
+        }
+
+        return $success;
+    }
+
     public function get_total_marketplace_products(): int
     {
         $query = new \WP_Query([

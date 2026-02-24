@@ -51,6 +51,8 @@ class Uninstaller
             '_wc_cgmp_enabled',
             '_wc_cgmp_popular',
             '_wc_cgmp_specialization',
+            '_wc_cgmp_learn_more_url',
+            '_wc_cgmp_apply_now_url',
             '_welp_enabled',
             '_wc_cgm_popular',
             '_wc_cgm_specialization',
