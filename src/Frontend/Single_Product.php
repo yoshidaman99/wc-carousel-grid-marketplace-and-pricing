@@ -157,6 +157,11 @@ class Single_Product
         }
 
         $product_id = $product->get_id();
+
+        if (!wc_cgmp_is_action_buttons_enabled($product_id)) {
+            return;
+        }
+
         $learn_more_url = wc_cgmp_get_learn_more_url($product_id);
         $apply_now_url = wc_cgmp_get_apply_now_url($product_id);
 

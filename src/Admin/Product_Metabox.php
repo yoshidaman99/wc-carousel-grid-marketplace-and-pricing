@@ -40,6 +40,7 @@ class Product_Metabox
 
         $learn_more_url = get_post_meta($post->ID, WC_CGMP_META_LEARN_MORE_URL, true) ?: '';
         $apply_now_url = get_post_meta($post->ID, WC_CGMP_META_APPLY_NOW_URL, true) ?: '';
+        $action_buttons_enabled = get_post_meta($post->ID, WC_CGMP_META_ACTION_BUTTONS_ENABLED, true);
 
         $repository = wc_cgmp()->get_service('repository');
         $tiers = $repository->get_tiers_by_product($post->ID);
@@ -107,6 +108,9 @@ class Product_Metabox
         } else {
             delete_post_meta($post_id, WC_CGMP_META_APPLY_NOW_URL);
         }
+
+        $action_buttons_enabled = isset($_POST['_wc_cgmp_action_buttons_enabled']) && $_POST['_wc_cgmp_action_buttons_enabled'] === 'yes';
+        update_post_meta($post_id, WC_CGMP_META_ACTION_BUTTONS_ENABLED, $action_buttons_enabled ? 'yes' : 'no');
 
         if (!$enabled) {
             return;

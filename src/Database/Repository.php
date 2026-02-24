@@ -743,6 +743,15 @@ class Repository
         return $url ?: '';
     }
 
+    public function is_action_buttons_enabled(int $product_id): bool
+    {
+        $enabled = get_post_meta($product_id, WC_CGMP_META_ACTION_BUTTONS_ENABLED, true);
+        if ($enabled === 'no') {
+            return false;
+        }
+        return true;
+    }
+
     public function get_button_urls(int $product_id): array
     {
         return [

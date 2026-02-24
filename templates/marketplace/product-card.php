@@ -69,11 +69,11 @@ if (!$default_tier && !empty($tiers)) {
 
     <?php echo \WC_CGMP\Frontend\Marketplace::render_pricing_panel($product, $tiers, $atts); ?>
 
-    <?php
-    $learn_more_url = wc_cgmp_get_learn_more_url($product_id);
-    $apply_now_url = wc_cgmp_get_apply_now_url($product_id);
+    <?php if (wc_cgmp_is_action_buttons_enabled($product_id)) :
+        $learn_more_url = wc_cgmp_get_learn_more_url($product_id);
+        $apply_now_url = wc_cgmp_get_apply_now_url($product_id);
 
-    if ($learn_more_url || $apply_now_url) : ?>
+        if ($learn_more_url || $apply_now_url) : ?>
     <div class="wc-cgmp-action-buttons">
         <?php if ($learn_more_url) : ?>
             <a href="<?php echo esc_url($learn_more_url); ?>"
@@ -93,5 +93,6 @@ if (!$default_tier && !empty($tiers)) {
             </a>
         <?php endif; ?>
     </div>
-    <?php endif; ?>
+        <?php endif;
+    endif; ?>
 </div>

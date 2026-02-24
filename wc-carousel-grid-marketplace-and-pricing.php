@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-R-Yoshida
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
@@ -29,6 +29,7 @@ define('WC_CGMP_DB_VERSION', '1.3.0');
 
 define('WC_CGMP_META_LEARN_MORE_URL', '_wc_cgmp_learn_more_url');
 define('WC_CGMP_META_APPLY_NOW_URL', '_wc_cgmp_apply_now_url');
+define('WC_CGMP_META_ACTION_BUTTONS_ENABLED', '_wc_cgmp_action_buttons_enabled');
 
 if (!function_exists('wc_cgmp_autoloader')) {
     function wc_cgmp_autoloader($class) {
@@ -99,6 +100,14 @@ function wc_cgmp_get_button_urls(int $product_id): array {
         'learn_more' => wc_cgmp_get_learn_more_url($product_id),
         'apply_now' => wc_cgmp_get_apply_now_url($product_id),
     ];
+}
+
+function wc_cgmp_is_action_buttons_enabled(int $product_id): bool {
+    $enabled = get_post_meta($product_id, WC_CGMP_META_ACTION_BUTTONS_ENABLED, true);
+    if ($enabled === 'no') {
+        return false;
+    }
+    return true;
 }
 
 function wc_cgmp_format_price(float $price, string $type = ''): string {
