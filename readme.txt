@@ -65,6 +65,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+= 1.5.0 =
+* Release version 1.5.0
+
 
 = 1.3.6 =
 * Fix: Corrected tier name field mapping in admin metabox
@@ -141,6 +144,11 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Single unified product metabox
 * Auto-migration from separate plugins
 * Backward compatibility for existing integrations
+
+= 1.3.9 =
+* Maintenance release - dev workflow validation and preparation for next feature release
+* Updated version numbers for consistency
+* Test infrastructure prepared for comprehensive testing
 
 == Upgrade Notice ==
 
