@@ -51,7 +51,7 @@ if (!$default_tier && !empty($tiers)) {
         $show_tier_badge = ($atts['show_tier_badge'] ?? 'true') === 'true';
         if ($show_tier_badge && !empty($tiers) && $default_tier && isset($tier_badges[$default_tier->tier_level])) : ?>
         <span class="wc-cgmp-tier-badge <?php echo esc_attr($tier_classes[$default_tier->tier_level] ?? 'default'); ?>">
-            <?php echo esc_html($tier_badges[$default_tier->tier_level]); ?>
+            <?php echo esc_html($default_tier->tier_name ?: $tier_badges[$default_tier->tier_level]); ?>
         </span>
         <?php endif; ?>
     </h3>

@@ -128,7 +128,7 @@ class Product_Metabox
                 $tier = $_POST['wc_cgmp_tiers'][$i];
                 $tiers[] = [
                     'tier_level' => $i,
-                    'tier_name' => sanitize_text_field($tier['name'] ?? ''),
+                    'tier_name' => sanitize_text_field($tier['tier_name'] ?? ''),
                     'monthly_price' => isset($tier['monthly_price']) && $tier['monthly_price'] !== '' ? floatval($tier['monthly_price']) : null,
                     'hourly_price' => isset($tier['hourly_price']) && $tier['hourly_price'] !== '' ? floatval($tier['hourly_price']) : null,
                     'description' => wp_kses_post($tier['description'] ?? ''),
