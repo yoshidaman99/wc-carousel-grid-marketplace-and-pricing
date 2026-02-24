@@ -41,7 +41,7 @@ if (!$default_tier && !empty($tiers)) {
 
     <?php if ($is_popular) : ?>
     <span class="wc-cgmp-badge-popular">
-        <?php esc_html_e('Popular', 'wc-carousel-grid-marketplace'); ?>
+        <?php esc_html_e('Popular', 'wc-carousel-grid-marketplace-and-pricing'); ?>
     </span>
     <?php endif; ?>
 
