@@ -134,10 +134,10 @@ class Single_Product
         }
 
         if (!$default_tier) {
-            $default_tier = reset($tiers);
+            return;
         }
-
-        $default_level = $default_tier ? $default_tier->tier_level : 1;
+        
+        $default_level = $default_tier->tier_level;
         $default_price = $default_type === 'hourly' ? $default_tier->hourly_price : $default_tier->monthly_price;
 
         $nonce = wp_create_nonce('wc_cgmp_cart_submit');
@@ -188,7 +188,9 @@ class Single_Product
 
     private function load_template(string $template_name, array $data = []): void
     {
-        extract($data);
+        $tiers = $data['tiers'] ?? [];
+        $product = $data['product'] ?? null;
+        $available_types = $data['available_types'] ?? [];
 
         $theme_template = get_stylesheet_directory() . '/wc-carousel-grid-marketplace-and-pricing/frontend/' . $template_name;
 

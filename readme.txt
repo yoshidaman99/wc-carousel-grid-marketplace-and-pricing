@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,18 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 
 == Changelog ==
 
+= 1.3.3 =
+* Security: Fixed potential SQL injection via dynamic column names
+* Security: Fixed XSS vulnerability by removing extract() in templates
+* Security: Added WP_UNINSTALL_PLUGIN check to prevent unauthorized deletion
+* Security: Fixed nonce bypass vulnerability in cart integration
+* Security: Added proper input sanitization with wp_unslash()
+* Security: Escaped table identifiers in database migrations
+* Performance: Replaced N+1 queries with optimized single JOIN queries
+* Performance: Added caching to marketplace product count queries
+* Fix: Added null checks before accessing tier properties
+* Fix: Added input length limits to prevent DoS attacks
+
 = 1.3.1 =
 * Fix: Add collapse functionality to Action Buttons section in product edit page
 
@@ -124,6 +136,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Backward compatibility for existing integrations
 
 == Upgrade Notice ==
+
+= 1.3.3 =
+Security release - fixes SQL injection, XSS vulnerabilities, and nonce bypass issues. Recommended for all users.
 
 = 1.1.6 =
 Maintenance release - updates .gitignore for cleaner distribution builds.

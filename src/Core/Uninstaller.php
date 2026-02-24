@@ -8,6 +8,10 @@ class Uninstaller
 {
     public static function uninstall(): void
     {
+        if (!defined('WP_UNINSTALL_PLUGIN')) {
+            return;
+        }
+        
         if (get_option('wc_cgmp_remove_data_on_uninstall', false)) {
             self::drop_tables();
             self::remove_options();
@@ -21,9 +25,12 @@ class Uninstaller
 
         $tiers_table = $wpdb->prefix . WC_CGMP_TABLE_TIERS;
         $sales_table = $wpdb->prefix . WC_CGMP_TABLE_SALES;
+        
+        $tiers_table_escaped = '`' . str_replace('`', '``', $tiers_table) . '`';
+        $sales_table_escaped = '`' . str_replace('`', '``', $sales_table) . '`';
 
-        $wpdb->query("DROP TABLE IF EXISTS $tiers_table");
-        $wpdb->query("DROP TABLE IF EXISTS $sales_table");
+        $wpdb->query("DROP TABLE IF EXISTS $tiers_table_escaped");
+        $wpdb->query("DROP TABLE IF EXISTS $sales_table_escaped");
     }
 
     private static function remove_options(): void

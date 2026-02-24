@@ -38,11 +38,10 @@ class Cart_Integration
             return $cart_item_data;
         }
 
-        if (isset($_POST['wc_cgmp_cart_nonce'])) {
-            if (!wp_verify_nonce(sanitize_text_field($_POST['wc_cgmp_cart_nonce']), 'wc_cgmp_cart_submit')) {
-                $this->log('Cart nonce verification failed', ['product_id' => $product_id]);
-                return $cart_item_data;
-            }
+        if (!isset($_POST['wc_cgmp_cart_nonce']) || 
+            !wp_verify_nonce(wp_unslash($_POST['wc_cgmp_cart_nonce']), 'wc_cgmp_cart_submit')) {
+            $this->log('Cart nonce verification failed', ['product_id' => $product_id]);
+            return $cart_item_data;
         }
 
         if (!isset($_POST['wc_cgmp_selected_tier'])) {
@@ -435,6 +434,7 @@ class Cart_Integration
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
 
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $search = substr($search, 0, 100);
         $limit = isset($_POST['limit']) ? absint($_POST['limit']) : 12;
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
 

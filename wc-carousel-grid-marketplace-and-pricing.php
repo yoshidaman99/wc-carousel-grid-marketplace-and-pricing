@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.3.0');
+define('WC_CGMP_VERSION', '1.3.3');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -222,7 +222,13 @@ function wc_cgmp_init_elementor(): void {
         return;
     }
 
-    require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Elementor_Integration.php';
+    $file = WC_CGMP_PLUGIN_DIR . 'src/Elementor/Elementor_Integration.php';
+
+    if (!file_exists($file)) {
+        return;
+    }
+
+    require_once $file;
     \WC_CGMP\Elementor\Elementor_Integration::get_instance();
 }
 
