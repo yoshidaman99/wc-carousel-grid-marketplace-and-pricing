@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -77,10 +80,11 @@ jobs:
           fi
           echo "ZIP structure verified - contains plugin folder"
 
-      - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
           files: wc-carousel-grid-marketplace-and-pricing-${{ steps.version.outputs.VERSION }}.zip
           generate_release_notes: true
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
