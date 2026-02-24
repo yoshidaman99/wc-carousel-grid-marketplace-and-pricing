@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: zip
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Validate version consistency
+        run: |
+          HEADER_VER=$(grep "Version:" wc-carousel-grid-marketplace-and-pricing.php | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          CONSTANT_VER=$(grep "WC_CGMP_VERSION" wc-carousel-grid-marketplace-and-pricing.php | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          README_VER=$(grep "Stable tag:" readme.txt | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          TAG_VER="${{ steps.version.outputs.VERSION }}"
+          
+          echo "Version check:"
+          echo "  Header: $HEADER_VER"
+          echo "  Constant: $CONSTANT_VER"
+          echo "  Readme: $README_VER"
+          echo "  Tag: $TAG_VER"
+          
+          if [ "$HEADER_VER" != "$TAG_VER" ] || [ "$CONSTANT_VER" != "$TAG_VER" ] || [ "$README_VER" != "$TAG_VER" ]; then
+            echo "ERROR: Version mismatch!"
+            exit 1
+          fi
+          echo "Version consistency verified: $TAG_VER"
+
+      - name: Build ZIP
+        run: |
+          mkdir -p build
+          rsync -av --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='*.log' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='.test' \
+            --exclude='.builder' \
+            --exclude='.vscode' \
+            --exclude='.idea' \
+            --exclude='phpcs.xml' \
+            --exclude='phpunit.xml' \
+            --exclude='phpstan.neon' \
+            ./ build/wc-carousel-grid-marketplace-and-pricing/
+          
+          cd build
+          zip -r ../wc-carousel-grid-marketplace-and-pricing-${{ steps.version.outputs.VERSION }}.zip wc-carousel-grid-marketplace-and-pricing
+          
+          # Verify ZIP structure
+          echo ""
+          echo "Verifying ZIP structure..."
+          unzip -l ../wc-carousel-grid-marketplace-and-pricing-${{ steps.version.outputs.VERSION }}.zip | head -20
+          
+          if ! unzip -l ../wc-carousel-grid-marketplace-and-pricing-${{ steps.version.outputs.VERSION }}.zip | grep -q "wc-carousel-grid-marketplace-and-pricing/"; then
+            echo "ERROR: ZIP does not contain plugin folder!"
+            exit 1
+          fi
+          echo "ZIP structure verified - contains plugin folder"
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: wc-carousel-grid-marketplace-and-pricing-${{ steps.version.outputs.VERSION }}.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

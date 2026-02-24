@@ -1,0 +1,39 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+error_log
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build/Dev files
+.test/
+.builder/
+*.zip
+build/
+
+# Config (keep package info if needed)
+composer.json
+composer.lock
+package.json
+package-lock.json
+phpcs.xml
+phpunit.xml
+phpstan.neon
+.phpunit.cache/
+
+# Environment
+.env
+.env.*
+*.pem
+*.key
