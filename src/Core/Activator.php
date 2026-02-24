@@ -98,9 +98,14 @@ class Activator
         $old_sales_table = $wpdb->prefix . 'welp_order_tier_sales';
         $new_tiers_table = $wpdb->prefix . WC_CGMP_TABLE_TIERS;
         $new_sales_table = $wpdb->prefix . WC_CGMP_TABLE_SALES;
+        
+        $old_tiers_escaped = '`' . str_replace('`', '``', $old_tiers_table) . '`';
+        $old_sales_escaped = '`' . str_replace('`', '``', $old_sales_table) . '`';
+        $new_tiers_escaped = '`' . str_replace('`', '``', $new_tiers_table) . '`';
+        $new_sales_escaped = '`' . str_replace('`', '``', $new_sales_table) . '`';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$old_tiers_table'") === $old_tiers_table) {
-            $wpdb->query("INSERT IGNORE INTO $new_tiers_table SELECT * FROM $old_tiers_table");
+            $wpdb->query("INSERT IGNORE INTO $new_tiers_escaped SELECT * FROM $old_tiers_escaped");
 
             $existing_meta = $wpdb->get_results(
                 "SELECT post_id, meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_welp_enabled' AND meta_value = 'yes'"
@@ -111,7 +116,7 @@ class Activator
             }
 
             if ($wpdb->get_var("SHOW TABLES LIKE '$old_sales_table'") === $old_sales_table) {
-                $wpdb->query("INSERT IGNORE INTO $new_sales_table SELECT * FROM $old_sales_table");
+                $wpdb->query("INSERT IGNORE INTO $new_sales_escaped SELECT * FROM $old_sales_escaped");
             }
 
             update_option('wc_cgmp_migrated_from_welp', true);

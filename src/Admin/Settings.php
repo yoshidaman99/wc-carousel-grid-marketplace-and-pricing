@@ -83,7 +83,7 @@ class Settings
         ]);
     }
 
-    public static function get(string $key, $default = null)
+    public static function get(string $key, mixed $default = null): mixed
     {
         return get_option('wc_cgmp_' . $key, $default);
     }

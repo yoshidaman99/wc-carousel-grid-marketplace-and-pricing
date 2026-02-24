@@ -135,7 +135,12 @@ class Repository
 
     public function get_price_range(int $product_id, string $price_type = 'monthly'): array
     {
+        $allowed_columns = ['monthly_price', 'hourly_price'];
         $column = $price_type === 'hourly' ? 'hourly_price' : 'monthly_price';
+        
+        if (!in_array($column, $allowed_columns, true)) {
+            $column = 'monthly_price';
+        }
 
         $result = $this->wpdb->get_row(
             $this->wpdb->prepare(
@@ -623,6 +628,52 @@ class Repository
 
     public function get_categories_with_product_counts(): array
     {
+        $cache_key = 'wc_cgmp_categories_with_counts';
+        $cached = wp_cache_get($cache_key, 'wc_cgmp');
+        
+        if (false !== $cached) {
+            return $cached;
+        }
+        
+        $sql = "SELECT tt.term_id, COUNT(DISTINCT p.ID) as product_count
+                FROM {$this->wpdb->posts} p
+                INNER JOIN {$this->wpdb->term_relationships} tr ON p.ID = tr.object_id
+                INNER JOIN {$this->wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+                INNER JOIN {$this->wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_wc_cgmp_enabled' AND pm1.meta_value = 'yes'
+                WHERE p.post_type = 'product' 
+                AND p.post_status = 'publish'
+                AND tt.taxonomy = 'product_cat'
+                GROUP BY tt.term_id";
+        
+        $enabled_counts = $this->wpdb->get_results($sql, OBJECT_K);
+        
+        $sql_legacy = "SELECT tt.term_id, COUNT(DISTINCT p.ID) as product_count
+                       FROM {$this->wpdb->posts} p
+                       INNER JOIN {$this->wpdb->term_relationships} tr ON p.ID = tr.object_id
+                       INNER JOIN {$this->wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+                       INNER JOIN {$this->wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_welp_enabled' AND pm2.meta_value = 'yes'
+                       WHERE p.post_type = 'product' 
+                       AND p.post_status = 'publish'
+                       AND tt.taxonomy = 'product_cat'
+                       AND p.ID NOT IN (
+                           SELECT pm3.post_id FROM {$this->wpdb->postmeta} pm3 
+                           WHERE pm3.meta_key = '_wc_cgmp_enabled' AND pm3.meta_value = 'yes'
+                       )
+                       GROUP BY tt.term_id";
+        
+        $legacy_counts = $this->wpdb->get_results($sql_legacy, OBJECT_K);
+        
+        $combined_counts = [];
+        foreach ($enabled_counts as $term_id => $row) {
+            $combined_counts[$term_id] = (int) $row->product_count;
+        }
+        foreach ($legacy_counts as $term_id => $row) {
+            if (!isset($combined_counts[$term_id])) {
+                $combined_counts[$term_id] = 0;
+            }
+            $combined_counts[$term_id] += (int) $row->product_count;
+        }
+
         $categories = get_terms([
             'taxonomy' => 'product_cat',
             'hide_empty' => true,
@@ -638,35 +689,7 @@ class Repository
         $total_count = 0;
 
         foreach ($categories as $category) {
-            $args = [
-                'post_type' => 'product',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'fields' => 'ids',
-                'tax_query' => [
-                    [
-                        'taxonomy' => 'product_cat',
-                        'field' => 'term_id',
-                        'terms' => $category->term_id,
-                    ],
-                ],
-                'meta_query' => [
-                    'relation' => 'OR',
-                    [
-                        'key' => '_wc_cgmp_enabled',
-                        'value' => 'yes',
-                        'compare' => '=',
-                    ],
-                    [
-                        'key' => '_welp_enabled',
-                        'value' => 'yes',
-                        'compare' => '=',
-                    ],
-                ],
-            ];
-
-            $query = new \WP_Query($args);
-            $count = $query->found_posts;
+            $count = $combined_counts[$category->term_id] ?? 0;
 
             if ($count > 0) {
                 $result[] = [
@@ -687,6 +710,8 @@ class Repository
             'count' => $total_count,
             'icon' => 'grid',
         ]);
+        
+        wp_cache_set($cache_key, $result, 'wc_cgmp', HOUR_IN_SECONDS);
 
         return $result;
     }
@@ -753,24 +778,25 @@ class Repository
 
     public function get_total_marketplace_products(): int
     {
-        $query = new \WP_Query([
-            'post_type' => 'product',
-            'post_status' => 'publish',
-            'posts_per_page' => -1,
-            'fields' => 'ids',
-            'meta_query' => [
-                'relation' => 'OR',
-                [
-                    'key' => '_wc_cgmp_enabled',
-                    'value' => 'yes',
-                ],
-                [
-                    'key' => '_welp_enabled',
-                    'value' => 'yes',
-                ],
-            ],
-        ]);
+        $cache_key = 'wc_cgmp_total_products';
+        $cached = wp_cache_get($cache_key, 'wc_cgmp');
+        
+        if (false !== $cached) {
+            return (int) $cached;
+        }
+        
+        $count = (int) $this->wpdb->get_var(
+            "SELECT COUNT(DISTINCT p.ID) 
+             FROM {$this->wpdb->posts} p
+             INNER JOIN {$this->wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'product' 
+             AND p.post_status = 'publish'
+             AND ((pm.meta_key = '_wc_cgmp_enabled' AND pm.meta_value = 'yes')
+                  OR (pm.meta_key = '_welp_enabled' AND pm.meta_value = 'yes'))"
+        );
+        
+        wp_cache_set($cache_key, $count, 'wc_cgmp', HOUR_IN_SECONDS);
 
-        return $query->found_posts;
+        return $count;
     }
 }

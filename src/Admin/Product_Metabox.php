@@ -74,7 +74,7 @@ class Product_Metabox
             return;
         }
 
-        if (!wp_verify_nonce($_POST['wc_cgmp_metabox_nonce'], 'wc_cgmp_save_metabox')) {
+        if (!wp_verify_nonce(wp_unslash($_POST['wc_cgmp_metabox_nonce']), 'wc_cgmp_save_metabox')) {
             return;
         }
 

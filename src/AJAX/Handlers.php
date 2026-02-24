@@ -38,7 +38,7 @@ class Handlers
             return;
         }
 
-        $tiers = isset($_POST['tiers']) ? $_POST['tiers'] : [];
+        $tiers = wp_unslash($_POST['tiers'] ?? []);
 
         if (!is_array($tiers)) {
             wp_send_json_error(['message' => __('Invalid tier data', 'wc-carousel-grid-marketplace-and-pricing')]);

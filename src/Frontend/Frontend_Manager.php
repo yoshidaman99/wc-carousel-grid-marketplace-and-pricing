@@ -102,7 +102,12 @@ class Frontend_Manager
 
     private function load_template(string $template_name, array $data = []): string
     {
-        extract($data);
+        $products = $data['products'] ?? [];
+        $categories = $data['categories'] ?? [];
+        $atts = $data['atts'] ?? [];
+        $repository = $data['repository'] ?? null;
+        $admin_notice = $data['admin_notice'] ?? '';
+        
         ob_start();
 
         $theme_template = get_stylesheet_directory() . '/wc-carousel-grid-marketplace-and-pricing/' . $template_name;

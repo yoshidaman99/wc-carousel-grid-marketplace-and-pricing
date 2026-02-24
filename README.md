@@ -132,6 +132,20 @@ If upgrading from the separate plugins:
 
 ## Changelog
 
+### 1.3.3 - 2026-02-24
+* Security: Fixed potential SQL injection via dynamic column names in Repository.php
+* Security: Fixed XSS vulnerability by removing extract() in template loaders
+* Security: Added WP_UNINSTALL_PLUGIN check to prevent unauthorized data deletion
+* Security: Fixed nonce bypass vulnerability in cart integration
+* Security: Added wp_unslash() to nonce verification for proper input handling
+* Security: Escaped table identifiers in database migrations
+* Performance: Replaced N+1 queries with single JOIN query for category counts
+* Performance: Added caching to marketplace product count queries
+* Fix: Added null check before accessing default tier properties
+* Fix: Added 100-character limit on search input to prevent DoS
+* Refactor: Replaced extract() with explicit variable assignments
+* Refactor: Added proper return type declarations
+
 ### 1.1.5 - 2026-02-23
 * Feature: Redesigned product metabox with professional styling
 * Feature: Added tier icons (medal, star, crown) for visual distinction
