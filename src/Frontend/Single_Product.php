@@ -11,6 +11,7 @@ class Single_Product
         add_action('woocommerce_single_product_summary', [$this, 'display_tier_selector'], 25);
         add_filter('woocommerce_get_price_html', [$this, 'filter_price_html'], 10, 2);
         add_action('woocommerce_before_add_to_cart_button', [$this, 'add_tier_hidden_fields']);
+        add_action('woocommerce_after_add_to_cart_button', [$this, 'display_action_buttons']);
     }
 
     public function display_tier_selector(): void
@@ -145,6 +146,44 @@ class Single_Product
         echo '<input type="hidden" name="wc_cgmp_tier_name" id="wc_cgmp_tier_name" value="' . esc_attr($default_tier->tier_name ?? '') . '">';
         echo '<input type="hidden" name="wc_cgmp_tier_price" id="wc_cgmp_tier_price" value="' . esc_attr($default_price ?? 0) . '">';
         echo '<input type="hidden" name="wc_cgmp_price_type" id="wc_cgmp_price_type" value="' . esc_attr($default_type) . '">';
+    }
+
+    public function display_action_buttons(): void
+    {
+        global $product;
+
+        if (!$product || !wc_cgmp_is_enabled($product->get_id())) {
+            return;
+        }
+
+        $product_id = $product->get_id();
+        $learn_more_url = wc_cgmp_get_learn_more_url($product_id);
+        $apply_now_url = wc_cgmp_get_apply_now_url($product_id);
+
+        if (!$learn_more_url && !$apply_now_url) {
+            return;
+        }
+        ?>
+        <div class="wc-cgmp-single-product-buttons">
+            <?php if ($learn_more_url) : ?>
+                <a href="<?php echo esc_url($learn_more_url); ?>"
+                   class="wc-cgmp-button wc-cgmp-button-learn-more"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <?php esc_html_e('Learn More', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($apply_now_url) : ?>
+                <a href="<?php echo esc_url($apply_now_url); ?>"
+                   class="wc-cgmp-button wc-cgmp-button-apply-now"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <?php esc_html_e('Apply Now', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                </a>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 
     private function load_template(string $template_name, array $data = []): void

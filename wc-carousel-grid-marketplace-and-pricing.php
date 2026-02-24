@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.2.8
+ * Version: 1.3.0
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-R-Yoshida
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
@@ -18,14 +18,17 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.2.8');
+define('WC_CGMP_VERSION', '1.3.0');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
 define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
-define('WC_CGMP_DB_VERSION', '1.2.8');
+define('WC_CGMP_DB_VERSION', '1.3.0');
+
+define('WC_CGMP_META_LEARN_MORE_URL', '_wc_cgmp_learn_more_url');
+define('WC_CGMP_META_APPLY_NOW_URL', '_wc_cgmp_apply_now_url');
 
 if (!function_exists('wc_cgmp_autoloader')) {
     function wc_cgmp_autoloader($class) {
@@ -79,6 +82,23 @@ function wc_cgmp_is_popular(int $product_id): bool {
     }
 
     return false;
+}
+
+function wc_cgmp_get_learn_more_url(int $product_id): string {
+    $url = get_post_meta($product_id, WC_CGMP_META_LEARN_MORE_URL, true);
+    return $url ?: '';
+}
+
+function wc_cgmp_get_apply_now_url(int $product_id): string {
+    $url = get_post_meta($product_id, WC_CGMP_META_APPLY_NOW_URL, true);
+    return $url ?: '';
+}
+
+function wc_cgmp_get_button_urls(int $product_id): array {
+    return [
+        'learn_more' => wc_cgmp_get_learn_more_url($product_id),
+        'apply_now' => wc_cgmp_get_apply_now_url($product_id),
+    ];
 }
 
 function wc_cgmp_format_price(float $price, string $type = ''): string {

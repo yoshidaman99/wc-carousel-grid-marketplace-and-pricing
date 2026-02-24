@@ -38,6 +38,9 @@ class Product_Metabox
         $specialization = get_post_meta($post->ID, '_wc_cgmp_specialization', true)
             ?: get_post_meta($post->ID, '_wc_cgm_specialization', true);
 
+        $learn_more_url = get_post_meta($post->ID, WC_CGMP_META_LEARN_MORE_URL, true) ?: '';
+        $apply_now_url = get_post_meta($post->ID, WC_CGMP_META_APPLY_NOW_URL, true) ?: '';
+
         $repository = wc_cgmp()->get_service('repository');
         $tiers = $repository->get_tiers_by_product($post->ID);
 
@@ -91,6 +94,18 @@ class Product_Metabox
 
         if (isset($_POST['_wc_cgmp_specialization'])) {
             update_post_meta($post_id, '_wc_cgmp_specialization', sanitize_text_field($_POST['_wc_cgmp_specialization']));
+        }
+
+        if (isset($_POST['_wc_cgmp_learn_more_url']) && $_POST['_wc_cgmp_learn_more_url'] !== '') {
+            update_post_meta($post_id, WC_CGMP_META_LEARN_MORE_URL, esc_url_raw($_POST['_wc_cgmp_learn_more_url']));
+        } else {
+            delete_post_meta($post_id, WC_CGMP_META_LEARN_MORE_URL);
+        }
+
+        if (isset($_POST['_wc_cgmp_apply_now_url']) && $_POST['_wc_cgmp_apply_now_url'] !== '') {
+            update_post_meta($post_id, WC_CGMP_META_APPLY_NOW_URL, esc_url_raw($_POST['_wc_cgmp_apply_now_url']));
+        } else {
+            delete_post_meta($post_id, WC_CGMP_META_APPLY_NOW_URL);
         }
 
         if (!$enabled) {

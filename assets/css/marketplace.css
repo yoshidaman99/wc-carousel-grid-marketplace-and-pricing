@@ -969,3 +969,64 @@
 .wc-cgmp-pricing-panel[data-has-multiple-tiers="false"] .wc-cgmp-tier-selector-mini {
     display: none !important;
 }
+
+/* Action Buttons */
+.wc-cgmp-action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.wc-cgmp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    min-height: 44px;
+    min-width: 120px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.wc-cgmp-button:hover {
+    transform: translateY(-2px);
+}
+
+.wc-cgmp-button-learn-more {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.wc-cgmp-button-learn-more:hover {
+    background-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.wc-cgmp-button-apply-now {
+    background-color: #10b981;
+    color: white;
+}
+
+.wc-cgmp-button-apply-now:hover {
+    background-color: #059669;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wc-cgmp-action-buttons {
+        flex-direction: column;
+    }
+
+    .wc-cgmp-action-buttons .wc-cgmp-button {
+        width: 100%;
+    }
+}
