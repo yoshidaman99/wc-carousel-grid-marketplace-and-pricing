@@ -176,7 +176,7 @@
     letter-spacing: 0.5px;
     margin-right: 8px;
     vertical-align: middle;
-    pointer-events: none;
+    transition: all 0.2s ease;
 }
 
 .wc-cgmp-tier-badge.entry {
@@ -185,16 +185,34 @@
     border: 1px solid #86efac;
 }
 
+.wc-cgmp-tier-badge.entry:hover {
+    background: var(--wc-cgmp-badge-entry-hover-bg, var(--wc-cgmp-badge-entry-bg, #dcfce7));
+    color: var(--wc-cgmp-badge-entry-hover-text, var(--wc-cgmp-badge-entry-text, #166534));
+    border-color: var(--wc-cgmp-badge-entry-hover-border, var(--wc-cgmp-badge-entry-border, #86efac));
+}
+
 .wc-cgmp-tier-badge.mid {
     background: #dbeafe;
     color: #1e40af;
     border: 1px solid #93c5fd;
 }
 
+.wc-cgmp-tier-badge.mid:hover {
+    background: var(--wc-cgmp-badge-mid-hover-bg, var(--wc-cgmp-badge-mid-bg, #dbeafe));
+    color: var(--wc-cgmp-badge-mid-hover-text, var(--wc-cgmp-badge-mid-text, #1e40af));
+    border-color: var(--wc-cgmp-badge-mid-hover-border, var(--wc-cgmp-badge-mid-border, #93c5fd));
+}
+
 .wc-cgmp-tier-badge.expert {
     background: #f3e8ff;
     color: #7c3aed;
     border: 1px solid #c4b5fd;
+}
+
+.wc-cgmp-tier-badge.expert:hover {
+    background: var(--wc-cgmp-badge-expert-hover-bg, var(--wc-cgmp-badge-expert-bg, #f3e8ff));
+    color: var(--wc-cgmp-badge-expert-hover-text, var(--wc-cgmp-badge-expert-text, #7c3aed));
+    border-color: var(--wc-cgmp-badge-expert-hover-border, var(--wc-cgmp-badge-expert-border, #c4b5fd));
 }
 
 /* ============================================
