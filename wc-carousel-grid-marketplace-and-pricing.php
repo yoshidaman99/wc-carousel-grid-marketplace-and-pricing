@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.4.0-dev
+ * Version: 1.4.0
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-R-Yoshida
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
@@ -18,11 +18,55 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.4.0-dev');
+define('WC_CGMP_VERSION', '1.4.0');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
+
+wc_cgmp_repair_stale_paths();
+
+function wc_cgmp_repair_stale_paths(): void {
+    $correct_path = 'wc-carousel-grid-marketplace-and-pricing/wc-carousel-grid-marketplace-and-pricing.php';
+    $pattern = '#^wc-carousel-grid-marketplace-and-pricing(-[0-9.]+(-[a-z0-9]+)?)?/wc-carousel-grid-marketplace-and-pricing\.php$#i';
+    
+    $active_plugins = get_option('active_plugins', []);
+    if (!is_array($active_plugins)) {
+        return;
+    }
+    
+    $has_stale = false;
+    $has_correct = false;
+    
+    foreach ($active_plugins as $plugin) {
+        if (preg_match($pattern, $plugin)) {
+            if ($plugin === $correct_path) {
+                $has_correct = true;
+            } else {
+                $has_stale = true;
+            }
+        }
+    }
+    
+    if ($has_stale) {
+        $active_plugins = array_filter($active_plugins, function($plugin) use ($pattern, $correct_path) {
+            if (preg_match($pattern, $plugin)) {
+                return $plugin === $correct_path;
+            }
+            return true;
+        });
+        
+        if (!$has_correct) {
+            $active_plugins[] = $correct_path;
+        }
+        
+        update_option('active_plugins', array_values($active_plugins));
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[WC CGMP] Repaired stale plugin path references');
+        }
+    }
+}
 define('WC_CGMP_TABLE_TIERS', 'cgmp_product_tiers');
 define('WC_CGMP_TABLE_SALES', 'cgmp_order_tier_sales');
 define('WC_CGMP_DB_VERSION', '1.3.0');
@@ -241,22 +285,55 @@ function wc_cgmp_init_elementor(): void {
     \WC_CGMP\Elementor\Elementor_Integration::get_instance();
 }
 
-register_activation_hook(__FILE__, function() {
-    // First load the autoloader
-    require_once __FILE__;
-    
+register_activation_hook(__FILE__, 'wc_cgmp_activate');
+
+function wc_cgmp_activate(): void {
     if (!class_exists('WooCommerce')) {
-        deactivate_plugins(WC_CGMP_PLUGIN_BASENAME);
-        wp_die('WooCommerce Carousel/Grid Marketplace & Pricing requires WooCommerce to be installed and active.');
+        deactivate_plugins(plugin_basename(__FILE__));
+        wp_die(
+            'WooCommerce Carousel/Grid Marketplace & Pricing requires WooCommerce to be installed and active.',
+            'Plugin Activation Error',
+            ['back_link' => true]
+        );
     }
 
-    require_once WC_CGMP_PLUGIN_DIR . 'src/Core/Activator.php';
+    require_once dirname(__FILE__) . '/src/Core/Activator.php';
     $activator = new WC_CGMP\Core\Activator();
     $activator->activate();
-});
+    
+    wc_cgmp_repair_stale_paths();
+}
 
-register_deactivation_hook(__FILE__, function() {
-    require_once WC_CGMP_PLUGIN_DIR . 'src/Core/Deactivator.php';
+register_deactivation_hook(__FILE__, 'wc_cgmp_deactivate');
+
+function wc_cgmp_deactivate(): void {
+    require_once dirname(__FILE__) . '/src/Core/Deactivator.php';
     $deactivator = new WC_CGMP\Core\Deactivator();
     $deactivator->deactivate();
-});
+}
+
+add_action('admin_init', 'wc_cgmp_check_plugin_path_health');
+
+function wc_cgmp_check_plugin_path_health(): void {
+    if (!current_user_can('activate_plugins')) {
+        return;
+    }
+    
+    $correct_basename = plugin_basename(__FILE__);
+    $active_plugins = get_option('active_plugins', []);
+    $pattern = '#^wc-carousel-grid-marketplace-and-pricing(-[0-9.]+(-[a-z0-9]+)?)?/wc-carousel-grid-marketplace-and-pricing\.php$#i';
+    
+    foreach ($active_plugins as $plugin) {
+        if (preg_match($pattern, $plugin) && $plugin !== $correct_basename) {
+            add_action('admin_notices', function() use ($plugin, $correct_basename) {
+                echo '<div class="notice notice-warning is-dismissible">';
+                echo '<p><strong>WooCommerce Carousel/Grid Marketplace & Pricing:</strong> ';
+                echo 'Detected stale plugin path reference. Please deactivate and reactivate the plugin to repair. ';
+                echo '<br><code>Expected: ' . esc_html($correct_basename) . '</code>';
+                echo '<br><code>Found: ' . esc_html($plugin) . '</code>';
+                echo '</p></div>';
+            });
+            break;
+        }
+    }
+}
