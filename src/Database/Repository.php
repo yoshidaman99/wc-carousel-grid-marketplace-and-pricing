@@ -9,6 +9,7 @@ class Repository
     private $wpdb;
     private string $tiers_table;
     private string $sales_table;
+    private string $cache_group;
 
     public function __construct()
     {
@@ -57,7 +58,11 @@ class Repository
         $this->delete_transient('marketplace_products');
         $this->delete_transient('popular_products');
         wp_cache_delete('wc_cgmp_products', $this->cache_group);
-        wp_cache_flush_group($this->cache_group);
+        wp_cache_delete('wc_cgmp_categories_with_counts', $this->cache_group);
+        
+        if (function_exists('wp_cache_flush_group')) {
+            wp_cache_flush_group($this->cache_group);
+        }
     }
 
     public function insert_tiers(int $product_id, array $tiers): bool
@@ -190,16 +195,12 @@ class Repository
 
     public function get_price_range(int $product_id, string $price_type = 'monthly'): array
     {
-        $allowed_columns = ['monthly_price', 'hourly_price'];
-        $column = $price_type === 'hourly' ? 'hourly_price' : 'monthly_price';
-        
-        if (!in_array($column, $allowed_columns, true)) {
-            $column = 'monthly_price';
-        }
+        $column = ($price_type === 'hourly') ? 'hourly_price' : 'monthly_price';
+        $column_escaped = '`' . str_replace('`', '``', $column) . '`';
 
         $result = $this->wpdb->get_row(
             $this->wpdb->prepare(
-                "SELECT MIN({$column}) as min_price, MAX({$column}) as max_price FROM {$this->tiers_table} WHERE product_id = %d AND {$column} IS NOT NULL",
+                "SELECT MIN({$column_escaped}) as min_price, MAX({$column_escaped}) as max_price FROM {$this->tiers_table} WHERE product_id = %d AND {$column_escaped} IS NOT NULL",
                 $product_id
             )
         );
@@ -497,13 +498,17 @@ class Repository
             return $cached;
         }
 
+        $allowed_orderby = ['date', 'title', 'price', 'popularity', 'menu_order', 'rand', 'post__in'];
+        $orderby = in_array($args['orderby'], $allowed_orderby, true) ? $args['orderby'] : 'date';
+        $order = in_array(strtoupper($args['order']), ['ASC', 'DESC'], true) ? strtoupper($args['order']) : 'DESC';
+
         $query_args = [
             'post_type' => 'product',
             'post_status' => 'publish',
             'posts_per_page' => (int) $args['limit'],
             'offset' => (int) $args['offset'],
-            'orderby' => $args['orderby'],
-            'order' => $args['order'],
+            'orderby' => $orderby,
+            'order' => $order,
         ];
 
         if (!empty($args['marketplace_only'])) {
@@ -588,8 +593,12 @@ class Repository
         if ($args['tier'] > 0) {
             $product_ids = $this->get_products_with_tier((int) $args['tier']);
             if (!empty($product_ids)) {
-                $query_args['post__in'] = isset($query_args['post__in'])
-                    ? array_intersect($query_args['post__in'] ?? [], $product_ids)
+                $existing_post_in = $query_args['post__in'] ?? [];
+                if (!is_array($existing_post_in)) {
+                    $existing_post_in = [];
+                }
+                $query_args['post__in'] = !empty($existing_post_in)
+                    ? array_intersect($existing_post_in, $product_ids)
                     : $product_ids;
             } else {
                 return [];

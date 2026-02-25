@@ -99,6 +99,17 @@ class Handlers
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
 
+        if (!is_user_logged_in()) {
+            $ip_address = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $transient_key = 'wc_cgmp_tier_price_' . md5(sanitize_text_field($ip_address));
+            $count = (int) get_transient($transient_key);
+            if ($count > 30) {
+                wp_send_json_error(['message' => __('Too many requests. Please try again later.', 'wc-carousel-grid-marketplace-and-pricing')]);
+                return;
+            }
+            set_transient($transient_key, $count + 1, MINUTE_IN_SECONDS);
+        }
+
         $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
         $tier_level = isset($_POST['tier_level']) ? (int) $_POST['tier_level'] : 0;
 

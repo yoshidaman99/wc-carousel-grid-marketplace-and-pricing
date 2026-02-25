@@ -42,7 +42,7 @@
             var $marketplace = $('.wc-cgmp-marketplace');
             
             if ($activeBtn.length) {
-                var activeTier = parseInt($activeBtn.data('tier')) || 0;
+                var activeTier = parseInt($activeBtn.data('tier'), 10) || 0;
                 if (activeTier > 0) {
                     this.updateAllPricingPanels(activeTier);
                 }
@@ -71,7 +71,7 @@
         initDefaultTier: function() {
             var $activeBtn = $('.wc-cgmp-tier-btn.active');
             if ($activeBtn.length) {
-                this.currentTier = parseInt($activeBtn.data('tier')) || 1;
+                this.currentTier = parseInt($activeBtn.data('tier'), 10) || 1;
             } else {
                 $('.wc-cgmp-tier-btn.wc-cgmp-tier-entry').addClass('active');
                 this.currentTier = 1;
@@ -107,7 +107,7 @@
         filterByTier: function(e) {
             e.preventDefault();
             var $this = $(this);
-            var tier = parseInt($this.data('tier')) || 1;
+            var tier = parseInt($this.data('tier'), 10) || 1;
 
             if (tier === WC_CGMP_Marketplace.currentTier) {
                 return;
@@ -130,7 +130,7 @@
                 return;
             }
             
-            var tierLevel = parseInt($select.val()) || 0;
+            var tierLevel = parseInt($select.val(), 10) || 0;
             if (tierLevel > 0) {
                 $btn.attr('data-tier-level', tierLevel);
                 WC_CGMP_Marketplace.log('Panel synced from dropdown', {
@@ -206,7 +206,7 @@
 
         loadProducts: function() {
             var $grid = $('.wc-cgmp-grid');
-            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit')) || WC_CGMP_Marketplace.limit;
+            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit'), 10) || WC_CGMP_Marketplace.limit;
 
             this.showLoading();
 
@@ -214,7 +214,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_filter_products',
+                    action: 'wc_cgmp_filter_products',
                     nonce: wc_cgmp_ajax.nonce,
                     category: WC_CGMP_Marketplace.currentCategory,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -252,7 +252,7 @@
             e.preventDefault();
             var $grid = $('.wc-cgmp-grid');
             var $btn = $(this);
-            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit')) || WC_CGMP_Marketplace.limit;
+            var limit = parseInt($grid.closest('.wc-cgmp-marketplace').data('limit'), 10) || WC_CGMP_Marketplace.limit;
 
             WC_CGMP_Marketplace.currentOffset += limit;
 
@@ -260,7 +260,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_load_more',
+                    action: 'wc_cgmp_load_more',
                     nonce: wc_cgmp_ajax.nonce,
                     category: WC_CGMP_Marketplace.currentCategory,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -306,7 +306,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_search_products',
+                    action: 'wc_cgmp_search_products',
                     nonce: wc_cgmp_ajax.nonce,
                     search: search,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -338,9 +338,9 @@
 
             var productId = $btn.data('product-id');
             var tierLevelAttr = $btn.attr('data-tier-level');
-            var tierLevel = parseInt(tierLevelAttr) || 0;
+            var tierLevel = parseInt(tierLevelAttr, 10) || 0;
             var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : ($panel.data('default-price-type') || 'monthly');
-            var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+            var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val(), 10) || 1;
 
             // Extract tier details for WELP compatibility
             var tierName = $panel.attr('data-tier-' + tierLevel + '-name') || '';
@@ -386,7 +386,7 @@
             }
 
             var ajaxData = {
-                action: 'WC_CGMP_add_to_cart',
+                action: 'wc_cgmp_add_to_cart',
                 nonce: wc_cgmp_ajax.nonce,
                 product_id: productId,
                 quantity: quantity,
@@ -449,7 +449,7 @@
             var $btn = $(this);
             var $input = $btn.siblings('.wc-cgmp-quantity-input');
             var action = $btn.data('action');
-            var currentVal = parseInt($input.val()) || 1;
+            var currentVal = parseInt($input.val(), 10) || 1;
 
             if (action === 'increase') {
                 $input.val(Math.min(currentVal + 1, 99));
@@ -463,7 +463,7 @@
         updateTotal: function(e) {
             var $input = $(this);
             var $panel = $input.closest('.wc-cgmp-pricing-panel');
-            var quantity = parseInt($input.val()) || 1;
+            var quantity = parseInt($input.val(), 10) || 1;
             
             var hasTiers = $panel.attr('data-has-tiers');
             var price = 0;
@@ -488,7 +488,7 @@
             var $option = $select.find('option:selected');
             var $btn = $panel.find('.wc-cgmp-add-to-cart');
 
-            var newTierLevel = parseInt($select.val()) || 0;
+            var newTierLevel = parseInt($select.val(), 10) || 0;
             var hourlyPrice = parseFloat($option.data('hourly')) || 0;
             var monthlyPrice = parseFloat($option.data('monthly')) || 0;
             var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : 'monthly';
@@ -521,7 +521,7 @@
 
             $panel.find('.wc-cgmp-add-to-cart').data('price-type', priceType);
 
-            var currentTier = parseInt($panel.find('.wc-cgmp-add-to-cart').attr('data-tier-level')) || 1;
+            var currentTier = parseInt($panel.find('.wc-cgmp-add-to-cart').attr('data-tier-level'), 10) || 1;
             var hourlyPrice = parseFloat($panel.attr('data-tier-' + currentTier + '-hourly')) || 0;
             var monthlyPrice = parseFloat($panel.attr('data-tier-' + currentTier + '-monthly')) || 0;
             var newPrice = priceType === 'monthly' ? monthlyPrice : hourlyPrice;

@@ -281,7 +281,7 @@ class Cart_Integration
             return;
         }
 
-        if (!WC()->cart) {
+        if (!function_exists('WC') || !WC() || !WC()->cart) {
             wp_send_json_error(['message' => __('Cart not available.', 'wc-carousel-grid-marketplace-and-pricing')]);
             return;
         }
@@ -307,7 +307,7 @@ class Cart_Integration
                 return;
             }
 
-            $price = $price_type === 'monthly' ? $tier->monthly_price : $tier->hourly_price;
+            $price = (float) ($price_type === 'monthly' ? $tier->monthly_price : $tier->hourly_price);
 
             if ($price <= 0) {
                 wp_send_json_error([
@@ -333,7 +333,14 @@ class Cart_Integration
             }
 
             if (!$cart_item_key) {
-                wp_send_json_error(['message' => __('Could not add to cart.', 'wc-carousel-grid-marketplace-and-pricing')]);
+                $error_message = function_exists('wc_get_notices') ? wc_get_notices('error') : [];
+                $message = !empty($error_message)
+                    ? strip_tags(implode(', ', array_column($error_message, 'notice') ?: $error_message))
+                    : __('Could not add to cart.', 'wc-carousel-grid-marketplace-and-pricing');
+                if (function_exists('wc_clear_notices')) {
+                    wc_clear_notices();
+                }
+                wp_send_json_error(['message' => $message]);
                 return;
             }
 

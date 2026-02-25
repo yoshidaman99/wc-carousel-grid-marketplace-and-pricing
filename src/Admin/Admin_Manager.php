@@ -63,16 +63,20 @@ class Admin_Manager
     private function save_settings(): void
     {
         $settings = [
-            'wc_cgmp_grid_columns' => absint($_POST['wc_cgmp_grid_columns'] ?? 3),
-            'wc_cgmp_cards_per_page' => absint($_POST['wc_cgmp_cards_per_page'] ?? 12),
+            'wc_cgmp_grid_columns' => min(max(absint($_POST['wc_cgmp_grid_columns'] ?? 3), 1), 6),
+            'wc_cgmp_cards_per_page' => min(max(absint($_POST['wc_cgmp_cards_per_page'] ?? 12), 1), 100),
             'wc_cgmp_mobile_carousel' => isset($_POST['wc_cgmp_mobile_carousel']),
             'wc_cgmp_show_sidebar' => isset($_POST['wc_cgmp_show_sidebar']),
             'wc_cgmp_show_filter_bar' => isset($_POST['wc_cgmp_show_filter_bar']),
             'wc_cgmp_enable_infinite_scroll' => isset($_POST['wc_cgmp_enable_infinite_scroll']),
-            'wc_cgmp_card_style' => sanitize_text_field($_POST['wc_cgmp_card_style'] ?? 'default'),
-            'wc_cgmp_popular_method' => sanitize_text_field($_POST['wc_cgmp_popular_method'] ?? 'auto'),
-            'wc_cgmp_popular_threshold' => absint($_POST['wc_cgmp_popular_threshold'] ?? 5),
-            'wc_cgmp_popular_days' => absint($_POST['wc_cgmp_popular_days'] ?? 30),
+            'wc_cgmp_card_style' => in_array($_POST['wc_cgmp_card_style'] ?? 'default', ['default', 'compact', 'detailed'], true)
+                ? sanitize_text_field($_POST['wc_cgmp_card_style'])
+                : 'default',
+            'wc_cgmp_popular_method' => in_array($_POST['wc_cgmp_popular_method'] ?? 'auto', ['auto', 'manual', 'both'], true)
+                ? sanitize_text_field($_POST['wc_cgmp_popular_method'])
+                : 'auto',
+            'wc_cgmp_popular_threshold' => min(max(absint($_POST['wc_cgmp_popular_threshold'] ?? 5), 1), 100),
+            'wc_cgmp_popular_days' => min(max(absint($_POST['wc_cgmp_popular_days'] ?? 30), 1), 365),
             'wc_cgmp_remove_data_on_uninstall' => isset($_POST['wc_cgmp_remove_data_on_uninstall']),
         ];
 
