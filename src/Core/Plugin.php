@@ -27,16 +27,6 @@ class Plugin
         $this->ensure_woocommerce_services_loaded_on_ajax();
     }
 
-    private function use_minified_assets(): bool
-    {
-        return !(defined('WP_DEBUG') && WP_DEBUG) && !(defined('SCRIPT_DEBUG') && SCRIPT_DEBUG);
-    }
-
-    private function get_asset_suffix(): string
-    {
-        return $this->use_minified_assets() ? '.min' : '';
-    }
-
     private function register_core_services(): void
     {
         $this->services = [
@@ -93,57 +83,6 @@ class Plugin
         add_action('init', [$this, 'load_textdomain']);
         add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend']);
         add_action('admin_enqueue_scripts', [$this, 'maybe_enqueue_admin']);
-        
-        add_action('save_post_product', [$this, 'clear_product_cache_on_save'], 10, 2);
-        add_action('transition_post_status', [$this, 'clear_marketplace_cache_on_status_change'], 10, 3);
-        add_action('edited_product_cat', [$this, 'clear_category_cache']);
-        add_action('delete_product_cat', [$this, 'clear_category_cache']);
-        add_action('wc_cgmp_tiers_updated', [$this, 'clear_tier_cache']);
-    }
-
-    public function clear_product_cache_on_save(int $post_id, \WP_Post $post): void
-    {
-        if (wp_is_post_revision($post_id) || wp_is_post_autosave($post_id)) {
-            return;
-        }
-
-        $repository = $this->get_service('repository');
-        if ($repository) {
-            $repository->clear_product_cache($post_id);
-        }
-    }
-
-    public function clear_marketplace_cache_on_status_change(string $new_status, string $old_status, \WP_Post $post): void
-    {
-        if ($post->post_type !== 'product') {
-            return;
-        }
-
-        if ($new_status === $old_status) {
-            return;
-        }
-
-        $repository = $this->get_service('repository');
-        if ($repository) {
-            $repository->clear_marketplace_cache();
-        }
-    }
-
-    public function clear_category_cache(): void
-    {
-        $repository = $this->get_service('repository');
-        if ($repository) {
-            $repository->clear_category_cache();
-        }
-    }
-
-    public function clear_tier_cache(int $product_id): void
-    {
-        $repository = $this->get_service('repository');
-        if ($repository) {
-            $repository->clear_product_cache($product_id);
-            $repository->clear_marketplace_cache();
-        }
     }
 
     public function load_textdomain(): void
@@ -170,25 +109,23 @@ class Plugin
 
     private function enqueue_frontend_assets(): void
     {
-        $suffix = $this->get_asset_suffix();
-
         wp_enqueue_style(
             'wc-cgmp-marketplace',
-            WC_CGMP_PLUGIN_URL . 'assets/css/marketplace' . $suffix . '.css',
+            WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
             [],
             WC_CGMP_VERSION
         );
 
         wp_enqueue_style(
             'wc-cgmp-frontend',
-            WC_CGMP_PLUGIN_URL . 'assets/css/frontend' . $suffix . '.css',
+            WC_CGMP_PLUGIN_URL . 'assets/css/frontend.css',
             ['wc-cgmp-marketplace'],
             WC_CGMP_VERSION
         );
 
         wp_enqueue_script(
             'wc-cgmp-marketplace',
-            WC_CGMP_PLUGIN_URL . 'assets/js/marketplace' . $suffix . '.js',
+            WC_CGMP_PLUGIN_URL . 'assets/js/marketplace.js',
             ['jquery'],
             WC_CGMP_VERSION,
             true
@@ -209,7 +146,7 @@ class Plugin
 
         wp_enqueue_script(
             'wc-cgmp-frontend',
-            WC_CGMP_PLUGIN_URL . 'assets/js/frontend' . $suffix . '.js',
+            WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
             ['jquery', 'wc-cgmp-marketplace'],
             WC_CGMP_VERSION,
             true
@@ -219,19 +156,18 @@ class Plugin
     private function enqueue_admin_assets(string $hook): void
     {
         $screen = get_current_screen();
-        $suffix = $this->get_asset_suffix();
 
         if ($screen && $screen->post_type === 'product') {
             wp_enqueue_style(
                 'wc-cgmp-admin',
-                WC_CGMP_PLUGIN_URL . 'assets/css/admin' . $suffix . '.css',
+                WC_CGMP_PLUGIN_URL . 'assets/css/admin.css',
                 [],
                 WC_CGMP_VERSION
             );
 
             wp_enqueue_script(
                 'wc-cgmp-admin',
-                WC_CGMP_PLUGIN_URL . 'assets/js/admin' . $suffix . '.js',
+                WC_CGMP_PLUGIN_URL . 'assets/js/admin.js',
                 ['jquery'],
                 WC_CGMP_VERSION,
                 true
@@ -248,7 +184,7 @@ class Plugin
         }
 
         if (strpos($hook, 'wc-carousel-grid-marketplace-and-pricing') !== false) {
-            wp_enqueue_style('wc-cgmp-admin', WC_CGMP_PLUGIN_URL . 'assets/css/admin' . $suffix . '.css', [], WC_CGMP_VERSION);
+            wp_enqueue_style('wc-cgmp-admin', WC_CGMP_PLUGIN_URL . 'assets/css/admin.css', [], WC_CGMP_VERSION);
         }
     }
 

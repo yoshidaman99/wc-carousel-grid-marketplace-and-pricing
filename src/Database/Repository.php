@@ -9,7 +9,6 @@ class Repository
     private $wpdb;
     private string $tiers_table;
     private string $sales_table;
-    private string $cache_group;
 
     public function __construct()
     {
@@ -17,52 +16,6 @@ class Repository
         $this->wpdb = $wpdb;
         $this->tiers_table = $wpdb->prefix . WC_CGMP_TABLE_TIERS;
         $this->sales_table = $wpdb->prefix . WC_CGMP_TABLE_SALES;
-        $this->cache_group = 'wc_cgmp';
-    }
-
-    private function get_transient_key(string $key): string
-    {
-        return 'wc_cgmp_' . $key;
-    }
-
-    private function get_transient(string $key, int $expiration = HOUR_IN_SECONDS)
-    {
-        return get_transient($this->get_transient_key($key));
-    }
-
-    private function set_transient(string $key, $value, int $expiration = HOUR_IN_SECONDS): bool
-    {
-        return set_transient($this->get_transient_key($key), $value, $expiration);
-    }
-
-    private function delete_transient(string $key): bool
-    {
-        return delete_transient($this->get_transient_key($key));
-    }
-
-    public function clear_product_cache(int $product_id): void
-    {
-        $this->delete_transient("tiers_{$product_id}");
-        $this->delete_transient("products_category_{$product_id}");
-        wp_cache_delete("wc_cgmp_tiers_{$product_id}", $this->cache_group);
-    }
-
-    public function clear_category_cache(): void
-    {
-        $this->delete_transient('categories_with_counts');
-        wp_cache_delete('wc_cgmp_categories_with_counts', $this->cache_group);
-    }
-
-    public function clear_marketplace_cache(): void
-    {
-        $this->delete_transient('marketplace_products');
-        $this->delete_transient('popular_products');
-        wp_cache_delete('wc_cgmp_products', $this->cache_group);
-        wp_cache_delete('wc_cgmp_categories_with_counts', $this->cache_group);
-        
-        if (function_exists('wp_cache_flush_group')) {
-            wp_cache_flush_group($this->cache_group);
-        }
     }
 
     public function insert_tiers(int $product_id, array $tiers): bool
@@ -80,7 +33,6 @@ class Repository
                 'monthly_price' => isset($tier['monthly_price']) && $tier['monthly_price'] !== '' ? (float) $tier['monthly_price'] : null,
                 'hourly_price' => isset($tier['hourly_price']) && $tier['hourly_price'] !== '' ? (float) $tier['hourly_price'] : null,
                 'description' => isset($tier['description']) ? wp_kses_post($tier['description']) : '',
-                'is_visible' => isset($tier['is_visible']) ? (int) $tier['is_visible'] : 1,
             ];
 
             if ($existing) {
@@ -88,7 +40,7 @@ class Repository
                     $this->tiers_table,
                     $data,
                     ['id' => $existing->id],
-                    ['%d', '%d', '%s', '%f', '%f', '%s', '%d'],
+                    ['%d', '%d', '%s', '%f', '%f', '%s'],
                     ['%d']
                 );
                 $operation = 'UPDATE';
@@ -96,7 +48,7 @@ class Repository
                 $result = $this->wpdb->insert(
                     $this->tiers_table,
                     $data,
-                    ['%d', '%d', '%s', '%f', '%f', '%s', '%d']
+                    ['%d', '%d', '%s', '%f', '%f', '%s']
                 );
                 $operation = 'INSERT';
             }
@@ -116,8 +68,6 @@ class Repository
 
         if ($success) {
             wp_cache_delete('wc_cgmp_products', 'wc_cgmp');
-            $this->clear_product_cache($product_id);
-            $this->clear_marketplace_cache();
             wc_cgmp_logger()->stop_timer('insert_tiers', 'insert_tiers completed');
         }
 
@@ -126,13 +76,6 @@ class Repository
 
     public function get_tiers_by_product(int $product_id): array
     {
-        $cache_key = "tiers_{$product_id}";
-        $cached = $this->get_transient($cache_key, HOUR_IN_SECONDS);
-
-        if (false !== $cached && is_array($cached)) {
-            return $cached;
-        }
-
         $results = $this->wpdb->get_results(
             $this->wpdb->prepare(
                 "SELECT * FROM {$this->tiers_table} WHERE product_id = %d ORDER BY tier_level ASC",
@@ -147,10 +90,7 @@ class Repository
             return [];
         }
 
-        $tiers = $results ? $results : [];
-        $this->set_transient($cache_key, $tiers, HOUR_IN_SECONDS);
-
-        return $tiers;
+        return $results ? $results : [];
     }
 
     public function get_tier(int $product_id, int $tier_level): ?object
@@ -195,12 +135,16 @@ class Repository
 
     public function get_price_range(int $product_id, string $price_type = 'monthly'): array
     {
-        $column = ($price_type === 'hourly') ? 'hourly_price' : 'monthly_price';
-        $column_escaped = '`' . str_replace('`', '``', $column) . '`';
+        $allowed_columns = ['monthly_price', 'hourly_price'];
+        $column = $price_type === 'hourly' ? 'hourly_price' : 'monthly_price';
+        
+        if (!in_array($column, $allowed_columns, true)) {
+            $column = 'monthly_price';
+        }
 
         $result = $this->wpdb->get_row(
             $this->wpdb->prepare(
-                "SELECT MIN({$column_escaped}) as min_price, MAX({$column_escaped}) as max_price FROM {$this->tiers_table} WHERE product_id = %d AND {$column_escaped} IS NOT NULL",
+                "SELECT MIN({$column}) as min_price, MAX({$column}) as max_price FROM {$this->tiers_table} WHERE product_id = %d AND {$column} IS NOT NULL",
                 $product_id
             )
         );
@@ -498,17 +442,13 @@ class Repository
             return $cached;
         }
 
-        $allowed_orderby = ['date', 'title', 'price', 'popularity', 'menu_order', 'rand', 'post__in'];
-        $orderby = in_array($args['orderby'], $allowed_orderby, true) ? $args['orderby'] : 'date';
-        $order = in_array(strtoupper($args['order']), ['ASC', 'DESC'], true) ? strtoupper($args['order']) : 'DESC';
-
         $query_args = [
             'post_type' => 'product',
             'post_status' => 'publish',
             'posts_per_page' => (int) $args['limit'],
             'offset' => (int) $args['offset'],
-            'orderby' => $orderby,
-            'order' => $order,
+            'orderby' => $args['orderby'],
+            'order' => $args['order'],
         ];
 
         if (!empty($args['marketplace_only'])) {
@@ -593,12 +533,8 @@ class Repository
         if ($args['tier'] > 0) {
             $product_ids = $this->get_products_with_tier((int) $args['tier']);
             if (!empty($product_ids)) {
-                $existing_post_in = $query_args['post__in'] ?? [];
-                if (!is_array($existing_post_in)) {
-                    $existing_post_in = [];
-                }
-                $query_args['post__in'] = !empty($existing_post_in)
-                    ? array_intersect($existing_post_in, $product_ids)
+                $query_args['post__in'] = isset($query_args['post__in'])
+                    ? array_intersect($query_args['post__in'] ?? [], $product_ids)
                     : $product_ids;
             } else {
                 return [];
@@ -627,13 +563,6 @@ class Repository
 
     public function get_popular_products(int $limit = 10, int $days = 30): array
     {
-        $cache_key = "popular_{$limit}_{$days}";
-        $cached = $this->get_transient($cache_key, 15 * MINUTE_IN_SECONDS);
-
-        if (false !== $cached && is_array($cached)) {
-            return $cached;
-        }
-
         $method = get_option('wc_cgmp_popular_method', 'auto');
         $products = [];
 
@@ -667,10 +596,7 @@ class Repository
             $products = array_unique(array_merge($products, $manual_ids));
         }
 
-        $result = array_slice($products, 0, $limit);
-        $this->set_transient($cache_key, $result, 15 * MINUTE_IN_SECONDS);
-
-        return $result;
+        return array_slice($products, 0, $limit);
     }
 
     public function get_popular_product_ids(int $threshold = 5, int $days = 30): array

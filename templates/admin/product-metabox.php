@@ -166,23 +166,6 @@ if (!isset($action_buttons_enabled)) {
                                   rows="2"
                                   placeholder="<?php esc_attr_e('Brief description of this tier...', 'wc-carousel-grid-marketplace-and-pricing'); ?>"><?php echo esc_textarea($tier_data[$i]['description']); ?></textarea>
                     </div>
-
-                    <div class="wc-cgmp-field wc-cgmp-visibility-field">
-                        <label class="wc-cgmp-checkbox-label">
-                            <input type="checkbox"
-                                   id="wc_cgmp_tiers_<?php echo $i; ?>_visible"
-                                   name="wc_cgmp_tiers[<?php echo $i; ?>][is_visible]"
-                                   value="1"
-                                   <?php checked(isset($tier_data[$i]['is_visible']) ? $tier_data[$i]['is_visible'] : true, true); ?>>
-                            <span class="wc-cgmp-checkbox-text">
-                                <?php esc_html_e('Show this tier on frontend', 'wc-carousel-grid-marketplace-and-pricing'); ?>
-                            </span>
-                            <span class="wc-cgmp-tooltip">
-                                <?php echo wc_cgmp_get_help_icon(); ?>
-                                <span class="wc-cgmp-tooltip-text"><?php esc_html_e('When unchecked, this tier will be hidden from the marketplace display.', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                            </span>
-                        </label>
-                    </div>
                 </div>
             </div>
             <?php endfor; ?>
