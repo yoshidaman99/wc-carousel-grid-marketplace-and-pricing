@@ -67,11 +67,27 @@ class Repository
         }
 
         if ($success) {
-            wp_cache_delete('wc_cgmp_products', 'wc_cgmp');
+            $this->clear_product_cache($product_id);
             wc_cgmp_logger()->stop_timer('insert_tiers', 'insert_tiers completed');
         }
 
         return $success;
+    }
+
+    public function clear_product_cache(int $product_id = 0): void
+    {
+        wp_cache_delete('wc_cgmp_products', 'wc_cgmp');
+        wp_cache_delete('wc_cgmp_categories_with_counts', 'wc_cgmp');
+        wp_cache_delete('wc_cgmp_total_products', 'wc_cgmp');
+
+        if ($product_id > 0) {
+            wp_cache_delete("wc_cgmp_tiers_{$product_id}", 'wc_cgmp');
+            wp_cache_delete("wc_cgmp_price_range_{$product_id}", 'wc_cgmp');
+        }
+
+        if (function_exists('wp_cache_flush_group')) {
+            wp_cache_flush_group('wc_cgmp');
+        }
     }
 
     public function get_tiers_by_product(int $product_id): array
@@ -129,6 +145,7 @@ class Repository
             return false;
         }
 
+        $this->clear_product_cache($product_id);
         wc_cgmp_logger()->info('Tiers deleted', ['product_id' => $product_id]);
         return true;
     }

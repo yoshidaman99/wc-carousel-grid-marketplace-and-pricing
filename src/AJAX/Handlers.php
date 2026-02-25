@@ -6,12 +6,54 @@ defined('ABSPATH') || exit;
 
 class Handlers
 {
+    private const RATE_LIMIT_REQUESTS = 30;
+    private const RATE_LIMIT_WINDOW = 60;
+
     public function __construct()
     {
         add_action('wp_ajax_wc_cgmp_save_tiers', [$this, 'handle_save_tiers']);
         add_action('wp_ajax_wc_cgmp_get_tiers', [$this, 'handle_get_tiers']);
         add_action('wp_ajax_nopriv_wc_cgmp_get_tier_price', [$this, 'handle_get_tier_price']);
         add_action('wp_ajax_wc_cgmp_get_tier_price', [$this, 'handle_get_tier_price']);
+    }
+
+    private function check_rate_limit(string $action): bool
+    {
+        $ip = $this->get_client_ip();
+        $transient_key = 'wc_cgmp_rl_' . $action . '_' . md5($ip);
+        $count = (int) get_transient($transient_key);
+
+        if ($count >= self::RATE_LIMIT_REQUESTS) {
+            wp_send_json_error([
+                'message' => __('Too many requests. Please wait and try again.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'code' => 'rate_limit_exceeded',
+            ], 429);
+            return false;
+        }
+
+        set_transient($transient_key, $count + 1, self::RATE_LIMIT_WINDOW);
+        return true;
+    }
+
+    private function get_client_ip(): string
+    {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip = filter_var($_SERVER[$header], FILTER_VALIDATE_IP);
+                if ($ip) {
+                    return $ip;
+                }
+            }
+        }
+
+        return '0.0.0.0';
     }
 
     public function handle_save_tiers(): void
@@ -98,6 +140,10 @@ class Handlers
     public function handle_get_tier_price(): void
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('get_tier_price')) {
+            return;
+        }
 
         $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
         $tier_level = isset($_POST['tier_level']) ? (int) $_POST['tier_level'] : 0;

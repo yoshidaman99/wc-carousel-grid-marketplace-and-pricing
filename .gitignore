@@ -1,0 +1,54 @@
+# GitHub Actions - Local only
+.github/
+
+# Development Config - Local only
+.gitignore
+
+# Documentation (not required by WordPress.org)
+# README.md is kept for GitHub
+CHANGELOG.md
+AGENTS.md
+*.md
+!README.md
+!readme.txt  # Keep WordPress readme.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+error_log
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build/Dev files
+.test/
+.builder/
+plugin builder/
+*.zip
+build/
+
+# Config (keep package info if needed)
+composer.json
+composer.lock
+package.json
+package-lock.json
+phpcs.xml
+phpunit.xml
+phpstan.neon
+.phpunit.cache/
+
+# Environment
+.env
+.env.*
+*.pem
+*.key

@@ -32,6 +32,48 @@ class Cart_Integration
         wc_cgmp_log($message, $context);
     }
 
+    private const RATE_LIMIT_REQUESTS = 30;
+    private const RATE_LIMIT_WINDOW = 60;
+
+    private function check_rate_limit(string $action): bool
+    {
+        $ip = $this->get_client_ip();
+        $transient_key = 'wc_cgmp_rl_' . $action . '_' . md5($ip);
+        $count = (int) get_transient($transient_key);
+
+        if ($count >= self::RATE_LIMIT_REQUESTS) {
+            wp_send_json_error([
+                'message' => __('Too many requests. Please wait and try again.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'code' => 'rate_limit_exceeded',
+            ], 429);
+            return false;
+        }
+
+        set_transient($transient_key, $count + 1, self::RATE_LIMIT_WINDOW);
+        return true;
+    }
+
+    private function get_client_ip(): string
+    {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip = filter_var($_SERVER[$header], FILTER_VALIDATE_IP);
+                if ($ip) {
+                    return $ip;
+                }
+            }
+        }
+
+        return '0.0.0.0';
+    }
+
     public function add_tier_to_cart(array $cart_item_data, int $product_id, int $variation_id): array
     {
         if (!wc_cgmp_is_enabled($product_id)) {
@@ -220,6 +262,10 @@ class Cart_Integration
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
 
+        if (!$this->check_rate_limit('filter_products')) {
+            return;
+        }
+
         $category = isset($_POST['category']) ? absint($_POST['category']) : 0;
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
         $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
@@ -263,6 +309,10 @@ class Cart_Integration
     public function ajax_add_to_cart(): void
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('add_to_cart')) {
+            return;
+        }
 
         $product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
         $quantity = isset($_POST['quantity']) ? absint($_POST['quantity']) : 1;
@@ -389,6 +439,10 @@ class Cart_Integration
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
 
+        if (!$this->check_rate_limit('load_more')) {
+            return;
+        }
+
         $offset = isset($_POST['offset']) ? absint($_POST['offset']) : 0;
         $category = isset($_POST['category']) ? absint($_POST['category']) : 0;
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
@@ -432,6 +486,10 @@ class Cart_Integration
     public function ajax_search_products(): void
     {
         check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('search_products')) {
+            return;
+        }
 
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
         $search = substr($search, 0, 100);
