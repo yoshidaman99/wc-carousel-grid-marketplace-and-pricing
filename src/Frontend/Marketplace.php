@@ -26,10 +26,6 @@ class Marketplace
         $is_popular = wc_cgmp_is_popular($product_id);
         $specialization = $repository->get_specialization($product_id);
         $tiers = $repository->get_tiers_by_product($product_id);
-        
-        $tiers = array_filter($tiers, function($tier) {
-            return isset($tier->is_visible) && (bool) $tier->is_visible;
-        });
 
         ob_start();
         include WC_CGMP_PLUGIN_DIR . 'templates/marketplace/product-card.php';
@@ -42,12 +38,7 @@ class Marketplace
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
         $specialization = $repository ? $repository->get_specialization($product_id) : '';
-        
         $tiers = $tiers ?? [];
-        
-        $tiers = array_filter($tiers, function($tier) {
-            return isset($tier->is_visible) && (bool) $tier->is_visible;
-        });
 
         $tier_data = [
             1 => ['hourly' => 0, 'monthly' => 0, 'name' => 'Entry', 'description' => ''],
@@ -104,9 +95,7 @@ class Marketplace
             if ($tier->hourly_price > 0) $price_types['hourly'] = true;
         }
         $price_types = array_keys($price_types);
-        $default_price_type = in_array('monthly', $price_types, true)
-            ? 'monthly'
-            : (isset($price_types[0]) ? $price_types[0] : 'monthly');
+        $default_price_type = in_array('monthly', $price_types) ? 'monthly' : ($price_types[0] ?? 'monthly');
 
         $default_tier_description = $default_tier ? ($default_tier->description ?? '') : '';
 
@@ -168,13 +157,13 @@ class Marketplace
                 <span class="wc-cgmp-price-sub">
                     <?php if ($default_price_type === 'monthly') : ?>
                         <?php
-                        $hourly_price = isset($default_tier->hourly_price) ? (float) $default_tier->hourly_price : 0;
+                        $hourly_price = $default_tier->hourly_price ?? 0;
                         echo wc_price(number_format($hourly_price, 2, '.', '')) . '/hr';
                         ?>
                     <?php else : ?>
                         <?php
-                        $monthly_price_alt = isset($default_tier->monthly_price) ? (float) $default_tier->monthly_price : 0;
-                        echo wc_price(number_format($monthly_price_alt, 2, '.', '')) . '/mo';
+                        $monthly_price = $default_tier->monthly_price ?? 0;
+                        echo wc_price(number_format($monthly_price, 2, '.', '')) . '/mo';
                         ?>
                     <?php endif; ?>
                 </span>

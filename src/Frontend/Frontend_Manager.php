@@ -47,27 +47,14 @@ class Frontend_Manager
 
         $atts = shortcode_atts($defaults, $atts, 'wc_cgmp_marketplace');
 
-        $atts['columns'] = min(max(absint($atts['columns']), 1), 6);
-        $atts['columns_tablet'] = min(max(absint($atts['columns_tablet']), 1), 4);
-        $atts['columns_mobile'] = min(max(absint($atts['columns_mobile']), 1), 2);
-        $atts['category'] = sanitize_text_field($atts['category']);
-        $atts['exclude_category'] = sanitize_text_field($atts['exclude_category']);
-        $atts['products'] = sanitize_text_field($atts['products']);
-        $atts['tier'] = absint($atts['tier']);
-        $atts['limit'] = min(max(absint($atts['limit']), 1), 100);
-        $atts['orderby'] = in_array($atts['orderby'], ['date', 'title', 'price', 'popularity', 'menu_order', 'rand'], true) ? $atts['orderby'] : 'date';
-        $atts['order'] = in_array(strtoupper($atts['order']), ['ASC', 'DESC'], true) ? strtoupper($atts['order']) : 'DESC';
-        $atts['layout'] = in_array($atts['layout'], ['grid', 'carousel', 'hybrid'], true) ? sanitize_key($atts['layout']) : 'grid';
-        $atts['class'] = sanitize_html_class($atts['class']);
-
         $args = [
             'category' => $atts['category'],
             'exclude_category' => $atts['exclude_category'],
             'products' => $atts['products'],
-            'tier' => $atts['tier'],
-            'limit' => $atts['limit'],
-            'orderby' => $atts['orderby'],
-            'order' => $atts['order'],
+            'tier' => (int) $atts['tier'],
+            'limit' => (int) $atts['limit'],
+            'orderby' => sanitize_text_field($atts['orderby']),
+            'order' => sanitize_text_field($atts['order']),
             'popular_only' => $atts['popular_only'] === 'true',
             'marketplace_only' => $atts['marketplace_only'] === 'true',
         ];

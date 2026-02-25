@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.3.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,27 +65,9 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+= 1.5.0 =
+* Release version 1.5.0
 
-= 1.4.0 =
-* New: Added minified JavaScript and CSS assets (.min.js, .min.css) for better performance
-* New: Implemented performance caching with transients for product queries (5-15 minute TTL)
-* New: Added pricing tier visibility controls - show/hide individual tiers per product
-* Fix: Corrected WC_CGMP_VERSION constant mismatch (was 1.3.7, now 1.4.0)
-* Performance: Optimized product queries with transient caching
-* Performance: Reduced page load time with minified assets in production
-* Enhancement: Added cache invalidation on product/tier updates
-* Enhancement: Added database migration for tier visibility feature
-
-= 1.3.8 =
-* Feature: Tier name and price validation in admin metabox
-* Enhancement: Improved error handling in AJAX handlers
-* Enhancement: Added loading states for better UX
-* Fix: Version constant mismatch documentation note
-
-= 1.3.7 =
-* Fix: Corrected version constant from 1.3.6 to 1.3.7
-* Enhancement: Improved compatibility with WooCommerce 8.0+
-* Enhancement: Added better error logging for database operations
 
 = 1.3.6 =
 * Fix: Corrected tier name field mapping in admin metabox
@@ -162,6 +144,16 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Single unified product metabox
 * Auto-migration from separate plugins
 * Backward compatibility for existing integrations
+
+= 1.3.9 =
+* Maintenance release - dev workflow validation and preparation for next feature release
+* Updated version numbers for consistency
+* Test infrastructure prepared for comprehensive testing
+
+= 1.3.9-dev =
+* Development build - added dev suffix for testing
+* Preparing for next feature release
+* Master workflow validation with dev versioning
 
 == Upgrade Notice ==
 

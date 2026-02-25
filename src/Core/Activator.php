@@ -9,7 +9,6 @@ class Activator
     public function activate(): void
     {
         $this->create_tables();
-        $this->run_db_migrations();
         
         try {
             $this->migrate_from_welp();
@@ -85,33 +84,6 @@ class Activator
         ) $charset_collate;";
 
         dbDelta($sql_sales);
-    }
-
-    private function run_db_migrations(): void
-    {
-        global $wpdb;
-        $current_db_version = get_option('wc_cgmp_db_version', '1.3.0');
-
-        if (version_compare($current_db_version, '1.4.0', '<')) {
-            $this->add_tier_visibility_column();
-        }
-    }
-
-    private function add_tier_visibility_column(): void
-    {
-        global $wpdb;
-        $tiers_table = $wpdb->prefix . WC_CGMP_TABLE_TIERS;
-
-        $column_exists = $wpdb->get_var(
-            "SHOW COLUMNS FROM {$tiers_table} LIKE 'is_visible'"
-        );
-
-        if (!$column_exists) {
-            $wpdb->query(
-                "ALTER TABLE {$tiers_table} ADD COLUMN is_visible tinyint(1) NOT NULL DEFAULT 1 AFTER description"
-            );
-            $this->log_error('Added is_visible column to tiers table');
-        }
     }
 
     private function migrate_from_welp(): void
