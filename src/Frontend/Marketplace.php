@@ -26,6 +26,10 @@ class Marketplace
         $is_popular = wc_cgmp_is_popular($product_id);
         $specialization = $repository->get_specialization($product_id);
         $tiers = $repository->get_tiers_by_product($product_id);
+        
+        $tiers = array_filter($tiers, function($tier) {
+            return isset($tier->is_visible) && (bool) $tier->is_visible;
+        });
 
         ob_start();
         include WC_CGMP_PLUGIN_DIR . 'templates/marketplace/product-card.php';
@@ -38,7 +42,12 @@ class Marketplace
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
         $specialization = $repository ? $repository->get_specialization($product_id) : '';
+        
         $tiers = $tiers ?? [];
+        
+        $tiers = array_filter($tiers, function($tier) {
+            return isset($tier->is_visible) && (bool) $tier->is_visible;
+        });
 
         $tier_data = [
             1 => ['hourly' => 0, 'monthly' => 0, 'name' => 'Entry', 'description' => ''],

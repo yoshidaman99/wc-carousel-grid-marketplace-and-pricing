@@ -63,6 +63,7 @@ class Product_Metabox
                 'monthly_price' => $existing ? $existing->monthly_price : '',
                 'hourly_price' => $existing ? $existing->hourly_price : '',
                 'description' => $existing ? $existing->description : '',
+                'is_visible' => $existing ? (bool) $existing->is_visible : true,
             ];
         }
 
@@ -132,6 +133,7 @@ class Product_Metabox
                     'monthly_price' => isset($tier['monthly_price']) && $tier['monthly_price'] !== '' ? floatval($tier['monthly_price']) : null,
                     'hourly_price' => isset($tier['hourly_price']) && $tier['hourly_price'] !== '' ? floatval($tier['hourly_price']) : null,
                     'description' => wp_kses_post($tier['description'] ?? ''),
+                    'is_visible' => isset($tier['is_visible']) && $tier['is_visible'] == '1',
                 ];
             }
         }
