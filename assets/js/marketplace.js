@@ -214,7 +214,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_filter_products',
+                    action: 'wc_cgmp_filter_products',
                     nonce: wc_cgmp_ajax.nonce,
                     category: WC_CGMP_Marketplace.currentCategory,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -260,7 +260,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_load_more',
+                    action: 'wc_cgmp_load_more',
                     nonce: wc_cgmp_ajax.nonce,
                     category: WC_CGMP_Marketplace.currentCategory,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -306,7 +306,7 @@
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'WC_CGMP_search_products',
+                    action: 'wc_cgmp_search_products',
                     nonce: wc_cgmp_ajax.nonce,
                     search: search,
                     tier: WC_CGMP_Marketplace.currentTier,
@@ -386,7 +386,7 @@
             }
 
             var ajaxData = {
-                action: 'WC_CGMP_add_to_cart',
+                action: 'wc_cgmp_add_to_cart',
                 nonce: wc_cgmp_ajax.nonce,
                 product_id: productId,
                 quantity: quantity,
