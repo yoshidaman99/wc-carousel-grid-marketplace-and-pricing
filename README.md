@@ -195,6 +195,15 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.1
+- Fix: Array to string conversion error when using Elementor URL control arrays
+- Fix: Proper handling of URL attributes in templates
+
+### 1.6.0### 1.6.1
+- Fix: Array to string conversion error when using Elementor URL control arrays
+- Fix: Proper handling of URL attributes in templates
+- Fix: Icon rendering with class_exists check
+
 ### 1.6.0
 - Toggle to include/exclude total parameter in button override URL
 - Link above button with icon, text, highlight text, and URL (e.g., "Need 5+ headcount? Get volume pricing")
