@@ -39,9 +39,13 @@ if (!$default_tier && !empty($tiers)) {
 
 <div class="wc-cgmp-card" data-product-id="<?php echo esc_attr($product_id); ?>" <?php echo !empty($tiers) ? 'data-has-tiers="true"' : ''; ?>>
 
-    <?php if ($is_popular) : ?>
+    <?php 
+    $show_popular_badge = ($atts['show_popular_badge'] ?? 'true') === 'true';
+    $popular_badge_text = $atts['popular_badge_text'] ?? 'Popular';
+    if ($is_popular && $show_popular_badge) : 
+    ?>
     <span class="wc-cgmp-badge-popular">
-        <?php esc_html_e('Popular', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+        <?php echo esc_html__($popular_badge_text, 'wc-carousel-grid-marketplace-and-pricing'); ?>
     </span>
     <?php endif; ?>
 

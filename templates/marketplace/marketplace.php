@@ -15,6 +15,21 @@ $layout = $atts['layout'] ?? 'grid';
 $mobile_carousel = ($atts['mobile_carousel'] ?? 'true') === 'true';
 $class = $atts['class'] ?? '';
 $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+
+// Batch preload tier data for all products to eliminate N+1 queries
+if ($repository && !empty($products)) {
+    $product_ids = [];
+    foreach ($products as $post) {
+        if (is_object($post) && isset($post->ID)) {
+            $product_ids[] = (int) $post->ID;
+        } elseif (is_numeric($post)) {
+            $product_ids[] = (int) $post;
+        }
+    }
+    if (!empty($product_ids)) {
+        $repository->preload_tiers($product_ids);
+    }
+}
 ?>
 
 <?php if (!empty($admin_notice)) : ?>
@@ -81,7 +96,16 @@ $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
              data-show-tier-description="<?php echo esc_attr($atts['show_tier_description'] ?? 'true'); ?>"
              data-show-search="<?php echo esc_attr($atts['show_search'] ?? 'false'); ?>"
              data-show-sidebar="<?php echo esc_attr($atts['show_sidebar'] ?? 'true'); ?>"
-             data-show-filter="<?php echo esc_attr($atts['show_filter'] ?? 'true'); ?>">
+             data-show-filter="<?php echo esc_attr($atts['show_filter'] ?? 'true'); ?>"
+             data-columns="<?php echo esc_attr($columns); ?>"
+             data-layout="<?php echo esc_attr($layout); ?>"
+             data-show-popular-badge="<?php echo esc_attr($atts['show_popular_badge'] ?? 'true'); ?>"
+             data-popular-badge-text="<?php echo esc_attr($atts['popular_badge_text'] ?? 'Popular'); ?>"
+             data-price-display-mode="<?php echo esc_attr($atts['price_display_mode'] ?? 'both'); ?>"
+             data-show-price-prefix="<?php echo esc_attr($atts['show_price_prefix'] ?? 'false'); ?>"
+             data-price-prefix-text="<?php echo esc_attr($atts['price_prefix_text'] ?? ''); ?>"
+             data-price-prefix-separator="<?php echo esc_attr($atts['price_prefix_separator'] ?? '|'); ?>"
+             data-price-prefix-position="<?php echo esc_attr($atts['price_prefix_position'] ?? 'inline'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);
