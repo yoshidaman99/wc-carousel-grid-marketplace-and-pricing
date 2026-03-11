@@ -110,6 +110,15 @@ class Marketplace
         }
 
         ob_start();
+        
+        $display_hourly_price = $default_tier ? (float) ($default_tier->hourly_price ?? 0) : 0;
+        if ($display_hourly_price <= 0 && $default_price > 0) {
+            $display_hourly_price = $default_price;
+        }
+        
+        $show_price_prefix = ($atts['show_price_prefix'] ?? 'true') === 'true';
+        $price_prefix_text_raw = $atts['price_prefix_text'] ?? 'Starting at';
+        $price_prefix_text = is_array($price_prefix_text_raw) ? ($price_prefix_text_raw['text'] ?? $price_prefix_text_raw[0] ?? 'Starting at') : $price_prefix_text_raw;
         ?>
         <div class="wc-cgmp-pricing-panel"
              data-product-id="<?php echo esc_attr($product_id); ?>"
@@ -125,108 +134,39 @@ class Marketplace
              data-tier-<?php echo esc_attr($level); ?>-description="<?php echo esc_attr($tier_data[$level]['description'] ?? ''); ?>"
              <?php endforeach; ?>>
 
-            <?php
-            $show_tier_description = ($atts['show_tier_description'] ?? 'true') === 'true';
-            if ($has_tiers && $show_tier_description && !empty($default_tier_description)) :
-            ?>
-            <h4 class="wc-cgmp-tier-description"><?php echo esc_html($default_tier_description); ?></h4>
-            <?php endif; ?>
-
-            <?php 
-            $price_display_mode = $atts['price_display_mode'] ?? 'both';
-            $show_price_prefix = ($atts['show_price_prefix'] ?? 'false') === 'true';
-            $price_prefix_text_raw = $atts['price_prefix_text'] ?? '';
-            $price_prefix_text = is_array($price_prefix_text_raw) ? ($price_prefix_text_raw['text'] ?? $price_prefix_text_raw[0] ?? '') : $price_prefix_text_raw;
-            $price_prefix_separator = $atts['price_prefix_separator'] ?? '|';
-            $price_prefix_position = $atts['price_prefix_position'] ?? 'inline';
-            $prefix_text = $show_price_prefix && !empty($price_prefix_text) ? esc_html__($price_prefix_text, 'wc-carousel-grid-marketplace-and-pricing') : '';
-            ?>
-
-            <?php if ($has_tiers && count($price_types) > 1 && $price_display_mode === 'both') : ?>
-            <div class="wc-cgmp-price-type-switch">
-                <span class="wc-cgmp-switch-label <?php echo $default_price_type === 'monthly' ? 'active' : ''; ?>">
-                    <?php esc_html_e('Monthly', 'wc-carousel-grid-marketplace-and-pricing'); ?>
-                </span>
-                <label class="wc-cgmp-switch">
-                    <input type="checkbox" class="wc-cgmp-switch-input" <?php checked($default_price_type, 'hourly'); ?>>
-                    <span class="wc-cgmp-switch-slider"></span>
-                </label>
-                <span class="wc-cgmp-switch-label <?php echo $default_price_type === 'hourly' ? 'active' : ''; ?>">
-                    <?php esc_html_e('Hourly', 'wc-carousel-grid-marketplace-and-pricing'); ?>
-                </span>
-            </div>
-            <?php endif; ?>
-
             <div class="wc-cgmp-pricing-amount">
-                <?php if (!empty($prefix_text) && $price_prefix_position === 'inline') : ?>
-                <span class="wc-cgmp-price-prefix"><?php echo esc_html($prefix_text); ?></span>
-                <?php if (!empty($price_prefix_separator)) : ?>
-                <span class="wc-cgmp-price-prefix-separator"><?php echo esc_html($price_prefix_separator); ?></span>
+                <?php if ($show_price_prefix && !empty($price_prefix_text)) : ?>
+                <span class="wc-cgmp-price-prefix"><?php echo esc_html($price_prefix_text); ?></span>
                 <?php endif; ?>
-                <?php endif; ?>
-                
-                <?php if ($price_display_mode === 'both' || $price_display_mode === 'monthly_only') : ?>
-                <span class="wc-cgmp-price-main" data-price="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>">
-                    <?php echo wc_price(number_format($default_price, 2, '.', '')); ?>
-                </span>
-                <?php endif; ?>
-                
-                <?php 
-                $secondary_price = 0;
-                $secondary_label = '';
-                if ($price_display_mode === 'both') :
-                    if ($default_price_type === 'monthly') :
-                        $secondary_price = $default_tier->hourly_price ?? 0;
-                        $secondary_label = '/hr';
-                    else :
-                        $secondary_price = $default_tier->monthly_price ?? 0;
-                        $secondary_label = '/mo';
-                    endif;
-                    
-                    if ($secondary_price > 0) :
-                ?>
-                <span class="wc-cgmp-price-sub">
-                    <?php echo wc_price(number_format($secondary_price, 2, '.', '')) . $secondary_label; ?>
-                </span>
-                <?php 
-                    endif;
-                elseif ($price_display_mode === 'hourly_only') : 
-                ?>
-                <?php 
-                $display_hourly_price = $default_tier->hourly_price ?? 0;
-                if ($display_hourly_price <= 0) {
-                    $display_hourly_price = $default_price;
-                }
-                ?>
                 <span class="wc-cgmp-price-wrapper">
                     <span class="wc-cgmp-price-main" data-price="<?php echo esc_attr(number_format($display_hourly_price, 2, '.', '')); ?>">
                         <?php echo wc_price(number_format($display_hourly_price, 2, '.', '')); ?>
                     </span>
                     <span class="wc-cgmp-price-period">/hr</span>
                 </span>
-                <?php endif; ?>
             </div>
+        </div>
 
-             <?php if ($has_multiple_tiers) : ?>
-             <div class="wc-cgmp-tier-selector-mini">
-                 <select class="wc-cgmp-tier-select" name="wc_cgmp_tier_level">
-                     <?php foreach ($tiers as $tier) :
-                         $hourly = $tier->hourly_price ?? 0;
-                         $monthly = $tier->monthly_price ?? 0;
-                         $show_price = $default_price_type === 'monthly' ? $monthly : $hourly;
-                         if ($show_price <= 0) continue;
-                     ?>
-                     <option value="<?php echo esc_attr($tier->tier_level); ?>"
-                         data-tier-name="<?php echo esc_attr($tier->tier_name); ?>"
-                         data-hourly="<?php echo esc_attr($hourly); ?>"
-                         data-monthly="<?php echo esc_attr($monthly); ?>"
-                         <?php selected($tier->tier_level, $default_tier_level); ?>>
-                         <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
-                     </option>
-                     <?php endforeach; ?>
-                 </select>
-             </div>
-             <?php endif; ?>
+        <?php if ($has_multiple_tiers) : ?>
+        <div class="wc-cgmp-tier-selector-mini">
+            <select class="wc-cgmp-tier-select" name="wc_cgmp_tier_level">
+                <?php foreach ($tiers as $tier) :
+                    $hourly = $tier->hourly_price ?? 0;
+                    $monthly = $tier->monthly_price ?? 0;
+                    $show_price = $default_price_type === 'monthly' ? $monthly : $hourly;
+                    if ($show_price <= 0) continue;
+                ?>
+                <option value="<?php echo esc_attr($tier->tier_level); ?>"
+                    data-tier-name="<?php echo esc_attr($tier->tier_name); ?>"
+                    data-hourly="<?php echo esc_attr($hourly); ?>"
+                    data-monthly="<?php echo esc_attr($monthly); ?>"
+                    <?php selected($tier->tier_level, $default_tier_level); ?>>
+                    <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <?php endif; ?>
 
               <?php 
               $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
@@ -241,9 +181,12 @@ class Marketplace
               $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
                $enable_above_button_link = ($atts['enable_above_button_link'] ?? 'false') === 'true';
                $above_link_icon_raw = $atts['above_link_icon'] ?? '';
-               $above_link_icon = is_string($above_link_icon_raw) ? json_decode($above_link_icon_raw, true) : $above_link_icon_raw;
-               if (!is_array($above_link_icon)) {
-                   $above_link_icon = [];
+               $above_link_icon = [];
+               if (!empty($above_link_icon_raw)) {
+                   $decoded = is_string($above_link_icon_raw) ? json_decode(base64_decode($above_link_icon_raw), true) : $above_link_icon_raw;
+                   if (is_array($decoded)) {
+                       $above_link_icon = $decoded;
+                   }
                }
                $above_link_text_raw = $atts['above_link_text'] ?? '';
               $above_link_text = is_array($above_link_text_raw) ? ($above_link_text_raw['text'] ?? $above_link_text_raw[0] ?? '') : $above_link_text_raw;
@@ -290,18 +233,33 @@ class Marketplace
                   $override_url_with_param = $override_button_url . $separator . $total_url_param . '=';
               }
               ?>
-              <?php if ($enable_above_button_link && !empty($above_link_url)) : ?>
-              <div class="wc-cgmp-above-button-link">
-                  <a href="<?php echo esc_url($above_link_url); ?>" 
-                     class="wc-cgmp-link-above-btn"
-                     <?php echo $above_link_open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-                       <?php if (!empty($above_link_icon) && is_array($above_link_icon) && !empty($above_link_icon['value']) && class_exists('\Elementor\Icons_Manager')) : ?>
-                           <span class="wc-cgmp-link-icon"><?php \Elementor\Icons_Manager::render_icon($above_link_icon, ['aria-hidden' => 'true']); ?></span>
-                       <?php endif; ?>
-                      <span class="wc-cgmp-link-text"><?php echo esc_html($above_link_text); ?> <?php if (!empty($above_link_highlight_text)) : ?><span class="wc-cgmp-link-highlight"><?php echo esc_html($above_link_highlight_text); ?></span><?php endif; ?></span>
-                  </a>
-              </div>
-              <?php endif; ?>
+               <?php if ($enable_above_button_link && !empty($above_link_url)) : ?>
+               <div class="wc-cgmp-above-button-link">
+                   <a href="<?php echo esc_url($above_link_url); ?>" 
+                      class="wc-cgmp-link-above-btn"
+                      <?php echo $above_link_open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                        <?php 
+                        if (!empty($above_link_icon) && is_array($above_link_icon)) {
+                            $icon_value = $above_link_icon['value'] ?? null;
+                            $has_icon = !empty($icon_value);
+                            if ($has_icon) {
+                                echo '<span class="wc-cgmp-link-icon">';
+                                if (class_exists('\Elementor\Icons_Manager')) {
+                                    \Elementor\Icons_Manager::render_icon($above_link_icon, ['aria-hidden' => 'true']);
+                                } elseif (is_array($icon_value) && isset($icon_value['url'])) {
+                                    echo '<img src="' . esc_url($icon_value['url']) . '" alt="" style="width:14px;height:14px;">';
+                                } elseif (is_string($icon_value) && strpos($icon_value, 'fa-') === 0) {
+                                    $library = $above_link_icon['library'] ?? 'fa-solid';
+                                    echo '<i class="' . esc_attr($library . ' ' . $icon_value) . '" aria-hidden="true"></i>';
+                                }
+                                echo '</span>';
+                            }
+                        }
+                        ?>
+                       <span class="wc-cgmp-link-text"><?php echo esc_html($above_link_text); ?> <?php if (!empty($above_link_highlight_text)) : ?><span class="wc-cgmp-link-highlight"><?php echo esc_html($above_link_highlight_text); ?></span><?php endif; ?></span>
+                   </a>
+               </div>
+               <?php endif; ?>
               <a href="<?php echo esc_url($include_total_param ? $override_url_with_param . number_format($default_price, 2, '.', '') : $override_url_base); ?>"
                  class="wc-cgmp-add-to-cart wc-cgmp-override-button"
                  data-include-total-param="<?php echo $include_total_param ? 'true' : 'false'; ?>"
@@ -321,8 +279,7 @@ class Marketplace
                  <span class="dashicons dashicons-cart"></span>
                  <span class="wc-cgmp-btn-text"><?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
              </button>
-             <?php endif; ?>
-        </div>
+              <?php endif; ?>
         <?php
         return ob_get_clean() ?: '';
     }

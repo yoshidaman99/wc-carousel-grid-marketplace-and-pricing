@@ -1475,6 +1475,15 @@ class Marketplace_Widget extends Widget_Base
             'default' => 'yes',
         ]);
 
+        $this->add_control('show_debug_popular', [
+            'label' => __('Debug Popular Status', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'no',
+            'description' => __('Shows debug info: Popular status, Method setting, and Meta value', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
         $this->add_control('popular_badge_text', [
             'label' => __('Badge Text', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::TEXT,
@@ -1586,29 +1595,82 @@ class Marketplace_Widget extends Widget_Base
             'condition' => ['show_popular_badge' => 'yes'],
         ]);
 
-        $this->add_control('popular_badge_border_radius', [
+        $this->add_control('popular_badge_radius_heading', [
             'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_radius_tl', [
+            'label' => __('Top Left', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::SLIDER,
             'size_units' => ['px'],
-            'range' => [
-                'px' => ['min' => 0, 'max' => 30],
-            ],
-            'default' => ['size' => 20, 'unit' => 'px'],
+            'range' => ['px' => ['min' => 0, 'max' => 50]],
+            'default' => ['size' => 0, 'unit' => 'px'],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-radius: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-top-left-radius: {{SIZE}}{{UNIT}};',
             ],
             'condition' => ['show_popular_badge' => 'yes'],
         ]);
 
-        $this->add_control('popular_badge_padding', [
+        $this->add_control('popular_badge_radius_tr', [
+            'label' => __('Top Right', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => ['px' => ['min' => 0, 'max' => 50]],
+            'default' => ['size' => 0, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-top-right-radius: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_radius_br', [
+            'label' => __('Bottom Right', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => ['px' => ['min' => 0, 'max' => 50]],
+            'default' => ['size' => 20, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-bottom-right-radius: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_radius_bl', [
+            'label' => __('Bottom Left', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => ['px' => ['min' => 0, 'max' => 50]],
+            'default' => ['size' => 0, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-bottom-left-radius: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_padding_heading', [
+            'label' => __('Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_responsive_control('popular_badge_padding', [
             'label' => __('Padding', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::DIMENSIONS,
-            'size_units' => ['px'],
+            'size_units' => ['px', 'em', '%'],
             'default' => [
-                'top' => 4, 'right' => 12, 'bottom' => 4, 'left' => 12, 'unit' => 'px', 'isLinked' => false,
+                'top' => 0,
+                'right' => 12,
+                'bottom' => 0,
+                'left' => 12,
+                'unit' => 'px',
+                'isLinked' => false,
             ],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; box-sizing: border-box;',
             ],
             'condition' => ['show_popular_badge' => 'yes'],
         ]);
@@ -2448,6 +2510,7 @@ class Marketplace_Widget extends Widget_Base
             'popular_badge_text' => $settings['popular_badge_text'] ?? 'Popular',
             'show_popular_mark' => ($settings['show_popular_mark'] ?? 'no') === 'yes' ? 'true' : 'false',
             'popular_mark_text' => $settings['popular_mark_text'] ?? '‹popular›',
+            'show_debug_popular' => ($settings['show_debug_popular'] ?? 'no') === 'yes' ? 'true' : 'false',
             'show_headcount' => ($settings['show_headcount'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'show_total' => ($settings['show_total'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'enable_button_override' => ($settings['enable_button_override'] ?? 'no') === 'yes' ? 'true' : 'false',
@@ -2457,7 +2520,7 @@ class Marketplace_Widget extends Widget_Base
             'total_url_param' => $settings['total_url_param'] ?? 'total',
             'open_in_new_tab' => ($settings['open_in_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'enable_above_button_link' => ($settings['enable_above_button_link'] ?? 'no') === 'yes' ? 'true' : 'false',
-            'above_link_icon' => !empty($settings['above_link_icon']) ? json_encode($settings['above_link_icon']) : '',
+            'above_link_icon' => !empty($settings['above_link_icon']) ? base64_encode(wp_json_encode($settings['above_link_icon'])) : '',
             'above_link_text' => $settings['above_link_text'] ?? '',
             'above_link_url' => $settings['above_link_url']['url'] ?? '',
             'above_link_highlight_text' => $settings['above_link_highlight_text'] ?? '',

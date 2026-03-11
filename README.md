@@ -195,6 +195,59 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.7.9
+- Fixed: Icon not displaying in "above button link" on marketplace cards
+- Improved icon data handling using base64 encoding for shortcode attribute passing
+- Added SVG icon support in fallback rendering
+- Removed `position: static` from mobile Popular badge for proper positioning
+
+### 1.7.8
+- Added individual border radius controls for Popular badge (Top-Left, Top-Right, Bottom-Right, Bottom-Left)
+- Fixed padding control for Popular badge - now works correctly with responsive settings
+- Default radius: TL=0, TR=0, BR=20px, BL=0
+- Default padding: 0px 12px 0px 12px
+
+### 1.7.7
+- Updated Popular badge position to top-left corner (0, 0)
+- Changed border-radius to 0 0 20px 0 (rounded bottom-right only)
+- Reduced padding to 0px 12px and font-size to 10px
+- Removed text-transform uppercase styling
+
+### 1.7.6
+- Removed bottom margin from .wc-cgmp-pricing-amount for tighter layout
+
+### 1.7.5
+- Fixed: Icon not showing in "above button link" section
+- Added fallback icon rendering when Elementor Icons_Manager is unavailable
+- Improved icon data handling for better JSON decode reliability
+
+### 1.7.4
+- Version bump for release
+
+### 1.7.3
+- Redesigned pricing panel layout: "Starting at $X/hr" now displays first
+- Tier selector moved outside pricing panel div for cleaner structure
+- Simplified price display - always shows hourly rate with /hr suffix
+- "Starting at" prefix enabled by default
+
+### 1.7.2
+- Moved Popular badge from right to left side of the card
+
+### 1.7.1
+- Added "Debug Popular Status" toggle in Elementor widget (Popular Badge section)
+- Debug info now hidden by default - enable via Elementor when troubleshooting
+- Shows: Popular status, Method setting, and Meta value for each product
+
+### 1.7.0
+- Added debug info below card title to troubleshoot Popular badge display issues
+- Shows Popular status (true/false), Method setting, and Meta value
+- Fixed: Popular badge not showing when method is set to 'auto' (now requires 'both' or 'manual')
+- Note: Existing sites need to update `wc_cgmp_popular_method` option to 'both' in database
+
+### 1.6.10
+- Added debug text below title showing Popular status, method, and meta value
+- Helps troubleshoot why popular badge may not be showing on live site
+
 ### 1.6.9
 - Fixed: Popular badge not showing when "Mark as Popular" checkbox enabled on products
 - Changed default popular_method from 'auto' to 'both' - now respects manual checkbox AND auto sales detection

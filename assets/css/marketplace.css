@@ -325,16 +325,15 @@
     --wc-cgmp-popular-radius: 20px;
     
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 0;
+    left: 0;
     background: var(--wc-cgmp-popular-bg);
     color: var(--wc-cgmp-popular-text);
-    padding: 4px 12px;
-    border-radius: var(--wc-cgmp-popular-radius);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 0px 12px;
+    border-radius: 0 0 20px 0;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0px;
 }
 
 .wc-cgmp-popular-mark {
@@ -579,7 +578,6 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 12px;
 }
 
 .wc-cgmp-price-main {
@@ -972,7 +970,6 @@
     }
     
     .wc-cgmp-badge-popular {
-        position: static;
         display: inline-block;
         margin-bottom: 12px;
     }
