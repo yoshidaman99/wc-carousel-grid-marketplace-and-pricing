@@ -5,14 +5,17 @@
         init: function() {
             this.bindEvents();
             this.initPricePreviews();
+            this.initResponsibilitiesSortable();
         },
 
         bindEvents: function() {
             $(document).on('change', '#_wc_cgmp_enabled', this.toggleMarketplace);
-            $(document).on('click', '.wc-cgmp-display-header, .wc-cgmp-button-header', this.toggleSection);
+            $(document).on('click', '.wc-cgmp-display-header, .wc-cgmp-button-header, .wc-cgmp-modal-header', this.toggleSection);
             $(document).on('input', '.wc-cgmp-price-input', this.updatePricePreview);
             $(document).on('input', '.wc-cgmp-tier-name-input', this.updateTierHeader);
             $(document).on('input', '.wc-cgmp-url-input', this.validateUrlInput);
+            $(document).on('click', '.wc-cgmp-add-responsibility', this.addResponsibility);
+            $(document).on('click', '.wc-cgmp-remove-responsibility', this.removeResponsibility);
         },
 
         toggleMarketplace: function() {
@@ -20,15 +23,18 @@
             var $section = $('.wc-cgmp-tier-pricing-section');
             var $displaySection = $('.wc-cgmp-display-section');
             var $buttonSection = $('.wc-cgmp-button-section');
+            var $modalSection = $('.wc-cgmp-modal-section');
             
             if (checked) {
                 $section.slideDown(200);
                 $displaySection.slideDown(200);
                 $buttonSection.slideDown(200);
+                $modalSection.slideDown(200);
             } else {
                 $section.slideUp(200);
                 $displaySection.slideUp(200);
                 $buttonSection.slideUp(200);
+                $modalSection.slideUp(200);
             }
         },
 
@@ -108,6 +114,41 @@
             } catch (_) {
                 return false;
             }
+        },
+
+        initResponsibilitiesSortable: function() {
+            if ($.fn.sortable) {
+                $('.wc-cgmp-responsibilities-list').sortable({
+                    handle: '.wc-cgmp-drag-handle',
+                    placeholder: 'wc-cgmp-responsibility-placeholder',
+                    axis: 'y',
+                    cursor: 'move',
+                    tolerance: 'pointer'
+                });
+            }
+        },
+
+        addResponsibility: function(e) {
+            e.preventDefault();
+            var $list = $('#wc-cgmp-responsibilities-list');
+            var itemHtml = '<div class="wc-cgmp-responsibility-item">' +
+                '<span class="wc-cgmp-drag-handle">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>' +
+                '</span>' +
+                '<input type="text" name="wc_cgmp_key_responsibilities[]" value="" placeholder="Enter responsibility...">' +
+                '<button type="button" class="wc-cgmp-remove-responsibility" title="Remove">' +
+                '<span class="dashicons dashicons-no-alt"></span>' +
+                '</button>' +
+                '</div>';
+            $list.append(itemHtml);
+            $list.find('.wc-cgmp-responsibility-item:last-child input').focus();
+        },
+
+        removeResponsibility: function(e) {
+            e.preventDefault();
+            $(this).closest('.wc-cgmp-responsibility-item').fadeOut(200, function() {
+                $(this).remove();
+            });
         },
 
         placeholderText: 'Enter prices to preview'

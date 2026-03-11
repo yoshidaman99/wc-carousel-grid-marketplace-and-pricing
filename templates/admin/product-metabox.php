@@ -22,6 +22,15 @@ if (!isset($apply_now_url)) {
 if (!isset($action_buttons_enabled)) {
     $action_buttons_enabled = '';
 }
+if (!isset($modal_description)) {
+    $modal_description = '';
+}
+if (!isset($key_responsibilities)) {
+    $key_responsibilities = [];
+}
+
+$tooltips['modal_description'] = __('Detailed description shown in the modal popup when users click the question mark icon.', 'wc-carousel-grid-marketplace-and-pricing');
+$tooltips['key_responsibilities'] = __('List of responsibilities shown in the modal. These appear as bullet items with icons.', 'wc-carousel-grid-marketplace-and-pricing');
 ?>
 <div class="wc-cgmp-metabox">
     <div class="wc-cgmp-enable-section">
@@ -212,6 +221,71 @@ if (!isset($action_buttons_enabled)) {
                            value="<?php echo esc_attr($specialization); ?>"
                            placeholder="<?php esc_attr_e('e.g., Senior Developer, Full-Stack Developer', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wc-cgmp-modal-section <?php echo $enabled ? '' : 'collapsed'; ?>" <?php echo $enabled ? '' : 'style="display:none;"'; ?>>
+        <div class="wc-cgmp-modal-header">
+            <span class="wc-cgmp-modal-title">
+                <?php echo wc_cgmp_get_chevron_icon(); ?>
+                <?php esc_html_e('Modal Content', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+            </span>
+            <span class="wc-cgmp-modal-toggle-icon">
+                <?php echo wc_cgmp_get_chevron_icon(); ?>
+            </span>
+        </div>
+        <div class="wc-cgmp-modal-body">
+            <div class="wc-cgmp-field">
+                <label for="_wc_cgmp_modal_description">
+                    <?php esc_html_e('Modal Description', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    <span class="wc-cgmp-tooltip">
+                        <?php echo wc_cgmp_get_help_icon(); ?>
+                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['modal_description']); ?></span>
+                    </span>
+                </label>
+                <?php
+                $editor_settings = [
+                    'textarea_name' => '_wc_cgmp_modal_description',
+                    'textarea_rows' => 6,
+                    'media_buttons' => false,
+                    'teeny' => true,
+                    'quicktags' => ['buttons' => 'strong,em,link,ul,ol,li'],
+                ];
+                wp_editor($modal_description, '_wc_cgmp_modal_description', $editor_settings);
+                ?>
+            </div>
+
+            <div class="wc-cgmp-field wc-cgmp-responsibilities-field">
+                <label>
+                    <?php esc_html_e('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    <span class="wc-cgmp-tooltip">
+                        <?php echo wc_cgmp_get_help_icon(); ?>
+                        <span class="wc-cgmp-tooltip-text"><?php echo esc_html($tooltips['key_responsibilities']); ?></span>
+                    </span>
+                </label>
+                <div class="wc-cgmp-responsibilities-list" id="wc-cgmp-responsibilities-list">
+                    <?php if (!empty($key_responsibilities)) : ?>
+                        <?php foreach ($key_responsibilities as $index => $item) : ?>
+                        <div class="wc-cgmp-responsibility-item">
+                            <span class="wc-cgmp-drag-handle">
+                                <?php echo wc_cgmp_get_drag_icon(); ?>
+                            </span>
+                            <input type="text"
+                                   name="wc_cgmp_key_responsibilities[]"
+                                   value="<?php echo esc_attr($item); ?>"
+                                   placeholder="<?php esc_attr_e('Enter responsibility...', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
+                            <button type="button" class="wc-cgmp-remove-responsibility" title="<?php esc_attr_e('Remove', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
+                                <span class="dashicons dashicons-no-alt"></span>
+                            </button>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <button type="button" class="button wc-cgmp-add-responsibility">
+                    <span class="dashicons dashicons-plus-alt2"></span>
+                    <?php esc_html_e('Add Item', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                </button>
             </div>
         </div>
     </div>

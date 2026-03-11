@@ -195,6 +195,30 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.7.14
+- Added modal popup feature with question mark icon trigger on card titles
+- New "Modal Content" section in product edit with rich text description (TinyMCE)
+- Added "Key Responsibilities" repeater field for modal list items
+- Elementor controls: enable/disable modal, customize responsibilities title, icon, colors
+- Responsive modal design with keyboard (Escape) and overlay click to close
+- Modal style controls: trigger icon, container, typography for title/description/section
+- Default list icon: red checkmark (customizable via Elementor)
+
+### 1.7.13
+- Fix: Icon in "Link Above Button" now correctly displays after AJAX filtering/search/load more
+- Fix: Load More now includes all button override settings
+
+### 1.7.12
+- Fix: Icon in "Link Above Button" now persists when filtering by category
+
+### 1.7.11
+- Fix: Category filter now preserves layout and sort order settings from initial load
+- Fix: Search and Load More now respect orderby/order parameters
+
+### 1.7.10
+- Added alignment control (left/center/right) for Link Above Button in Elementor Style tab
+- Added responsive margin top control for Link Above Button spacing
+
 ### 1.7.9
 - Fixed: Icon not displaying in "above button link" on marketplace cards
 - Improved icon data handling using base64 encoding for shortcode attribute passing

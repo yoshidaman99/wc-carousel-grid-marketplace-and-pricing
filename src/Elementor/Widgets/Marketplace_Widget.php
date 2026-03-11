@@ -513,6 +513,57 @@ class Marketplace_Widget extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('modal_settings_section', [
+            'label' => __('Modal Settings', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_CONTENT,
+        ]);
+
+        $this->add_control('enable_modal', [
+            'label' => __('Enable Modal', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+            'description' => __('Show a question mark icon on cards that opens a modal with more details.', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control('modal_responsibilities_title', [
+            'label' => __('Responsibilities Title', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_modal' => 'yes'],
+        ]);
+
+        $this->add_control('modal_responsibilities_icon', [
+            'label' => __('List Item Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::ICONS,
+            'default' => [
+                'value' => 'fas fa-check',
+                'library' => 'fa-solid',
+            ],
+            'condition' => ['enable_modal' => 'yes'],
+        ]);
+
+        $this->add_control('modal_icon_color', [
+            'label' => __('Icon Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#dc2626',
+            'condition' => ['enable_modal' => 'yes'],
+        ]);
+
+        $this->add_control('modal_icon_size', [
+            'label' => __('Icon Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 12, 'max' => 32],
+            ],
+            'default' => ['size' => 16, 'unit' => 'px'],
+            'condition' => ['enable_modal' => 'yes'],
+        ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section('card_style_section', [
             'label' => __('Card Style', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_STYLE,
@@ -769,6 +820,162 @@ class Marketplace_Widget extends Widget_Base
                 'shine' => __('Shine', 'wc-carousel-grid-marketplace-and-pricing'),
             ],
             'prefix_class' => 'wc-cgmp-btn-animation-',
+        ]);
+
+        $this->end_controls_section();
+
+        $this->start_controls_section('modal_style_section', [
+            'label' => __('Modal Style', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+            'condition' => ['enable_modal' => 'yes'],
+        ]);
+
+        $this->add_control('modal_trigger_heading', [
+            'label' => __('Question Mark Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+        ]);
+
+        $this->add_control('modal_trigger_icon_color', [
+            'label' => __('Icon Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-question-icon' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('modal_trigger_bg_color', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#3b82f6',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-trigger' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('modal_trigger_size', [
+            'label' => __('Icon Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 16, 'max' => 36],
+            ],
+            'default' => ['size' => 22, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-trigger' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('modal_heading', [
+            'label' => __('Modal Container', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('modal_bg_color', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('modal_max_width', [
+            'label' => __('Max Width', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 300, 'max' => 800],
+            ],
+            'default' => ['size' => 600, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal' => 'max-width: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('modal_border_radius', [
+            'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 24],
+            ],
+            'default' => ['size' => 12, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('modal_overlay_color', [
+            'label' => __('Overlay Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => 'rgba(0, 0, 0, 0.6)',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-overlay' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('modal_title_heading', [
+            'label' => __('Modal Title', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('modal_title_color', [
+            'label' => __('Title Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1e293b',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-title' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'modal_title_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-modal-title',
+            'global' => ['default' => Global_Typography::TYPOGRAPHY_PRIMARY],
+        ]);
+
+        $this->add_control('modal_desc_heading', [
+            'label' => __('Modal Description', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('modal_description_color', [
+            'label' => __('Description Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#475569',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-description' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'modal_description_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-modal-description',
+            'global' => ['default' => Global_Typography::TYPOGRAPHY_TEXT],
+        ]);
+
+        $this->add_control('modal_section_heading', [
+            'label' => __('Section Title', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('modal_section_title_color', [
+            'label' => __('Section Title Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1e293b',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-section-title' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'modal_section_title_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-modal-section-title',
         ]);
 
         $this->end_controls_section();
@@ -1863,6 +2070,42 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
+        $this->add_control('above_link_alignment', [
+            'label' => __('Alignment', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::CHOOSE,
+            'options' => [
+                'left' => [
+                    'title' => __('Left', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'icon' => 'eicon-text-align-left',
+                ],
+                'center' => [
+                    'title' => __('Center', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'icon' => 'eicon-text-align-center',
+                ],
+                'right' => [
+                    'title' => __('Right', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'icon' => 'eicon-text-align-right',
+                ],
+            ],
+            'default' => 'center',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-above-button-link' => 'text-align: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('above_link_margin_top', [
+            'label' => __('Margin Top', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 50],
+            ],
+            'default' => ['size' => 0, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-above-button-link' => 'margin-top: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
         $this->add_control('above_link_margin', [
             'label' => __('Margin Bottom', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::SLIDER,
@@ -2525,6 +2768,10 @@ class Marketplace_Widget extends Widget_Base
             'above_link_url' => $settings['above_link_url']['url'] ?? '',
             'above_link_highlight_text' => $settings['above_link_highlight_text'] ?? '',
             'above_link_open_new_tab' => ($settings['above_link_open_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'enable_modal' => ($settings['enable_modal'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'modal_responsibilities_title' => $settings['modal_responsibilities_title'] ?? __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'),
+            'modal_icon_color' => $settings['modal_icon_color'] ?? '#dc2626',
+            'modal_icon_size' => $settings['modal_icon_size']['size'] ?? 16,
         ];
 
         $shadow_class = '';
