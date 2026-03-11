@@ -135,7 +135,8 @@ class Marketplace
             <?php 
             $price_display_mode = $atts['price_display_mode'] ?? 'both';
             $show_price_prefix = ($atts['show_price_prefix'] ?? 'false') === 'true';
-            $price_prefix_text = $atts['price_prefix_text'] ?? '';
+            $price_prefix_text_raw = $atts['price_prefix_text'] ?? '';
+            $price_prefix_text = is_array($price_prefix_text_raw) ? ($price_prefix_text_raw['text'] ?? $price_prefix_text_raw[0] ?? '') : $price_prefix_text_raw;
             $price_prefix_separator = $atts['price_prefix_separator'] ?? '|';
             $price_prefix_position = $atts['price_prefix_position'] ?? 'inline';
             $prefix_text = $show_price_prefix && !empty($price_prefix_text) ? esc_html__($price_prefix_text, 'wc-carousel-grid-marketplace-and-pricing') : '';
@@ -231,7 +232,8 @@ class Marketplace
               $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
               $show_total = ($atts['show_total'] ?? 'true') === 'true';
               $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
-              $override_button_text = $atts['override_button_text'] ?? 'Get Quote';
+              $override_button_text_raw = $atts['override_button_text'] ?? 'Get Quote';
+              $override_button_text = is_array($override_button_text_raw) ? ($override_button_text_raw['text'] ?? $override_button_text_raw[0] ?? 'Get Quote') : $override_button_text_raw;
               $override_button_url_raw = $atts['override_button_url'] ?? '';
               $override_button_url = is_array($override_button_url_raw) ? ($override_button_url_raw['url'] ?? '') : $override_button_url_raw;
               $include_total_param = ($atts['include_total_param'] ?? 'true') === 'true';
@@ -239,10 +241,12 @@ class Marketplace
               $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
               $enable_above_button_link = ($atts['enable_above_button_link'] ?? 'false') === 'true';
               $above_link_icon = $atts['above_link_icon'] ?? '';
-              $above_link_text = $atts['above_link_text'] ?? '';
+              $above_link_text_raw = $atts['above_link_text'] ?? '';
+              $above_link_text = is_array($above_link_text_raw) ? ($above_link_text_raw['text'] ?? $above_link_text_raw[0] ?? '') : $above_link_text_raw;
               $above_link_url_raw = $atts['above_link_url'] ?? '';
               $above_link_url = is_array($above_link_url_raw) ? ($above_link_url_raw['url'] ?? '') : $above_link_url_raw;
-              $above_link_highlight_text = $atts['above_link_highlight_text'] ?? '';
+              $above_link_highlight_text_raw = $atts['above_link_highlight_text'] ?? '';
+              $above_link_highlight_text = is_array($above_link_highlight_text_raw) ? ($above_link_highlight_text_raw['text'] ?? $above_link_highlight_text_raw[0] ?? '') : $above_link_highlight_text_raw;
               $above_link_open_new_tab = ($atts['above_link_open_new_tab'] ?? 'true') === 'true';
               ?>
 
