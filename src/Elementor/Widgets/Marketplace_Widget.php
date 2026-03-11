@@ -2461,7 +2461,10 @@ class Marketplace_Widget extends Widget_Base
     {
         $parts = [];
         foreach ($atts as $key => $value) {
-            if (!empty($value)) {
+            if (is_array($value)) {
+                $value = $value['value'] ?? $value['url'] ?? $value[0] ?? '';
+            }
+            if (!empty($value) && !is_array($value)) {
                 $parts[] = esc_attr($key) . '="' . esc_attr($value) . '"';
             }
         }

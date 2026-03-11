@@ -479,18 +479,26 @@ class Cart_Integration
             }
         }
 
+        $safeSanitize = function($key, $default = '') {
+            $val = $_POST[$key] ?? $default;
+            if (is_array($val)) {
+                return $val['value'] ?? $val['url'] ?? $val[0] ?? $default;
+            }
+            return sanitize_text_field($val);
+        };
+
         $atts = [
-            'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
-            'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
-            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
-            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
-            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
-            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
-            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
-            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
-            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'show_tier_badge' => $safeSanitize('show_tier_badge', 'true'),
+            'show_tier_description' => $safeSanitize('show_tier_description', 'true'),
+            'show_popular_badge' => $safeSanitize('show_popular_badge', 'true'),
+            'popular_badge_text' => $safeSanitize('popular_badge_text', 'Popular'),
+            'price_display_mode' => $safeSanitize('price_display_mode', 'both'),
+            'show_price_prefix' => $safeSanitize('show_price_prefix', 'false'),
+            'price_prefix_text' => $safeSanitize('price_prefix_text', ''),
+            'price_prefix_separator' => $safeSanitize('price_prefix_separator', '|'),
+            'price_prefix_position' => $safeSanitize('price_prefix_position', 'inline'),
             'columns' => absint($_POST['columns'] ?? 3),
-            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
+            'layout' => $safeSanitize('layout', 'grid'),
             'selected_tier' => $tier,
         ];
 
@@ -539,33 +547,41 @@ class Cart_Integration
 
         $products = $repository->search_products($search, ['limit' => $limit, 'marketplace_only' => true]);
 
+        $safeSanitize = function($key, $default = '') {
+            $val = $_POST[$key] ?? $default;
+            if (is_array($val)) {
+                return $val['value'] ?? $val['url'] ?? $val[0] ?? $default;
+            }
+            return sanitize_text_field($val);
+        };
+
         $atts = [
-            'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
-            'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
-            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
-            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
-            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
-            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
-            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
-            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
-            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'show_tier_badge' => $safeSanitize('show_tier_badge', 'true'),
+            'show_tier_description' => $safeSanitize('show_tier_description', 'true'),
+            'show_popular_badge' => $safeSanitize('show_popular_badge', 'true'),
+            'popular_badge_text' => $safeSanitize('popular_badge_text', 'Popular'),
+            'price_display_mode' => $safeSanitize('price_display_mode', 'both'),
+            'show_price_prefix' => $safeSanitize('show_price_prefix', 'false'),
+            'price_prefix_text' => $safeSanitize('price_prefix_text', ''),
+            'price_prefix_separator' => $safeSanitize('price_prefix_separator', '|'),
+            'price_prefix_position' => $safeSanitize('price_prefix_position', 'inline'),
             'columns' => absint($_POST['columns'] ?? 3),
-            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
+            'layout' => $safeSanitize('layout', 'grid'),
             'selected_tier' => $tier,
-            'show_headcount' => sanitize_text_field($_POST['show_headcount'] ?? 'true'),
-            'show_total' => sanitize_text_field($_POST['show_total'] ?? 'true'),
-            'enable_button_override' => sanitize_text_field($_POST['enable_button_override'] ?? 'false'),
-            'override_button_text' => sanitize_text_field($_POST['override_button_text'] ?? 'Get Quote'),
+            'show_headcount' => $safeSanitize('show_headcount', 'true'),
+            'show_total' => $safeSanitize('show_total', 'true'),
+            'enable_button_override' => $safeSanitize('enable_button_override', 'false'),
+            'override_button_text' => $safeSanitize('override_button_text', 'Get Quote'),
             'override_button_url' => esc_url_raw($_POST['override_button_url'] ?? ''),
-            'include_total_param' => sanitize_text_field($_POST['include_total_param'] ?? 'true'),
-            'total_url_param' => sanitize_text_field($_POST['total_url_param'] ?? 'total'),
-            'open_in_new_tab' => sanitize_text_field($_POST['open_in_new_tab'] ?? 'true'),
-            'enable_above_button_link' => sanitize_text_field($_POST['enable_above_button_link'] ?? 'false'),
+            'include_total_param' => $safeSanitize('include_total_param', 'true'),
+            'total_url_param' => $safeSanitize('total_url_param', 'total'),
+            'open_in_new_tab' => $safeSanitize('open_in_new_tab', 'true'),
+            'enable_above_button_link' => $safeSanitize('enable_above_button_link', 'false'),
             'above_link_icon' => isset($_POST['above_link_icon']) ? json_decode(stripslashes($_POST['above_link_icon']), true) : '',
-            'above_link_text' => sanitize_text_field($_POST['above_link_text'] ?? ''),
+            'above_link_text' => $safeSanitize('above_link_text', ''),
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
-            'above_link_highlight_text' => sanitize_text_field($_POST['above_link_highlight_text'] ?? ''),
-            'above_link_open_new_tab' => sanitize_text_field($_POST['above_link_open_new_tab'] ?? 'true'),
+            'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
+            'above_link_open_new_tab' => $safeSanitize('above_link_open_new_tab', 'true'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries

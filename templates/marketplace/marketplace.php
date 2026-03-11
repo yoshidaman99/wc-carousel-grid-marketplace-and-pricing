@@ -39,7 +39,7 @@ if ($repository && !empty($products)) {
 <div class="wc-cgmp-marketplace wc-cgmp-loading <?php echo esc_attr($class); ?>"
      data-columns="<?php echo esc_attr($columns); ?>"
      data-layout="<?php echo esc_attr($layout); ?>"
-     data-limit="<?php echo esc_attr($atts['limit']); ?>"
+     data-limit="<?php echo esc_attr(is_array($atts['limit'] ?? 12) ? ($atts['limit'][0] ?? 12) : ($atts['limit'] ?? 12)); ?>"
      data-load-all="<?php echo esc_attr($load_all ? 'true' : 'false'); ?>"
      data-mobile-carousel="<?php echo esc_attr($mobile_carousel ? 'true' : 'false'); ?>">
 
