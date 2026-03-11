@@ -702,6 +702,49 @@
 }
 
 /* ============================================
+   Above Button Link Styles
+   ============================================ */
+
+.wc-cgmp-above-button-link {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.wc-cgmp-link-above-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--wc-cgmp-text-medium, #6b7280);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.wc-cgmp-link-above-btn:hover {
+    color: var(--wc-cgmp-primary, #22c55e);
+}
+
+.wc-cgmp-link-icon {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.wc-cgmp-link-icon i {
+    font-size: 14px;
+}
+
+.wc-cgmp-link-text {
+    display: inline;
+}
+
+.wc-cgmp-link-highlight {
+    text-decoration: underline;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+/* ============================================
    Button Styles with Hover Effects
    ============================================ */
 

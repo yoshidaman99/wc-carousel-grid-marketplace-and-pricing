@@ -716,14 +716,22 @@ class Repository
 
     public function is_popular_auto(int $product_id): bool
     {
-        // Use cached popular IDs to avoid running aggregation query per product
         if ($this->popular_ids_cache === null) {
             $threshold = (int) get_option('wc_cgmp_popular_threshold', 5);
             $days = (int) get_option('wc_cgmp_popular_days', 30);
             $this->popular_ids_cache = $this->get_popular_product_ids($threshold, $days);
         }
 
-        return in_array($product_id, $this->popular_ids_cache, true);
+        if (in_array($product_id, $this->popular_ids_cache, true)) {
+            return true;
+        }
+
+        $product = wc_get_product($product_id);
+        if ($product && $product->is_featured()) {
+            return true;
+        }
+
+        return false;
     }
 
     public function get_categories_with_product_counts(): array
