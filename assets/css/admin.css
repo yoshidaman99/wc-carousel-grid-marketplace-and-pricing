@@ -619,3 +619,186 @@
 .wc-cgmp-action-buttons-urls .wc-cgmp-field:first-child {
     margin-top: 0;
 }
+
+/* ============================================
+   Modal Content Section in Admin
+   ============================================ */
+
+.wc-cgmp-modal-section {
+    margin-top: 20px;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.wc-cgmp-modal-header {
+    padding: 12px 18px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dcdcdc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wc-cgmp-modal-header:hover {
+    background: #f0f0f0;
+}
+
+.wc-cgmp-modal-section .wc-cgmp-modal-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e1e1e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wc-cgmp-modal-toggle-icon {
+    width: 14px;
+    height: 14px;
+    color: #666;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.wc-cgmp-modal-section.collapsed .wc-cgmp-modal-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.wc-cgmp-modal-body {
+    padding: 18px;
+}
+
+.wc-cgmp-modal-section.collapsed .wc-cgmp-modal-body {
+    display: none;
+}
+
+.wc-cgmp-modal-body .wp-editor-container {
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.wc-cgmp-modal-body .wp-editor-area {
+    border: none;
+}
+
+/* ============================================
+   Responsibilities Repeater
+   ============================================ */
+
+.wc-cgmp-responsibilities-field {
+    margin-top: 20px;
+}
+
+.wc-cgmp-responsibilities-list {
+    margin-bottom: 12px;
+}
+
+.wc-cgmp-responsibility-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.wc-cgmp-responsibility-item:hover {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.wc-cgmp-responsibility-item.ui-sortable-helper {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.wc-cgmp-responsibility-placeholder {
+    height: 48px;
+    border: 2px dashed #2271b1;
+    border-radius: 6px;
+    background: rgba(34, 113, 177, 0.05);
+    margin-bottom: 8px;
+}
+
+.wc-cgmp-drag-handle {
+    width: 20px;
+    height: 20px;
+    color: #999;
+    cursor: move;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wc-cgmp-drag-handle:hover {
+    color: #666;
+}
+
+.wc-cgmp-drag-handle svg {
+    width: 16px;
+    height: 16px;
+}
+
+.wc-cgmp-responsibility-item input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 13px;
+    background: #fff;
+}
+
+.wc-cgmp-responsibility-item input[type="text"]:focus {
+    outline: none;
+    border-color: #2271b1;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.1);
+}
+
+.wc-cgmp-remove-responsibility {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+}
+
+.wc-cgmp-remove-responsibility:hover {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.wc-cgmp-remove-responsibility .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+.wc-cgmp-add-responsibility {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+.wc-cgmp-add-responsibility .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}

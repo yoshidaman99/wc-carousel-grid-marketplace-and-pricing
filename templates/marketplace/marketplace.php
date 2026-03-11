@@ -116,11 +116,14 @@ if ($repository && !empty($products)) {
              data-include-total-param="<?php echo esc_attr($atts['include_total_param'] ?? 'true'); ?>"
              data-total-url-param="<?php echo esc_attr($atts['total_url_param'] ?? 'total'); ?>"
              data-open-in-new-tab="<?php echo esc_attr($atts['open_in_new_tab'] ?? 'true'); ?>"
-             data-enable-above-button-link="<?php echo esc_attr($atts['enable_above_button_link'] ?? 'false'); ?>"
-              data-above-link-text="<?php echo esc_attr(is_array($atts['above_link_text'] ?? '') ? ($atts['above_link_text']['text'] ?? $atts['above_link_text'][0] ?? '') : ($atts['above_link_text'] ?? '')); ?>"
+              data-enable-above-button-link="<?php echo esc_attr($atts['enable_above_button_link'] ?? 'false'); ?>"
+              data-above-link-icon="<?php echo esc_attr(is_string($atts['above_link_icon'] ?? '') ? $atts['above_link_icon'] : ''); ?>"
+               data-above-link-text="<?php echo esc_attr(is_array($atts['above_link_text'] ?? '') ? ($atts['above_link_text']['text'] ?? $atts['above_link_text'][0] ?? '') : ($atts['above_link_text'] ?? '')); ?>"
               data-above-link-url="<?php echo esc_attr(is_array($atts['above_link_url'] ?? '') ? ($atts['above_link_url']['url'] ?? '') : ($atts['above_link_url'] ?? '')); ?>"
               data-above-link-highlight-text="<?php echo esc_attr(is_array($atts['above_link_highlight_text'] ?? '') ? ($atts['above_link_highlight_text']['text'] ?? $atts['above_link_highlight_text'][0] ?? '') : ($atts['above_link_highlight_text'] ?? '')); ?>"
-             data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>">
+             data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>"
+             data-orderby="<?php echo esc_attr($atts['orderby'] ?? 'date'); ?>"
+             data-order="<?php echo esc_attr($atts['order'] ?? 'DESC'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);

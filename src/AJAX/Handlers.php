@@ -15,6 +15,8 @@ class Handlers
         add_action('wp_ajax_wc_cgmp_get_tiers', [$this, 'handle_get_tiers']);
         add_action('wp_ajax_nopriv_wc_cgmp_get_tier_price', [$this, 'handle_get_tier_price']);
         add_action('wp_ajax_wc_cgmp_get_tier_price', [$this, 'handle_get_tier_price']);
+        add_action('wp_ajax_nopriv_wc_cgmp_get_modal_content', [$this, 'handle_get_modal_content']);
+        add_action('wp_ajax_wc_cgmp_get_modal_content', [$this, 'handle_get_modal_content']);
     }
 
     private function check_rate_limit(string $action): bool
@@ -167,5 +169,45 @@ class Handlers
             'formatted_monthly_price' => \wc_price($tier->monthly_price),
             'formatted_hourly_price' => \wc_price($tier->hourly_price),
         ]);
+    }
+
+    public function handle_get_modal_content(): void
+    {
+        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
+
+        if (!$product_id) {
+            wp_send_json_error(['message' => __('Invalid product ID', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            wp_send_json_error(['message' => __('Product not found', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        ob_start();
+        
+        $modal_description = get_post_meta($product_id, '_wc_cgmp_modal_description', true) ?: '';
+        $key_responsibilities = get_post_meta($product_id, '_wc_cgmp_key_responsibilities', true);
+        if (!is_array($key_responsibilities)) {
+            $key_responsibilities = [];
+        }
+        
+        $atts = [
+            'modal_responsibilities_title' => __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'),
+            'modal_responsibilities_icon_html' => wc_cgmp_get_check_icon(),
+            'modal_responsibilities_icon_color' => '#dc2626',
+            'modal_responsibilities_icon_size' => 16,
+        ];
+        
+        include WC_CGMP_PLUGIN_DIR . 'templates/marketplace/product-modal.php';
+        
+        $html = ob_get_clean();
+
+        wp_send_json_success(['html' => $html]);
     }
 }

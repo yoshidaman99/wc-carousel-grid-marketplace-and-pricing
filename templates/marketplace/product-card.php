@@ -35,6 +35,12 @@ if (!$default_tier) {
 if (!$default_tier && !empty($tiers)) {
     $default_tier = $tiers[0];
 }
+
+$enable_modal = ($atts['enable_modal'] ?? 'true') === 'true';
+$modal_description = get_post_meta($product_id, '_wc_cgmp_modal_description', true);
+$key_responsibilities = get_post_meta($product_id, '_wc_cgmp_key_responsibilities', true);
+$has_modal_content = !empty($modal_description) || (!empty($key_responsibilities) && is_array($key_responsibilities));
+$show_modal_trigger = $enable_modal && $has_modal_content;
 ?>
 
 <div class="wc-cgmp-card" data-product-id="<?php echo esc_attr($product_id); ?>" <?php echo !empty($tiers) ? 'data-has-tiers="true"' : ''; ?>>
@@ -51,7 +57,12 @@ if (!$default_tier && !empty($tiers)) {
     <?php endif; ?>
 
     <h3 class="wc-cgmp-card-title">
-        <?php echo esc_html($product->get_name()); ?>
+        <span class="wc-cgmp-title-text"><?php echo esc_html($product->get_name()); ?></span>
+        <?php if ($show_modal_trigger) : ?>
+        <span class="wc-cgmp-modal-trigger" data-product-id="<?php echo esc_attr($product_id); ?>" role="button" tabindex="0" aria-label="<?php esc_attr_e('View more details', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
+            <span class="wc-cgmp-question-icon">?</span>
+        </span>
+        <?php endif; ?>
         <?php
         $show_popular_mark = ($atts['show_popular_mark'] ?? 'false') === 'true';
         $popular_mark_text_raw = $atts['popular_mark_text'] ?? '‹popular›';

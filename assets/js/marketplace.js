@@ -91,6 +91,9 @@
             $(document).on('input', '.wc-cgmp-search-input', this.debounce(this.searchProducts, 300));
             $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
             $(document).on('click', '.wc-cgmp-cart-qty-btn', this.updateCartQuantity);
+            $(document).on('click', '.wc-cgmp-modal-trigger', this.openModal);
+            $(document).on('click', '.wc-cgmp-modal-close, .wc-cgmp-modal-overlay', this.closeModal);
+            $(document).on('keydown', this.handleModalKeydown);
         },
 
         filterByCategory: function(e) {
@@ -283,10 +286,13 @@
                 total_url_param: $grid.data('total-url-param') ?? 'total',
                 open_in_new_tab: $grid.data('open-in-new-tab') ?? 'true',
                 enable_above_button_link: $grid.data('enable-above-button-link') ?? 'false',
+                above_link_icon: $grid.data('above-link-icon') ?? '',
                 above_link_text: $grid.data('above-link-text') ?? '',
                 above_link_url: $grid.data('above-link-url') ?? '',
                 above_link_highlight_text: $grid.data('above-link-highlight-text') ?? '',
                 above_link_open_new_tab: $grid.data('above-link-open-new-tab') ?? 'true',
+                orderby: $grid.data('orderby') ?? 'date',
+                order: $grid.data('order') ?? 'DESC',
             };
         },
 
@@ -329,10 +335,13 @@
                     total_url_param: gridAtts.total_url_param,
                     open_in_new_tab: gridAtts.open_in_new_tab,
                     enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_icon: gridAtts.above_link_icon,
                     above_link_text: gridAtts.above_link_text,
                     above_link_url: gridAtts.above_link_url,
                     above_link_highlight_text: gridAtts.above_link_highlight_text,
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
+                    orderby: gridAtts.orderby,
+                    order: gridAtts.order,
                 },
                 beforeSend: function() {
                     $grid.addClass('loading');
@@ -399,10 +408,13 @@
                     total_url_param: gridAtts.total_url_param,
                     open_in_new_tab: gridAtts.open_in_new_tab,
                     enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_icon: gridAtts.above_link_icon,
                     above_link_text: gridAtts.above_link_text,
                     above_link_url: gridAtts.above_link_url,
                     above_link_highlight_text: gridAtts.above_link_highlight_text,
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
+                    orderby: gridAtts.orderby,
+                    order: gridAtts.order,
                 },
                 beforeSend: function() {
                     $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
@@ -472,10 +484,13 @@
                     total_url_param: gridAtts.total_url_param,
                     open_in_new_tab: gridAtts.open_in_new_tab,
                     enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_icon: gridAtts.above_link_icon,
                     above_link_text: gridAtts.above_link_text,
                     above_link_url: gridAtts.above_link_url,
                     above_link_highlight_text: gridAtts.above_link_highlight_text,
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
+                    orderby: gridAtts.orderby,
+                    order: gridAtts.order,
                 },
                 success: function(response) {
                     if (response.success) {
@@ -859,6 +874,73 @@
                     func.apply(context, args);
                 }, wait);
             };
+        },
+
+        openModal: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var $trigger = $(this);
+            var productId = $trigger.data('product-id');
+            var $card = $trigger.closest('.wc-cgmp-card');
+            var $marketplace = $card.closest('.wc-cgmp-marketplace');
+            
+            WC_CGMP_Marketplace.log('Opening modal for product:', productId);
+            
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'wc_cgmp_get_modal_content',
+                    nonce: wc_cgmp_ajax.nonce,
+                    product_id: productId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var $modal = $(response.data.html);
+                        $('body').append($modal);
+                        $('body').addClass('wc-cgmp-modal-open');
+                        
+                        setTimeout(function() {
+                            $modal.addClass('wc-cgmp-modal-visible');
+                        }, 10);
+                        
+                        WC_CGMP_Marketplace.log('Modal opened successfully');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    WC_CGMP_Marketplace.log('Modal AJAX error:', error);
+                }
+            });
+        },
+
+        closeModal: function(e) {
+            if (e.target === this || $(e.target).hasClass('wc-cgmp-modal-close') || $(e.target).hasClass('wc-cgmp-modal-close-icon')) {
+                e.preventDefault();
+                
+                var $modal = $('.wc-cgmp-modal-overlay');
+                $modal.removeClass('wc-cgmp-modal-visible');
+                
+                setTimeout(function() {
+                    $modal.remove();
+                    $('body').removeClass('wc-cgmp-modal-open');
+                }, 300);
+                
+                WC_CGMP_Marketplace.log('Modal closed');
+            }
+        },
+
+        handleModalKeydown: function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                var $modal = $('.wc-cgmp-modal-overlay');
+                if ($modal.length) {
+                    $modal.removeClass('wc-cgmp-modal-visible');
+                    setTimeout(function() {
+                        $modal.remove();
+                        $('body').removeClass('wc-cgmp-modal-open');
+                    }, 300);
+                }
+            }
         },
 
         initCarousel: function() {

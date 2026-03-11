@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.7.9
+Stable tag: 1.7.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,21 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 * Configurable URL parameter name for total (default: "total")
 * Open custom button link in new tab option
 * Dynamic URL updates when quantity, tier, or price type changes
+
+= 1.7.13 =
+* Fix: Icon in "Link Above Button" now correctly displays after AJAX filtering/search/load more
+* Fix: Load More now includes all button override settings
+
+= 1.7.12 =
+* Fix: Icon in "Link Above Button" now persists when filtering by category
+
+= 1.7.11 =
+* Fix: Category filter now preserves layout and sort order settings from initial load
+* Fix: Search and Load More now respect orderby/order parameters
+
+= 1.7.10 =
+* Feature: Added alignment control (left/center/right) for Link Above Button
+* Feature: Added responsive margin top control for Link Above Button spacing
 
 = 1.5.0 =
 * Release version 1.5.0

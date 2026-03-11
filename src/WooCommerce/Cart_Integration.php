@@ -317,7 +317,7 @@ class Cart_Integration
             'total_url_param' => sanitize_text_field($_POST['total_url_param'] ?? 'total'),
             'open_in_new_tab' => sanitize_text_field($_POST['open_in_new_tab'] ?? 'true'),
             'enable_above_button_link' => sanitize_text_field($_POST['enable_above_button_link'] ?? 'false'),
-            'above_link_icon' => isset($_POST['above_link_icon']) ? json_decode(stripslashes($_POST['above_link_icon']), true) : '',
+            'above_link_icon' => isset($_POST['above_link_icon']) ? sanitize_text_field($_POST['above_link_icon']) : '',
             'above_link_text' => sanitize_text_field($_POST['above_link_text'] ?? ''),
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
             'above_link_highlight_text' => sanitize_text_field($_POST['above_link_highlight_text'] ?? ''),
@@ -450,6 +450,8 @@ class Cart_Integration
         $offset = isset($_POST['offset']) ? absint($_POST['offset']) : 0;
         $category = isset($_POST['category']) ? absint($_POST['category']) : 0;
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
+        $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
+        $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
         $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
         $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
 
@@ -460,6 +462,8 @@ class Cart_Integration
             $args = [
                 'category' => $category > 0 ? $category : '',
                 'tier' => $tier,
+                'orderby' => $orderby,
+                'order' => $order,
                 'limit' => -1,
                 'offset' => 0,
                 'marketplace_only' => true,
@@ -470,6 +474,8 @@ class Cart_Integration
             $args = [
                 'category' => $category > 0 ? $category : '',
                 'tier' => $tier,
+                'orderby' => $orderby,
+                'order' => $order,
                 'limit' => $limit + 1,
                 'offset' => $offset,
                 'marketplace_only' => true,
@@ -504,6 +510,20 @@ class Cart_Integration
             'columns' => absint($_POST['columns'] ?? 3),
             'layout' => $safeSanitize('layout', 'grid'),
             'selected_tier' => $tier,
+            'show_headcount' => $safeSanitize('show_headcount', 'true'),
+            'show_total' => $safeSanitize('show_total', 'true'),
+            'enable_button_override' => $safeSanitize('enable_button_override', 'false'),
+            'override_button_text' => $safeSanitize('override_button_text', 'Get Quote'),
+            'override_button_url' => esc_url_raw($_POST['override_button_url'] ?? ''),
+            'include_total_param' => $safeSanitize('include_total_param', 'true'),
+            'total_url_param' => $safeSanitize('total_url_param', 'total'),
+            'open_in_new_tab' => $safeSanitize('open_in_new_tab', 'true'),
+            'enable_above_button_link' => $safeSanitize('enable_above_button_link', 'false'),
+            'above_link_icon' => isset($_POST['above_link_icon']) ? sanitize_text_field($_POST['above_link_icon']) : '',
+            'above_link_text' => $safeSanitize('above_link_text', ''),
+            'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
+            'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
+            'above_link_open_new_tab' => $safeSanitize('above_link_open_new_tab', 'true'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries
@@ -540,6 +560,8 @@ class Cart_Integration
         $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
         $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
+        $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
+        $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
 
         if (strlen($search) < 2) {
             wp_send_json_success(['html' => '', 'count' => 0]);
@@ -549,7 +571,7 @@ class Cart_Integration
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
 
-        $products = $repository->search_products($search, ['limit' => $limit, 'marketplace_only' => true]);
+        $products = $repository->search_products($search, ['limit' => $limit, 'marketplace_only' => true, 'orderby' => $orderby, 'order' => $order]);
 
         $safeSanitize = function($key, $default = '') {
             $val = $_POST[$key] ?? $default;
@@ -583,7 +605,7 @@ class Cart_Integration
             'total_url_param' => $safeSanitize('total_url_param', 'total'),
             'open_in_new_tab' => $safeSanitize('open_in_new_tab', 'true'),
             'enable_above_button_link' => $safeSanitize('enable_above_button_link', 'false'),
-            'above_link_icon' => isset($_POST['above_link_icon']) ? json_decode(stripslashes($_POST['above_link_icon']), true) : '',
+            'above_link_icon' => isset($_POST['above_link_icon']) ? sanitize_text_field($_POST['above_link_icon']) : '',
             'above_link_text' => $safeSanitize('above_link_text', ''),
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
             'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
