@@ -193,7 +193,59 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 - **GitHub Issues**: [https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues)
 
-## Changelog
+### 1.5.7
+- Fixed layout sync between initial load and AJAX category filtering
+- Added missing data attributes to grid container for AJAX requests
+- Fixed missing tier badges and descriptions on category click
+- Fixed missing popular badges on AJAX filtered results
+- Fixed missing price prefix options on category filter
+- Added `getGridAtts()` helper to collect all grid attributes consistently
+- Updated all AJAX handlers (filter, load-more, search) to pass complete `$atts` array
+
+### 1.5.6
+- Fixed WP_Post object to int conversion warning in marketplace template (line 21)
+- Fixed popular products aggregation query running once per request instead of per product
+- Batch preload tier data with `preload_tiers()``
+- Assets only load on pages with marketplace
+- Conditional assets loading on pages with shortcode/Elementor widget
+- Moved stale path repair to admin only (### 1.5.5
+- Major performance optimization for loading 100+ products
+- Fixed N+1 query problem: batch preload all tier data in a single SQL query instead of 1 query per product
+- Fixed popular products aggregation query running once per product (now cached per request)
+- Added in-memory tier cache to avoid duplicate queries within a single request
+- Conditional asset loading: CSS/JS only loads on pages with the marketplace shortcode or Elementor widget
+- Moved stale path repair to admin-only context (no longer runs on every frontend page)
+- Removed duplicate get_specialization() call in pricing panel rendering
+- Added preload_tiers() to all AJAX handlers (filter, load-more, search)
+- Query reduction: ~500-800 queries for 100 products reduced to ~5-10 queries
+
+### 1.5.6
+- Fixed WP_Post object to int conversion warning in marketplace template (line 21)
+- Properly extracts IDs from WP_Post objects
+- Fixed wp_post object to int conversion in preload_tiers()
+- Updated version and README to 1.5.6
+- Updated readme.txt stable tag to 1.5.6
+- Fixed price alignment - price now displays on far right with prefix on left
+- Improved pricing panel layout with space-between justification
+- Fixed price and period (/hr) spacing - now closer together
+
+### 1.5.3
+- Fixed price prefix display to align inline with price
+- Fixed separator display when only one price type (hourly or monthly) exists
+- Improved price prefix CSS styling for better alignment
+
+### 1.5.2
+- Fixed undefined array key warnings for exclude_category and popular_only
+- Fixed secondary price showing $0.00 when only hourly or monthly price set
+
+### 1.5.1
+- Fixed undefined array key warnings in Frontend_Manager.php
+- Fixed price display alignment for inline prefix
+
+### 1.5.0
+- Major update with enhanced pricing panel
+- Added price prefix support (inline and above positions)
+- Improved Elementor widget styling controls
 
 ### 1.4.8
 - Dynamic section title based on category selection

@@ -320,6 +320,57 @@ class Marketplace_Widget extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('price_display_section', [
+            'label' => __('Price Display', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_CONTENT,
+        ]);
+
+        $this->add_control('price_display_mode', [
+            'label' => __('Price Display Mode', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SELECT,
+            'default' => 'both',
+            'options' => [
+                'both' => __('Monthly & Hourly (with toggle)', 'wc-carousel-grid-marketplace-and-pricing'),
+                'monthly_only' => __('Monthly Only', 'wc-carousel-grid-marketplace-and-pricing'),
+                'hourly_only' => __('Hourly Only', 'wc-carousel-grid-marketplace-and-pricing'),
+            ],
+        ]);
+
+        $this->add_control('show_price_prefix', [
+            'label' => __('Show Price Prefix', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'no',
+        ]);
+
+        $this->add_control('price_prefix_text', [
+            'label' => __('Prefix Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Starting at', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['show_price_prefix' => 'yes'],
+        ]);
+
+        $this->add_control('price_prefix_separator', [
+            'label' => __('Separator', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => '|',
+            'condition' => ['show_price_prefix' => 'yes'],
+        ]);
+
+        $this->add_control('price_prefix_position', [
+            'label' => __('Prefix Position', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SELECT,
+            'default' => 'inline',
+            'options' => [
+                'inline' => __('Inline (| Starting at $8/hr)', 'wc-carousel-grid-marketplace-and-pricing'),
+                'above' => __('Above Price', 'wc-carousel-grid-marketplace-and-pricing'),
+            ],
+            'condition' => ['show_price_prefix' => 'yes'],
+        ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section('card_style_section', [
             'label' => __('Card Style', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_STYLE,
@@ -1269,6 +1320,167 @@ class Marketplace_Widget extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('popular_badge_style_section', [
+            'label' => __('Popular Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+        ]);
+
+        $this->add_control('show_popular_badge', [
+            'label' => __('Show Popular Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+        ]);
+
+        $this->add_control('popular_badge_text', [
+            'label' => __('Badge Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Popular', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_colors_heading', [
+            'label' => __('Colors', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_bg_color', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#f59e0b',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'background-color: {{VALUE}}; --wc-cgmp-popular-bg: {{VALUE}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_text_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'color: {{VALUE}}; --wc-cgmp-popular-text: {{VALUE}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_size_heading', [
+            'label' => __('Size & Spacing', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_font_size', [
+            'label' => __('Font Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 8, 'max' => 20],
+            ],
+            'default' => ['size' => 11, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'font-size: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_border_radius', [
+            'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 30],
+            ],
+            'default' => ['size' => 20, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_badge_padding', [
+            'label' => __('Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px'],
+            'default' => [
+                'top' => 4, 'right' => 12, 'bottom' => 4, 'left' => 12, 'unit' => 'px', 'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-badge-popular' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'popular_badge_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-badge-popular',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->end_controls_section();
+
+        $this->start_controls_section('price_prefix_style_section', [
+            'label' => __('Price Prefix', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+            'condition' => ['show_price_prefix' => 'yes'],
+        ]);
+
+        $this->add_control('price_prefix_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#6b7280',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-price-prefix' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('price_prefix_separator_color', [
+            'label' => __('Separator Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#d1d5db',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-price-prefix-separator' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'price_prefix_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-price-prefix',
+            'global' => ['default' => Global_Typography::TYPOGRAPHY_TEXT],
+        ]);
+
+        $this->add_control('price_prefix_spacing', [
+            'label' => __('Spacing', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 20],
+            ],
+            'default' => ['size' => 8, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-price-prefix-wrapper' => 'gap: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('price_prefix_margin', [
+            'label' => __('Margin Bottom', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 20],
+            ],
+            'default' => ['size' => 8, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-price-prefix-wrapper' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section('toggle_style_section', [
             'label' => __('Toggle Switch', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_STYLE,
@@ -1579,7 +1791,7 @@ class Marketplace_Widget extends Widget_Base
             ],
             'default' => ['size' => 280, 'unit' => 'px'],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-sidebar' => 'width: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}} .wc-cgmp-sidebar' => '--wc-cgmp-sidebar-width: {{SIZE}}{{UNIT}};',
             ],
         ]);
 
@@ -1637,6 +1849,13 @@ class Marketplace_Widget extends Widget_Base
             'mobile_carousel' => ($settings['layout_type'] ?? 'grid') === 'hybrid' ? 'true' : 'false',
             'infinite_scroll' => ($settings['infinite_scroll'] ?? 'no') === 'yes' ? 'true' : 'false',
             'marketplace_only' => 'true',
+            'price_display_mode' => $settings['price_display_mode'] ?? 'both',
+            'show_price_prefix' => ($settings['show_price_prefix'] ?? 'no') === 'yes' ? 'true' : 'false',
+            'price_prefix_text' => $settings['price_prefix_text'] ?? '',
+            'price_prefix_separator' => $settings['price_prefix_separator'] ?? '|',
+            'price_prefix_position' => $settings['price_prefix_position'] ?? 'inline',
+            'show_popular_badge' => ($settings['show_popular_badge'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'popular_badge_text' => $settings['popular_badge_text'] ?? 'Popular',
         ];
 
         $shadow_class = '';
@@ -1668,6 +1887,13 @@ class Marketplace_Widget extends Widget_Base
         var showSearch = settings.show_search === 'yes';
         var showTierDesc = settings.show_tier_description !== 'no';
         var showTierBadge = settings.show_tier_badge !== 'no';
+        var showPopularBadge = settings.show_popular_badge !== 'no';
+        var showPricePrefix = settings.show_price_prefix === 'yes';
+        var pricePrefixText = settings.price_prefix_text || 'Starting at';
+        var pricePrefixSeparator = settings.price_prefix_separator || '|';
+        var pricePrefixPosition = settings.price_prefix_position || 'inline';
+        var priceDisplayMode = settings.price_display_mode || 'both';
+        var popularBadgeText = settings.popular_badge_text || 'Popular';
         var columns = settings.columns || '3';
         var defaultTier = settings.default_tier || '1';
 
@@ -1735,9 +1961,9 @@ class Marketplace_Widget extends Widget_Base
                     #>
                     <div class="wc-cgmp-card elementor-editor-card" style="background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; position: relative;">
                         <#
-                        if (product.popular) {
+                        if (product.popular && showPopularBadge) {
                         #>
-                        <span class="wc-cgmp-badge-popular" style="position: absolute; top: 12px; right: 12px; background: #f59e0b; color: #fff; font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;"><?php esc_html_e('Popular', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                        <span class="wc-cgmp-badge-popular" style="position: absolute; top: 12px; right: 12px; background: #f59e0b; color: #fff; font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;">{{popularBadgeText}}</span>
                         <#
                         }
                         #>
@@ -1753,9 +1979,33 @@ class Marketplace_Widget extends Widget_Base
                         </h3>
                         <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5;">{{product.desc}}</p>
                         <div class="wc-cgmp-pricing-panel" data-tier="{{product.tier}}" style="background: {{product.tier === 1 ? '#f0fdf4' : product.tier === 2 ? '#eff6ff' : '#faf5ff'}}; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <#
+                            var priceDisplay = '';
+                            var showMonthly = priceDisplayMode === 'both' || priceDisplayMode === 'monthly_only';
+                            var showHourly = priceDisplayMode === 'both' || priceDisplayMode === 'hourly_only';
+                            
+                            if (showPricePrefix) {
+                                if (pricePrefixPosition === 'above') {
+                                    priceDisplay += '<div class="wc-cgmp-price-prefix-wrapper" style="display: block; margin-bottom: 8px;"><span class="wc-cgmp-price-prefix" style="font-size: 14px; color: #6b7280;">' + pricePrefixText + '</span></div>';
+                                } else {
+                                    priceDisplay += '<div class="wc-cgmp-price-prefix-wrapper" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;"><span class="wc-cgmp-price-prefix-separator" style="color: #d1d5db;">' + pricePrefixSeparator + '</span><span class="wc-cgmp-price-prefix" style="font-size: 14px; color: #6b7280;">' + pricePrefixText + '</span></div>';
+                                }
+                            }
+                            #>
+                            {{{priceDisplay}}}
                             <div class="wc-cgmp-pricing-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <#
+                                if (showMonthly) {
+                                #>
                                 <span class="wc-cgmp-price-main" style="font-size: 20px; font-weight: 700; color: #1f2937;">${{product.price.toLocaleString()}}<span class="wc-cgmp-price-period" style="font-size: 12px; color: #6b7280; font-weight: 400;">/mo</span></span>
+                                <#
+                                }
+                                if (showHourly && priceDisplayMode !== 'monthly_only') {
+                                #>
                                 <span class="wc-cgmp-price-hourly" style="font-size: 14px; color: #6b7280;">${{product.hourly}}/hr</span>
+                                <#
+                                }
+                                #>
                             </div>
                             <div class="wc-cgmp-headcount" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                 <span style="font-size: 12px; color: #6b7280;"><?php esc_html_e('Headcount:', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>

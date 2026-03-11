@@ -8,8 +8,10 @@
 }
 
 .wc-cgmp-sidebar {
-    min-width: 400px;
-    max-width: 400px;
+    --wc-cgmp-sidebar-width: 280px;
+    min-width: var(--wc-cgmp-sidebar-width);
+    max-width: var(--wc-cgmp-sidebar-width);
+    width: var(--wc-cgmp-sidebar-width);
     flex-shrink: 0;
     background: var(--wc-cgmp-bg-sidebar, #fff);
     border-radius: var(--wc-cgmp-radius, 12px);
@@ -318,13 +320,17 @@
 .wc-cgmp-shadow-strong { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15); }
 
 .wc-cgmp-badge-popular {
+    --wc-cgmp-popular-bg: #f59e0b;
+    --wc-cgmp-popular-text: #ffffff;
+    --wc-cgmp-popular-radius: 20px;
+    
     position: absolute;
     top: 12px;
     right: 12px;
-    background: var(--wc-cgmp-primary, #22c55e);
-    color: #fff;
+    background: var(--wc-cgmp-popular-bg);
+    color: var(--wc-cgmp-popular-text);
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: var(--wc-cgmp-popular-radius);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -563,6 +569,7 @@
 .wc-cgmp-pricing-amount {
     display: flex;
     align-items: baseline;
+    justify-content: space-between;
     gap: 8px;
     margin-bottom: 12px;
 }
@@ -573,9 +580,49 @@
     color: var(--wc-cgmp-text-dark, #1f2937);
 }
 
+.wc-cgmp-price-wrapper {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
 .wc-cgmp-price-sub {
     font-size: 14px;
     color: var(--wc-cgmp-text-medium, #6b7280);
+}
+
+.wc-cgmp-price-prefix-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.wc-cgmp-price-prefix-wrapper[data-position="above"] {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.wc-cgmp-price-prefix {
+    font-size: 14px;
+    color: var(--wc-cgmp-text-medium, #6b7280);
+    font-weight: 500;
+}
+
+.wc-cgmp-pricing-amount .wc-cgmp-price-prefix {
+    flex-shrink: 0;
+}
+
+.wc-cgmp-price-prefix-separator {
+    color: #d1d5db;
+    font-weight: 400;
+}
+
+.wc-cgmp-price-period {
+    font-size: 14px;
+    color: var(--wc-cgmp-text-medium, #6b7280);
+    font-weight: 400;
+    margin-left: 2px;
 }
 
 .wc-cgmp-tier-selector-mini {

@@ -99,7 +99,37 @@ class Plugin
         if (is_admin()) {
             return;
         }
-        $this->enqueue_frontend_assets();
+
+        // Only load assets on pages that use our shortcode or Elementor widget
+        global $post;
+        $should_load = false;
+
+        if ($post instanceof \WP_Post) {
+            // Check for shortcode in post content
+            if (has_shortcode($post->post_content, 'wc_cgmp_marketplace')
+                || has_shortcode($post->post_content, 'wc_cgm_marketplace')) {
+                $should_load = true;
+            }
+
+            // Check for Elementor widget
+            if (!$should_load && strpos($post->post_content, 'wc_cgmp_marketplace') !== false) {
+                $should_load = true;
+            }
+        }
+
+        // Allow other code to force-load assets (e.g., template tags, widgets)
+        if (apply_filters('wc_cgmp_force_load_assets', false)) {
+            $should_load = true;
+        }
+
+        // On AJAX requests, always load (needed for fragment refresh)
+        if (wp_doing_ajax()) {
+            $should_load = true;
+        }
+
+        if ($should_load) {
+            $this->enqueue_frontend_assets();
+        }
     }
 
     public function maybe_enqueue_admin(string $hook): void

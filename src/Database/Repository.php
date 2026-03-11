@@ -83,15 +83,38 @@ class Repository
         if ($product_id > 0) {
             wp_cache_delete("wc_cgmp_tiers_{$product_id}", 'wc_cgmp');
             wp_cache_delete("wc_cgmp_price_range_{$product_id}", 'wc_cgmp');
+            unset($this->tier_cache[$product_id]);
+        } else {
+            $this->tier_cache = [];
         }
+
+        // Clear popular IDs cache
+        $this->popular_ids_cache = null;
 
         if (function_exists('wp_cache_flush_group')) {
             wp_cache_flush_group('wc_cgmp');
         }
     }
 
+    /**
+     * In-memory tier cache to avoid repeated queries within a single request.
+     * @var array<int, array>
+     */
+    private array $tier_cache = [];
+
+    /**
+     * In-memory popular IDs cache to avoid repeated aggregation queries.
+     * @var array|null
+     */
+    private ?array $popular_ids_cache = null;
+
     public function get_tiers_by_product(int $product_id): array
     {
+        // Check in-memory cache first
+        if (isset($this->tier_cache[$product_id])) {
+            return $this->tier_cache[$product_id];
+        }
+
         $results = $this->wpdb->get_results(
             $this->wpdb->prepare(
                 "SELECT * FROM {$this->tiers_table} WHERE product_id = %d ORDER BY tier_level ASC",
@@ -106,7 +129,56 @@ class Repository
             return [];
         }
 
-        return $results ? $results : [];
+        $tiers = $results ? $results : [];
+        $this->tier_cache[$product_id] = $tiers;
+        return $tiers;
+    }
+
+    /**
+     * Batch preload tiers for multiple products in a single query.
+     * Eliminates N+1 query problem when rendering product cards.
+     *
+     * @param array $product_ids Array of product IDs to preload tiers for.
+     */
+    public function preload_tiers(array $product_ids): void
+    {
+        if (empty($product_ids)) {
+            return;
+        }
+
+        // Filter out already-cached product IDs
+        $uncached_ids = [];
+        foreach ($product_ids as $id) {
+            $id = (int) $id;
+            if ($id > 0 && !isset($this->tier_cache[$id])) {
+                $uncached_ids[] = $id;
+            }
+        }
+
+        if (empty($uncached_ids)) {
+            return;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($uncached_ids), '%d'));
+        $sql = $this->wpdb->prepare(
+            "SELECT * FROM {$this->tiers_table} WHERE product_id IN ({$placeholders}) ORDER BY product_id ASC, tier_level ASC",
+            $uncached_ids
+        );
+
+        $results = $this->wpdb->get_results($sql);
+
+        // Initialize all requested IDs with empty arrays
+        foreach ($uncached_ids as $id) {
+            $this->tier_cache[$id] = [];
+        }
+
+        // Group results by product_id
+        if ($results) {
+            foreach ($results as $row) {
+                $pid = (int) $row->product_id;
+                $this->tier_cache[$pid][] = $row;
+            }
+        }
     }
 
     public function get_tier(int $product_id, int $tier_level): ?object
@@ -644,11 +716,14 @@ class Repository
 
     public function is_popular_auto(int $product_id): bool
     {
-        $threshold = (int) get_option('wc_cgmp_popular_threshold', 5);
-        $days = (int) get_option('wc_cgmp_popular_days', 30);
-        $popular_ids = $this->get_popular_product_ids($threshold, $days);
+        // Use cached popular IDs to avoid running aggregation query per product
+        if ($this->popular_ids_cache === null) {
+            $threshold = (int) get_option('wc_cgmp_popular_threshold', 5);
+            $days = (int) get_option('wc_cgmp_popular_days', 30);
+            $this->popular_ids_cache = $this->get_popular_product_ids($threshold, $days);
+        }
 
-        return in_array($product_id, $popular_ids, true);
+        return in_array($product_id, $this->popular_ids_cache, true);
     }
 
     public function get_categories_with_product_counts(): array

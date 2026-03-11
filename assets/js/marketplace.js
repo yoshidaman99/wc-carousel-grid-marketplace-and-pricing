@@ -245,11 +245,29 @@
             WC_CGMP_Marketplace.updateSectionHeader(visibleCount);
         },
 
+        getGridAtts: function() {
+            var $grid = $('.wc-cgmp-grid');
+            return {
+                show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
+                show_tier_description: $grid.data('show-tier-description') ?? 'true',
+                show_popular_badge: $grid.data('show-popular-badge') ?? 'true',
+                popular_badge_text: $grid.data('popular-badge-text') ?? 'Popular',
+                price_display_mode: $grid.data('price-display-mode') ?? 'both',
+                show_price_prefix: $grid.data('show-price-prefix') ?? 'false',
+                price_prefix_text: $grid.data('price-prefix-text') ?? '',
+                price_prefix_separator: $grid.data('price-prefix-separator') ?? '|',
+                price_prefix_position: $grid.data('price-prefix-position') ?? 'inline',
+                columns: $grid.data('columns') ?? 3,
+                layout: $grid.data('layout') ?? 'grid'
+            };
+        },
+
         loadProducts: function() {
             var $grid = $('.wc-cgmp-grid');
             var $marketplace = $grid.closest('.wc-cgmp-marketplace');
             var loadAll = $marketplace.attr('data-load-all') === 'true';
             var limit = loadAll ? -1 : (parseInt($marketplace.attr('data-limit')) || WC_CGMP_Marketplace.limit);
+            var gridAtts = this.getGridAtts();
 
             this.showLoading();
 
@@ -263,8 +281,17 @@
                     tier: WC_CGMP_Marketplace.currentTier,
                     limit: limit,
                     offset: WC_CGMP_Marketplace.currentOffset,
-                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
-                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                    show_tier_badge: gridAtts.show_tier_badge,
+                    show_tier_description: gridAtts.show_tier_description,
+                    show_popular_badge: gridAtts.show_popular_badge,
+                    popular_badge_text: gridAtts.popular_badge_text,
+                    price_display_mode: gridAtts.price_display_mode,
+                    show_price_prefix: gridAtts.show_price_prefix,
+                    price_prefix_text: gridAtts.price_prefix_text,
+                    price_prefix_separator: gridAtts.price_prefix_separator,
+                    price_prefix_position: gridAtts.price_prefix_position,
+                    columns: gridAtts.columns,
+                    layout: gridAtts.layout
                 },
                 beforeSend: function() {
                     $grid.addClass('loading');
@@ -297,6 +324,7 @@
             var $btn = $(this);
             var $marketplace = $grid.closest('.wc-cgmp-marketplace');
             var limit = parseInt($marketplace.attr('data-limit')) || WC_CGMP_Marketplace.limit;
+            var gridAtts = WC_CGMP_Marketplace.getGridAtts();
 
             WC_CGMP_Marketplace.currentOffset += limit;
 
@@ -310,8 +338,17 @@
                     tier: WC_CGMP_Marketplace.currentTier,
                     limit: limit,
                     offset: WC_CGMP_Marketplace.currentOffset,
-                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
-                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                    show_tier_badge: gridAtts.show_tier_badge,
+                    show_tier_description: gridAtts.show_tier_description,
+                    show_popular_badge: gridAtts.show_popular_badge,
+                    popular_badge_text: gridAtts.popular_badge_text,
+                    price_display_mode: gridAtts.price_display_mode,
+                    show_price_prefix: gridAtts.show_price_prefix,
+                    price_prefix_text: gridAtts.price_prefix_text,
+                    price_prefix_separator: gridAtts.price_prefix_separator,
+                    price_prefix_position: gridAtts.price_prefix_position,
+                    columns: gridAtts.columns,
+                    layout: gridAtts.layout
                 },
                 beforeSend: function() {
                     $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
@@ -340,6 +377,7 @@
             var $marketplace = $grid.closest('.wc-cgmp-marketplace');
             var loadAll = $marketplace.attr('data-load-all') === 'true';
             var limit = loadAll ? -1 : (parseInt($marketplace.attr('data-limit')) || 12);
+            var gridAtts = WC_CGMP_Marketplace.getGridAtts();
 
             if (search.length < 2) {
                 WC_CGMP_Marketplace.currentOffset = 0;
@@ -360,8 +398,17 @@
                     search: search,
                     tier: WC_CGMP_Marketplace.currentTier,
                     limit: limit,
-                    show_tier_badge: $grid.data('show-tier-badge') ?? 'true',
-                    show_tier_description: $grid.data('show-tier-description') ?? 'true'
+                    show_tier_badge: gridAtts.show_tier_badge,
+                    show_tier_description: gridAtts.show_tier_description,
+                    show_popular_badge: gridAtts.show_popular_badge,
+                    popular_badge_text: gridAtts.popular_badge_text,
+                    price_display_mode: gridAtts.price_display_mode,
+                    show_price_prefix: gridAtts.show_price_prefix,
+                    price_prefix_text: gridAtts.price_prefix_text,
+                    price_prefix_separator: gridAtts.price_prefix_separator,
+                    price_prefix_position: gridAtts.price_prefix_position,
+                    columns: gridAtts.columns,
+                    layout: gridAtts.layout
                 },
                 success: function(response) {
                     if (response.success) {

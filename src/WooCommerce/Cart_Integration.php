@@ -292,8 +292,22 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
+            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
+            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
+            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
+            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
+            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
+            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'columns' => absint($_POST['columns'] ?? 3),
+            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
             'selected_tier' => $tier,
         ];
+
+        // Batch preload tiers to eliminate N+1 queries
+        if (!empty($products)) {
+            $repository->preload_tiers(array_map('intval', $products));
+        }
 
         ob_start();
         foreach ($products as $product_id) {
@@ -481,8 +495,22 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
+            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
+            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
+            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
+            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
+            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
+            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'columns' => absint($_POST['columns'] ?? 3),
+            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
             'selected_tier' => $tier,
         ];
+
+        // Batch preload tiers to eliminate N+1 queries
+        if (!empty($products)) {
+            $repository->preload_tiers(array_map('intval', $products));
+        }
 
         ob_start();
         foreach ($products as $product_id) {
@@ -527,8 +555,22 @@ class Cart_Integration
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
             'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
+            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
+            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
+            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
+            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
+            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
+            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'columns' => absint($_POST['columns'] ?? 3),
+            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
             'selected_tier' => $tier,
         ];
+
+        // Batch preload tiers to eliminate N+1 queries
+        if (!empty($products)) {
+            $repository->preload_tiers(array_map('intval', $products));
+        }
 
         ob_start();
         foreach ($products as $product_id) {
