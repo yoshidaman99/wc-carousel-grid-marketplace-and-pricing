@@ -195,14 +195,13 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.2
+- Fix: Array to string conversion warning for text attributes (popular_badge_text, override_button_text, above_link_text, etc.)
+- Fix: Proper handling of Elementor text control arrays across all templates
+
 ### 1.6.1
 - Fix: Array to string conversion error when using Elementor URL control arrays
 - Fix: Proper handling of URL attributes in templates
-
-### 1.6.0### 1.6.1
-- Fix: Array to string conversion error when using Elementor URL control arrays
-- Fix: Proper handling of URL attributes in templates
-- Fix: Icon rendering with class_exists check
 
 ### 1.6.0
 - Toggle to include/exclude total parameter in button override URL
