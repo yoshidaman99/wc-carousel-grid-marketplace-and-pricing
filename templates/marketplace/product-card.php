@@ -53,6 +53,13 @@ if (!$default_tier && !empty($tiers)) {
     <h3 class="wc-cgmp-card-title">
         <?php echo esc_html($product->get_name()); ?>
         <?php
+        $show_popular_mark = ($atts['show_popular_mark'] ?? 'false') === 'true';
+        $popular_mark_text_raw = $atts['popular_mark_text'] ?? '‹popular›';
+        $popular_mark_text = is_array($popular_mark_text_raw) ? ($popular_mark_text_raw['text'] ?? $popular_mark_text_raw[0] ?? '‹popular›') : $popular_mark_text_raw;
+        if ($is_popular && $show_popular_mark) : ?>
+        <span class="wc-cgmp-popular-mark"><?php echo esc_html($popular_mark_text); ?></span>
+        <?php endif; ?>
+        <?php
         $show_tier_badge = ($atts['show_tier_badge'] ?? 'true') === 'true';
         if ($show_tier_badge && !empty($tiers) && $default_tier && isset($tier_badges[$default_tier->tier_level])) : ?>
         <span class="wc-cgmp-tier-badge <?php echo esc_attr($tier_classes[$default_tier->tier_level] ?? 'default'); ?>">

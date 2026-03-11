@@ -1482,6 +1482,62 @@ class Marketplace_Widget extends Widget_Base
             'condition' => ['show_popular_badge' => 'yes'],
         ]);
 
+        $this->add_control('popular_mark_heading', [
+            'label' => __('Popular Mark (Title)', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('show_popular_mark', [
+            'label' => __('Show Mark Next to Title', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+            'condition' => ['show_popular_badge' => 'yes'],
+        ]);
+
+        $this->add_control('popular_mark_text', [
+            'label' => __('Mark Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => '‹popular›',
+            'condition' => [
+                'show_popular_badge' => 'yes',
+                'show_popular_mark' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('popular_mark_color', [
+            'label' => __('Mark Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#f59e0b',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-popular-mark' => 'color: {{VALUE}};',
+            ],
+            'condition' => [
+                'show_popular_badge' => 'yes',
+                'show_popular_mark' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('popular_mark_font_size', [
+            'label' => __('Mark Font Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 10, 'max' => 30],
+            ],
+            'default' => ['size' => 14, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-popular-mark' => 'font-size: {{SIZE}}{{UNIT}};',
+            ],
+            'condition' => [
+                'show_popular_badge' => 'yes',
+                'show_popular_mark' => 'yes',
+            ],
+        ]);
+
         $this->add_control('popular_badge_colors_heading', [
             'label' => __('Colors', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::HEADING,
@@ -2390,6 +2446,8 @@ class Marketplace_Widget extends Widget_Base
             'price_prefix_position' => $settings['price_prefix_position'] ?? 'inline',
             'show_popular_badge' => ($settings['show_popular_badge'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'popular_badge_text' => $settings['popular_badge_text'] ?? 'Popular',
+            'show_popular_mark' => ($settings['show_popular_mark'] ?? 'no') === 'yes' ? 'true' : 'false',
+            'popular_mark_text' => $settings['popular_mark_text'] ?? '‹popular›',
             'show_headcount' => ($settings['show_headcount'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'show_total' => ($settings['show_total'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'enable_button_override' => ($settings['enable_button_override'] ?? 'no') === 'yes' ? 'true' : 'false',
