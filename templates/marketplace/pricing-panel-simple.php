@@ -3,6 +3,7 @@ defined('ABSPATH') || exit;
 
 $product = $product ?? null;
 $product_id = $product ? $product->get_id() : 0;
+$atts = $atts ?? [];
 
 $plugin = wc_cgm();
 $repository = $plugin ? $plugin->get_service('repository') : null;
@@ -16,7 +17,6 @@ foreach ($tiers as $tier) {
     }
 }
 
-// Count tiers with actual prices
 $tiers_with_prices = 0;
 foreach ($tiers as $tier) {
     if (($tier->hourly_price ?? 0) > 0 || ($tier->monthly_price ?? 0) > 0) {
@@ -46,6 +46,14 @@ if (!$has_tiers && $product) {
     $default_price_type = in_array('monthly', $price_types) ? 'monthly' : ($price_types[0] ?? 'hourly');
     $default_price = $default_price_type === 'monthly' ? $monthly_price : $hourly_price;
 }
+
+$show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
+$show_total = ($atts['show_total'] ?? 'true') === 'true';
+$enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
+$override_button_text = $atts['override_button_text'] ?? 'Get Quote';
+$override_button_url = $atts['override_button_url'] ?? '';
+$total_url_param = $atts['total_url_param'] ?? 'total';
+$open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
 ?>
 
 <div class="wc-cgmp-pricing-panel wc-cgmp-simple"
@@ -98,6 +106,7 @@ if (!$has_tiers && $product) {
         </span>
     </div>
 
+    <?php if ($show_headcount) : ?>
     <div class="wc-cgmp-headcount">
         <span class="wc-cgmp-headcount-label"><?php esc_html_e('Headcount:', 'wc-carousel-grid-marketplace'); ?></span>
         <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-minus" data-action="decrease">-</button>
@@ -110,7 +119,9 @@ if (!$has_tiers && $product) {
                aria-label="<?php esc_attr_e('Quantity', 'wc-carousel-grid-marketplace'); ?>">
         <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-plus" data-action="increase">+</button>
     </div>
+    <?php endif; ?>
 
+    <?php if ($show_total) : ?>
     <div class="wc-cgmp-total">
         <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace'); ?></span>
         <span class="wc-cgmp-total-price"
@@ -119,7 +130,22 @@ if (!$has_tiers && $product) {
             <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/' . ($default_price_type === 'monthly' ? 'mo' : 'hr') : ''; ?>
         </span>
     </div>
+    <?php endif; ?>
 
+    <?php if ($enable_button_override && !empty($override_button_url)) : ?>
+    <?php 
+    $separator = (strpos($override_button_url, '?') !== false) ? '&' : '?';
+    $override_url_with_param = $override_button_url . $separator . $total_url_param . '=';
+    ?>
+    <a href="<?php echo esc_url($override_url_with_param); ?><?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
+       class="wc-cgmp-add-to-cart wc-cgmp-override-button"
+       data-override-url="<?php echo esc_url($override_url_with_param); ?>"
+       data-total-param="<?php echo esc_attr($total_url_param); ?>"
+       data-product-id="<?php echo esc_attr($product_id); ?>"
+       <?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+        <span class="wc-cgmp-btn-text"><?php echo esc_html($override_button_text); ?></span>
+    </a>
+    <?php else : ?>
     <button type="button"
             class="wc-cgmp-add-to-cart"
             data-product-id="<?php echo esc_attr($product_id); ?>"
@@ -128,4 +154,5 @@ if (!$has_tiers && $product) {
         <span class="dashicons dashicons-cart"></span>
         <span class="wc-cgmp-btn-text"><?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace'); ?></span>
     </button>
+    <?php endif; ?>
 </div>

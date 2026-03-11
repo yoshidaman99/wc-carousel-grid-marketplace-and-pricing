@@ -105,7 +105,14 @@ if ($repository && !empty($products)) {
              data-show-price-prefix="<?php echo esc_attr($atts['show_price_prefix'] ?? 'false'); ?>"
              data-price-prefix-text="<?php echo esc_attr($atts['price_prefix_text'] ?? ''); ?>"
              data-price-prefix-separator="<?php echo esc_attr($atts['price_prefix_separator'] ?? '|'); ?>"
-             data-price-prefix-position="<?php echo esc_attr($atts['price_prefix_position'] ?? 'inline'); ?>">
+             data-price-prefix-position="<?php echo esc_attr($atts['price_prefix_position'] ?? 'inline'); ?>"
+             data-show-headcount="<?php echo esc_attr($atts['show_headcount'] ?? 'true'); ?>"
+             data-show-total="<?php echo esc_attr($atts['show_total'] ?? 'true'); ?>"
+             data-enable-button-override="<?php echo esc_attr($atts['enable_button_override'] ?? 'false'); ?>"
+             data-override-button-text="<?php echo esc_attr($atts['override_button_text'] ?? 'Get Quote'); ?>"
+             data-override-button-url="<?php echo esc_attr($atts['override_button_url'] ?? ''); ?>"
+             data-total-url-param="<?php echo esc_attr($atts['total_url_param'] ?? 'total'); ?>"
+             data-open-in-new-tab="<?php echo esc_attr($atts['open_in_new_tab'] ?? 'true'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);
