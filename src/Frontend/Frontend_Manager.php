@@ -49,6 +49,8 @@ class Frontend_Manager
             'price_prefix_position' => 'inline',
             'show_popular_badge' => 'true',
             'popular_badge_text' => 'Popular',
+            'show_popular_mark' => 'false',
+            'popular_mark_text' => '‹popular›',
             'show_headcount' => 'true',
             'show_total' => 'true',
             'enable_button_override' => 'false',

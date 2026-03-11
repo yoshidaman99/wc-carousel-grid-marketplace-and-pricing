@@ -337,6 +337,14 @@
     letter-spacing: 0.5px;
 }
 
+.wc-cgmp-popular-mark {
+    margin-left: 8px;
+    color: #f59e0b;
+    font-size: 14px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
 .wc-cgmp-card-title {
     margin: 0 0 8px 0;
     font-size: 18px;
