@@ -306,6 +306,13 @@ class Cart_Integration
             'columns' => absint($_POST['columns'] ?? 3),
             'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
             'selected_tier' => $tier,
+            'show_headcount' => sanitize_text_field($_POST['show_headcount'] ?? 'true'),
+            'show_total' => sanitize_text_field($_POST['show_total'] ?? 'true'),
+            'enable_button_override' => sanitize_text_field($_POST['enable_button_override'] ?? 'false'),
+            'override_button_text' => sanitize_text_field($_POST['override_button_text'] ?? 'Get Quote'),
+            'override_button_url' => esc_url_raw($_POST['override_button_url'] ?? ''),
+            'total_url_param' => sanitize_text_field($_POST['total_url_param'] ?? 'total'),
+            'open_in_new_tab' => sanitize_text_field($_POST['open_in_new_tab'] ?? 'true'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries

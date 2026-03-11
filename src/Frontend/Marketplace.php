@@ -206,57 +206,85 @@ class Marketplace
                 <?php endif; ?>
             </div>
 
-            <?php if ($has_multiple_tiers) : ?>
-            <div class="wc-cgmp-tier-selector-mini">
-                <select class="wc-cgmp-tier-select" name="wc_cgmp_tier_level">
-                    <?php foreach ($tiers as $tier) :
-                        $hourly = $tier->hourly_price ?? 0;
-                        $monthly = $tier->monthly_price ?? 0;
-                        $show_price = $default_price_type === 'monthly' ? $monthly : $hourly;
-                        if ($show_price <= 0) continue;
-                    ?>
-                    <option value="<?php echo esc_attr($tier->tier_level); ?>"
-                        data-tier-name="<?php echo esc_attr($tier->tier_name); ?>"
-                        data-hourly="<?php echo esc_attr($hourly); ?>"
-                        data-monthly="<?php echo esc_attr($monthly); ?>"
-                        <?php selected($tier->tier_level, $default_tier_level); ?>>
-                        <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <?php endif; ?>
+             <?php if ($has_multiple_tiers) : ?>
+             <div class="wc-cgmp-tier-selector-mini">
+                 <select class="wc-cgmp-tier-select" name="wc_cgmp_tier_level">
+                     <?php foreach ($tiers as $tier) :
+                         $hourly = $tier->hourly_price ?? 0;
+                         $monthly = $tier->monthly_price ?? 0;
+                         $show_price = $default_price_type === 'monthly' ? $monthly : $hourly;
+                         if ($show_price <= 0) continue;
+                     ?>
+                     <option value="<?php echo esc_attr($tier->tier_level); ?>"
+                         data-tier-name="<?php echo esc_attr($tier->tier_name); ?>"
+                         data-hourly="<?php echo esc_attr($hourly); ?>"
+                         data-monthly="<?php echo esc_attr($monthly); ?>"
+                         <?php selected($tier->tier_level, $default_tier_level); ?>>
+                         <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
+                     </option>
+                     <?php endforeach; ?>
+                 </select>
+             </div>
+             <?php endif; ?>
 
-            <div class="wc-cgmp-headcount">
-                <span class="wc-cgmp-headcount-label"><?php esc_html_e('Headcount:', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-minus" data-action="decrease">-</button>
-                <input type="number"
-                       class="wc-cgmp-quantity-input"
-                       name="quantity"
-                       value="1"
-                       min="1"
-                       max="99"
-                       aria-label="<?php esc_attr_e('Quantity', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
-                <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-plus" data-action="increase">+</button>
-            </div>
+             <?php 
+             $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
+             $show_total = ($atts['show_total'] ?? 'true') === 'true';
+             $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
+             $override_button_text = $atts['override_button_text'] ?? 'Get Quote';
+             $override_button_url = $atts['override_button_url'] ?? '';
+             $total_url_param = $atts['total_url_param'] ?? 'total';
+             $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
+             ?>
 
-            <div class="wc-cgmp-total">
-                <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                <span class="wc-cgmp-total-price"
-                      data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
-                      data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
-                    <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/mo' : ''; ?>
-                </span>
-            </div>
+             <?php if ($show_headcount) : ?>
+             <div class="wc-cgmp-headcount">
+                 <span class="wc-cgmp-headcount-label"><?php esc_html_e('Headcount:', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                 <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-minus" data-action="decrease">-</button>
+                 <input type="number"
+                        class="wc-cgmp-quantity-input"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        max="99"
+                        aria-label="<?php esc_attr_e('Quantity', 'wc-carousel-grid-marketplace-and-pricing'); ?>">
+                 <button type="button" class="wc-cgmp-headcount-btn wc-cgmp-btn-plus" data-action="increase">+</button>
+             </div>
+             <?php endif; ?>
 
-            <button type="button"
-                     class="wc-cgmp-add-to-cart"
-                     data-product-id="<?php echo esc_attr($product_id); ?>"
-                     data-tier-level="<?php echo esc_attr($default_tier_level); ?>"
-                     data-price-type="<?php echo esc_attr($default_price_type); ?>">
-                <span class="dashicons dashicons-cart"></span>
-                <span class="wc-cgmp-btn-text"><?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-            </button>
+             <?php if ($show_total) : ?>
+             <div class="wc-cgmp-total">
+                 <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                 <span class="wc-cgmp-total-price"
+                       data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
+                       data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
+                     <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/mo' : ''; ?>
+                 </span>
+             </div>
+             <?php endif; ?>
+
+             <?php if ($enable_button_override && !empty($override_button_url)) : ?>
+             <?php 
+             $separator = (strpos($override_button_url, '?') !== false) ? '&' : '?';
+             $override_url_with_param = $override_button_url . $separator . $total_url_param . '=';
+             ?>
+             <a href="<?php echo esc_url($override_url_with_param); ?><?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
+                class="wc-cgmp-add-to-cart wc-cgmp-override-button"
+                data-override-url="<?php echo esc_url($override_url_with_param); ?>"
+                data-total-param="<?php echo esc_attr($total_url_param); ?>"
+                <?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                 <span class="wc-cgmp-btn-text"><?php echo esc_html($override_button_text); ?></span>
+             </a>
+             <?php else : ?>
+             <button type="button"
+                      class="wc-cgmp-add-to-cart"
+                      data-product-id="<?php echo esc_attr($product_id); ?>"
+                      data-tier-level="<?php echo esc_attr($default_tier_level); ?>"
+                      data-price-type="<?php echo esc_attr($default_price_type); ?>">
+                 <span class="dashicons dashicons-cart"></span>
+                 <span class="wc-cgmp-btn-text"><?php esc_html_e('Add to Cart', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+             </button>
+             <?php endif; ?>
         </div>
         <?php
         return ob_get_clean() ?: '';
