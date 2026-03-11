@@ -193,6 +193,16 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 - **GitHub Issues**: [https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues)
 
+## Changelog
+
+### 1.6.0
+- Toggle to include/exclude total parameter in button override URL
+- Link above button with icon, text, highlight text, and URL (e.g., "Need 5+ headcount? Get volume pricing")
+- Comprehensive sidebar category style controls in Elementor (colors, fonts, padding, radius, icons)
+- Popular badge now also shows for WooCommerce featured products
+- Fixed category click to properly pass all button override settings
+- Fixed search and load more to include all button override settings
+
 ### 1.5.9
 - Added Display Options section in Elementor widget
 - Toggle to show/hide headcount selector on product cards

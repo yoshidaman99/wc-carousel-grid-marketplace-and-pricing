@@ -54,8 +54,15 @@ class Frontend_Manager
             'enable_button_override' => 'false',
             'override_button_text' => 'Get Quote',
             'override_button_url' => '',
+            'include_total_param' => 'true',
             'total_url_param' => 'total',
             'open_in_new_tab' => 'true',
+            'enable_above_button_link' => 'false',
+            'above_link_icon' => '',
+            'above_link_text' => '',
+            'above_link_url' => '',
+            'above_link_highlight_text' => '',
+            'above_link_open_new_tab' => 'true',
         ];
 
         $atts = shortcode_atts($defaults, $atts, 'wc_cgmp_marketplace');

@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.5.9
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,25 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+
+= 1.6.0 =
+* Feature: Toggle to include/exclude total parameter in button override URL
+* Feature: Link above button with icon, text, highlight text, and URL (like "Need 5+ headcount? Get volume pricing")
+* Feature: Comprehensive sidebar category style controls in Elementor (colors, fonts, padding, radius, icons)
+* Enhancement: Popular badge now also shows for WooCommerce featured products
+* Fix: Category click now properly passes all button override settings to AJAX requests
+* Fix: Search and load more now include all button override settings
+
+= 1.5.9 =
+* Added Display Options section in Elementor widget
+* Toggle to show/hide headcount selector on product cards
+* Toggle to show/hide total display on product cards
+* Button override feature: Replace Add to Cart with custom button
+* Custom button URL with dynamic total value parameter
+* Configurable URL parameter name for total (default: "total")
+* Open custom button link in new tab option
+* Dynamic URL updates when quantity, tier, or price type changes
+
 = 1.5.0 =
 * Release version 1.5.0
 
