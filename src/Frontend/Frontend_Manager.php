@@ -49,6 +49,13 @@ class Frontend_Manager
             'price_prefix_position' => 'inline',
             'show_popular_badge' => 'true',
             'popular_badge_text' => 'Popular',
+            'show_headcount' => 'true',
+            'show_total' => 'true',
+            'enable_button_override' => 'false',
+            'override_button_text' => 'Get Quote',
+            'override_button_url' => '',
+            'total_url_param' => 'total',
+            'open_in_new_tab' => 'true',
         ];
 
         $atts = shortcode_atts($defaults, $atts, 'wc_cgmp_marketplace');

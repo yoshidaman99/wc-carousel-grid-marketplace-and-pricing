@@ -795,6 +795,33 @@
     opacity: 0.7;
 }
 
+.wc-cgmp-override-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--wc-cgmp-btn-bg, var(--wc-cgmp-primary, #22c55e));
+    color: var(--wc-cgmp-btn-text, #ffffff);
+    border: none;
+    border-radius: var(--wc-cgmp-radius-sm, 8px);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.wc-cgmp-override-button:hover {
+    background: var(--wc-cgmp-btn-hover-bg, #16a34a);
+    color: var(--wc-cgmp-btn-text, #ffffff);
+    text-decoration: none;
+    transform: translateY(var(--wc-cgmp-btn-hover-y, -2px)) scale(var(--wc-cgmp-btn-hover-scale, 1.02));
+}
+
 .wc-cgmp-no-products {
     text-align: center;
     padding: 60px 20px;

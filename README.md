@@ -193,6 +193,16 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 - **GitHub Issues**: [https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues)
 
+### 1.5.9
+- Added Display Options section in Elementor widget
+- Toggle to show/hide headcount selector on product cards
+- Toggle to show/hide total display on product cards
+- Button override feature: Replace Add to Cart with custom button
+- Custom button URL with dynamic total value parameter
+- Configurable URL parameter name for total (default: "total")
+- Open custom button link in new tab option
+- Dynamic URL updates when quantity, tier, or price type changes
+
 ### 1.5.8
 - Added remove cart item functionality for mini cart widget
 - Added quantity update controls (increase/decrease) for cart items
