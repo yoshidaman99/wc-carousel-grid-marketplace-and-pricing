@@ -265,6 +265,8 @@
                 show_tier_description: $grid.data('show-tier-description') ?? 'true',
                 show_popular_badge: $grid.data('show-popular-badge') ?? 'true',
                 popular_badge_text: $grid.data('popular-badge-text') ?? 'Popular',
+                show_popular_mark: $grid.data('show-popular-mark') ?? 'false',
+                popular_mark_text: $grid.data('popular-mark-text') ?? '‹popular›',
                 price_display_mode: $grid.data('price-display-mode') ?? 'both',
                 show_price_prefix: $grid.data('show-price-prefix') ?? 'false',
                 price_prefix_text: $grid.data('price-prefix-text') ?? '',

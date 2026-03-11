@@ -195,6 +195,26 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.8
+- Added documentation for Popular badge database structure and SQL queries
+- Documented `_wc_cgmp_popular` meta key for manual popular marking
+- Added SQL examples for marking products as popular via database
+- Clarified popular method settings: auto (order-based), manual (meta-based), or both
+
+### 1.6.7
+- Changed show_popular_mark default to true - popular mark now shows automatically
+- Popular products will display ‹popular› text next to title by default
+
+### 1.6.6
+- Added popular mark text next to service title for popular products
+- New Elementor controls: show/hide mark, customize text, color, and font size
+- Default mark text: ‹popular› with customizable styling
+- Works alongside existing Popular badge
+- Available via shortcode: show_popular_mark, popular_mark_text
+
+### 1.6.5
+- Version bump for release
+
 ### 1.6.4
 - Added Link Above Button style controls in Elementor widget
 - New style options: text color, hover color, typography (font settings)
