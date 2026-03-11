@@ -195,6 +195,15 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.4
+- Added Link Above Button style controls in Elementor widget
+- New style options: text color, hover color, typography (font settings)
+- Icon color, hover color, and size controls (10-40px)
+- Highlight text color and hover color controls
+- Icon gap and margin bottom spacing controls
+- Fixed icon not showing - proper JSON encoding/decoding for Elementor icons
+- Added SVG icon support in CSS
+
 ### 1.6.3
 - Fix: Array to string conversion warning in wp-includes/formatting.php line 1128
 - Fix: Added array check in build_shortcode_string() for Elementor icon controls
