@@ -46,6 +46,12 @@ class Settings
             'sanitize_callback' => 'absint',
         ]);
 
+        register_setting($this->option_group, 'wc_cgmp_load_all_products', [
+            'type' => 'boolean',
+            'default' => false,
+            'sanitize_callback' => 'rest_sanitize_boolean',
+        ]);
+
         register_setting($this->option_group, 'wc_cgmp_enable_infinite_scroll', [
             'type' => 'boolean',
             'default' => false,
@@ -111,6 +117,11 @@ class Settings
     public static function get_cards_per_page(): int
     {
         return (int) get_option('wc_cgmp_cards_per_page', 12);
+    }
+
+    public static function load_all_products(): bool
+    {
+        return (bool) get_option('wc_cgmp_load_all_products', false);
     }
 
     public static function get_popular_method(): string

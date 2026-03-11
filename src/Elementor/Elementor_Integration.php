@@ -91,6 +91,7 @@ class Elementor_Integration
             'ajax_url' => \admin_url('admin-ajax.php'),
             'nonce' => \wp_create_nonce('wc_cgmp_frontend_nonce'),
             'debug' => (\defined('WP_DEBUG') && \WP_DEBUG) || (\defined('SCRIPT_DEBUG') && \SCRIPT_DEBUG),
+            'load_all' => (bool) \get_option('wc_cgmp_load_all_products', false),
             'i18n' => [
                 'added_to_cart' => \__('Added to cart!', 'wc-carousel-grid-marketplace-and-pricing'),
                 'error' => \__('An error occurred.', 'wc-carousel-grid-marketplace-and-pricing'),
