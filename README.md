@@ -193,6 +193,13 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 - **GitHub Issues**: [https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues)
 
+### 1.5.8
+- Added remove cart item functionality for mini cart widget
+- Added quantity update controls (increase/decrease) for cart items
+- New AJAX endpoints: `wc_cgmp_remove_cart_item`, `wc_cgmp_update_cart_quantity`
+- Refactored cart data preparation into shared `prepare_cart_data()` helper
+- Added i18n strings for cart operations (confirm_remove, item_removed, quantity_updated)
+
 ### 1.5.7
 - Fixed layout sync between initial load and AJAX category filtering
 - Added missing data attributes to grid container for AJAX requests

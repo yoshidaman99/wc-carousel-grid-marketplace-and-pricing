@@ -89,6 +89,8 @@
             $(document).on('change', '.wc-cgmp-switch-input', this.updatePriceType);
             $(document).on('click', '.wc-cgmp-load-more', this.loadMore);
             $(document).on('input', '.wc-cgmp-search-input', this.debounce(this.searchProducts, 300));
+            $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
+            $(document).on('click', '.wc-cgmp-cart-qty-btn', this.updateCartQuantity);
         },
 
         filterByCategory: function(e) {
@@ -554,6 +556,96 @@
             }
 
             $input.trigger('change');
+        },
+
+        removeFromCart: function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var cartItemKey = $btn.data('cart-item-key');
+
+            if (!cartItemKey) {
+                alert(wc_cgmp_ajax.i18n.error);
+                return;
+            }
+
+            if (!confirm(wc_cgmp_ajax.i18n.confirm_remove)) {
+                return;
+            }
+
+            $btn.addClass('loading');
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'wc_cgmp_remove_cart_item',
+                    nonce: wc_cgmp_ajax.nonce,
+                    cart_item_key: cartItemKey
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $(document.body).trigger('wc_fragment_refresh');
+
+                        if (response.data.cart_data && typeof window.cartQuoteUpdateMiniCart === 'function') {
+                            window.cartQuoteUpdateMiniCart(response.data.cart_data);
+                        } else if (typeof window.cartQuoteRefreshMiniCart === 'function') {
+                            window.cartQuoteRefreshMiniCart({ full: true });
+                        }
+                    } else {
+                        alert(response.data.message || wc_cgmp_ajax.i18n.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert(wc_cgmp_ajax.i18n.error + ': ' + error);
+                },
+                complete: function() {
+                    $btn.removeClass('loading');
+                }
+            });
+        },
+
+        updateCartQuantity: function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var cartItemKey = $btn.data('cart-item-key');
+            var action = $btn.data('action');
+
+            if (!cartItemKey || !action) {
+                alert(wc_cgmp_ajax.i18n.error);
+                return;
+            }
+
+            $btn.addClass('loading');
+
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'wc_cgmp_update_cart_quantity',
+                    nonce: wc_cgmp_ajax.nonce,
+                    cart_item_key: cartItemKey,
+                    cart_action: action
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $(document.body).trigger('wc_fragment_refresh');
+
+                        if (response.data.cart_data && typeof window.cartQuoteUpdateMiniCart === 'function') {
+                            window.cartQuoteUpdateMiniCart(response.data.cart_data);
+                        } else if (typeof window.cartQuoteRefreshMiniCart === 'function') {
+                            window.cartQuoteRefreshMiniCart({ full: true });
+                        }
+                    } else {
+                        alert(response.data.message || wc_cgmp_ajax.i18n.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert(wc_cgmp_ajax.i18n.error + ': ' + error);
+                },
+                complete: function() {
+                    $btn.removeClass('loading');
+                }
+            });
         },
 
         updateTotal: function(e) {
