@@ -195,6 +195,9 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.5
+- Version bump for release
+
 ### 1.6.4
 - Added Link Above Button style controls in Elementor widget
 - New style options: text color, hover color, typography (font settings)
