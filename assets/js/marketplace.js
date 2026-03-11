@@ -243,9 +243,12 @@
                 var $overrideBtn = $panel.find('.wc-cgmp-override-button');
                 if ($overrideBtn.length) {
                     var overrideUrl = $overrideBtn.data('override-url');
-                    var $totalPrice = $panel.find('.wc-cgmp-total-price');
-                    var currentTotal = $totalPrice.data('total') || newPrice;
-                    $overrideBtn.attr('href', overrideUrl + parseFloat(currentTotal).toFixed(2));
+                    var includeTotalParam = $overrideBtn.data('include-total-param') !== false;
+                    if (overrideUrl && includeTotalParam) {
+                        var $totalPrice = $panel.find('.wc-cgmp-total-price');
+                        var currentTotal = $totalPrice.data('total') || newPrice;
+                        $overrideBtn.attr('href', overrideUrl + parseFloat(currentTotal).toFixed(2));
+                    }
                 }
                 
                 $panel.find('.wc-cgmp-quantity-input').trigger('change');
@@ -274,8 +277,14 @@
                 enable_button_override: $grid.data('enable-button-override') ?? 'false',
                 override_button_text: $grid.data('override-button-text') ?? 'Get Quote',
                 override_button_url: $grid.data('override-button-url') ?? '',
+                include_total_param: $grid.data('include-total-param') ?? 'true',
                 total_url_param: $grid.data('total-url-param') ?? 'total',
                 open_in_new_tab: $grid.data('open-in-new-tab') ?? 'true',
+                enable_above_button_link: $grid.data('enable-above-button-link') ?? 'false',
+                above_link_text: $grid.data('above-link-text') ?? '',
+                above_link_url: $grid.data('above-link-url') ?? '',
+                above_link_highlight_text: $grid.data('above-link-highlight-text') ?? '',
+                above_link_open_new_tab: $grid.data('above-link-open-new-tab') ?? 'true',
             };
         },
 
@@ -308,7 +317,20 @@
                     price_prefix_separator: gridAtts.price_prefix_separator,
                     price_prefix_position: gridAtts.price_prefix_position,
                     columns: gridAtts.columns,
-                    layout: gridAtts.layout
+                    layout: gridAtts.layout,
+                    show_headcount: gridAtts.show_headcount,
+                    show_total: gridAtts.show_total,
+                    enable_button_override: gridAtts.enable_button_override,
+                    override_button_text: gridAtts.override_button_text,
+                    override_button_url: gridAtts.override_button_url,
+                    include_total_param: gridAtts.include_total_param,
+                    total_url_param: gridAtts.total_url_param,
+                    open_in_new_tab: gridAtts.open_in_new_tab,
+                    enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_text: gridAtts.above_link_text,
+                    above_link_url: gridAtts.above_link_url,
+                    above_link_highlight_text: gridAtts.above_link_highlight_text,
+                    above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                 },
                 beforeSend: function() {
                     $grid.addClass('loading');
@@ -365,7 +387,20 @@
                     price_prefix_separator: gridAtts.price_prefix_separator,
                     price_prefix_position: gridAtts.price_prefix_position,
                     columns: gridAtts.columns,
-                    layout: gridAtts.layout
+                    layout: gridAtts.layout,
+                    show_headcount: gridAtts.show_headcount,
+                    show_total: gridAtts.show_total,
+                    enable_button_override: gridAtts.enable_button_override,
+                    override_button_text: gridAtts.override_button_text,
+                    override_button_url: gridAtts.override_button_url,
+                    include_total_param: gridAtts.include_total_param,
+                    total_url_param: gridAtts.total_url_param,
+                    open_in_new_tab: gridAtts.open_in_new_tab,
+                    enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_text: gridAtts.above_link_text,
+                    above_link_url: gridAtts.above_link_url,
+                    above_link_highlight_text: gridAtts.above_link_highlight_text,
+                    above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                 },
                 beforeSend: function() {
                     $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
@@ -425,7 +460,20 @@
                     price_prefix_separator: gridAtts.price_prefix_separator,
                     price_prefix_position: gridAtts.price_prefix_position,
                     columns: gridAtts.columns,
-                    layout: gridAtts.layout
+                    layout: gridAtts.layout,
+                    show_headcount: gridAtts.show_headcount,
+                    show_total: gridAtts.show_total,
+                    enable_button_override: gridAtts.enable_button_override,
+                    override_button_text: gridAtts.override_button_text,
+                    override_button_url: gridAtts.override_button_url,
+                    include_total_param: gridAtts.include_total_param,
+                    total_url_param: gridAtts.total_url_param,
+                    open_in_new_tab: gridAtts.open_in_new_tab,
+                    enable_above_button_link: gridAtts.enable_above_button_link,
+                    above_link_text: gridAtts.above_link_text,
+                    above_link_url: gridAtts.above_link_url,
+                    above_link_highlight_text: gridAtts.above_link_highlight_text,
+                    above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                 },
                 success: function(response) {
                     if (response.success) {
@@ -687,7 +735,8 @@
             var $overrideBtn = $panel.find('.wc-cgmp-override-button');
             if ($overrideBtn.length) {
                 var overrideUrl = $overrideBtn.data('override-url');
-                if (overrideUrl) {
+                var includeTotalParam = $overrideBtn.data('include-total-param') !== false;
+                if (overrideUrl && includeTotalParam) {
                     $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
                 }
             }
@@ -723,10 +772,13 @@
 
             var $overrideBtn = $panel.find('.wc-cgmp-override-button');
             if ($overrideBtn.length) {
-                var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
-                var total = price * quantity;
                 var overrideUrl = $overrideBtn.data('override-url');
-                $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+                var includeTotalParam = $overrideBtn.data('include-total-param') !== false;
+                if (overrideUrl && includeTotalParam) {
+                    var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+                    var total = price * quantity;
+                    $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+                }
             }
 
             $panel.find('.wc-cgmp-quantity-input').trigger('change');
@@ -761,10 +813,13 @@
 
             var $overrideBtn = $panel.find('.wc-cgmp-override-button');
             if ($overrideBtn.length) {
-                var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
-                var total = newPrice * quantity;
                 var overrideUrl = $overrideBtn.data('override-url');
-                $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+                var includeTotalParam = $overrideBtn.data('include-total-param') !== false;
+                if (overrideUrl && includeTotalParam) {
+                    var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+                    var total = newPrice * quantity;
+                    $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+                }
             }
             
             $panel.find('.wc-cgmp-quantity-input').trigger('change');

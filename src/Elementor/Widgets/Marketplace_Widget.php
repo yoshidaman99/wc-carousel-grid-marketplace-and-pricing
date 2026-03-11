@@ -364,12 +364,25 @@ class Marketplace_Widget extends Widget_Base
             'condition' => ['enable_button_override' => 'yes'],
         ]);
 
+        $this->add_control('include_total_param', [
+            'label' => __('Include Total in URL', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+            'description' => __('Append the calculated total as a URL parameter.', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
         $this->add_control('total_url_param', [
             'label' => __('Total URL Parameter', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::TEXT,
             'default' => 'total',
             'description' => __('The URL parameter name for the total value (e.g., ?total=1500)', 'wc-carousel-grid-marketplace-and-pricing'),
-            'condition' => ['enable_button_override' => 'yes'],
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'include_total_param' => 'yes',
+            ],
         ]);
 
         $this->add_control('open_in_new_tab', [
@@ -379,6 +392,72 @@ class Marketplace_Widget extends Widget_Base
             'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
             'default' => 'yes',
             'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->add_control('enable_above_button_link', [
+            'label' => __('Enable Link Above Button', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'no',
+            'description' => __('Add a link with icon and text above the button.', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->add_control('above_link_icon', [
+            'label' => __('Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::ICONS,
+            'default' => [
+                'value' => 'fas fa-info-circle',
+                'library' => 'fa-solid',
+            ],
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'enable_above_button_link' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('above_link_text', [
+            'label' => __('Link Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Need 5+ headcount?', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'enable_above_button_link' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('above_link_url', [
+            'label' => __('Link URL', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::URL,
+            'placeholder' => __('https://your-link.com', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'enable_above_button_link' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('above_link_highlight_text', [
+            'label' => __('Highlight Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Get volume pricing', 'wc-carousel-grid-marketplace-and-pricing'),
+            'description' => __('Optional highlighted/underlined text at the end of the link.', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'enable_above_button_link' => 'yes',
+            ],
+        ]);
+
+        $this->add_control('above_link_open_new_tab', [
+            'label' => __('Open in New Tab', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+            'condition' => [
+                'enable_button_override' => 'yes',
+                'enable_above_button_link' => 'yes',
+            ],
         ]);
 
         $this->end_controls_section();
@@ -1858,8 +1937,149 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
+        $this->add_control('sidebar_border_radius', [
+            'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 20],
+            ],
+            'default' => ['size' => 12, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('sidebar_padding', [
+            'label' => __('Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 30],
+            ],
+            'default' => ['size' => 16, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar' => 'padding: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('category_heading', [
+            'label' => __('Category Items', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('category_item_padding', [
+            'label' => __('Item Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 5, 'max' => 25],
+            ],
+            'default' => ['size' => 12, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item' => 'padding: {{SIZE}}{{UNIT}} 14px;',
+            ],
+        ]);
+
+        $this->add_control('category_item_radius', [
+            'label' => __('Item Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 20],
+            ],
+            'default' => ['size' => 8, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('category_font_size', [
+            'label' => __('Font Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 10, 'max' => 20],
+            ],
+            'default' => ['size' => 14, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-name' => 'font-size: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('category_font_weight', [
+            'label' => __('Font Weight', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SELECT,
+            'default' => '400',
+            'options' => [
+                '300' => __('Light', 'wc-carousel-grid-marketplace-and-pricing'),
+                '400' => __('Normal', 'wc-carousel-grid-marketplace-and-pricing'),
+                '500' => __('Medium', 'wc-carousel-grid-marketplace-and-pricing'),
+                '600' => __('Semi Bold', 'wc-carousel-grid-marketplace-and-pricing'),
+                '700' => __('Bold', 'wc-carousel-grid-marketplace-and-pricing'),
+            ],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-name' => 'font-weight: {{VALUE}};',
+            ],
+        ]);
+
+        $this->start_controls_tabs('category_state_tabs');
+
+        $this->start_controls_tab('category_normal_tab', [
+            'label' => __('Normal', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control('category_text_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#6b7280',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('category_bg_color', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => 'transparent',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab('category_hover_tab', [
+            'label' => __('Hover', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control('category_hover_text_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1f2937',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item:hover' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('category_hover_bg_color', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#f3f4f6',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item:hover' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab('category_active_tab', [
+            'label' => __('Active', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
         $this->add_control('active_category_bg', [
-            'label' => __('Active Category Background', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::COLOR,
             'default' => '#22c55e',
             'selectors' => [
@@ -1868,11 +2088,125 @@ class Marketplace_Widget extends Widget_Base
         ]);
 
         $this->add_control('active_category_text', [
-            'label' => __('Active Category Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::COLOR,
             'default' => '#ffffff',
             'selectors' => [
                 '{{WRAPPER}} .wc-cgmp-category-item.active' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_control('category_count_heading', [
+            'label' => __('Category Count Badge', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('category_count_bg', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#e5e7eb',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-count' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('category_count_text', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#374151',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-count' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('category_count_font_size', [
+            'label' => __('Font Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 10, 'max' => 16],
+            ],
+            'default' => ['size' => 12, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-count' => 'font-size: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('category_count_radius', [
+            'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 30],
+            ],
+            'default' => ['size' => 20, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-count' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('active_category_count_heading', [
+            'label' => __('Active State', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+        ]);
+
+        $this->add_control('active_category_count_bg', [
+            'label' => __('Background Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => 'rgba(255, 255, 255, 0.25)',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item.active .wc-cgmp-category-count' => 'background-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('active_category_count_text', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item.active .wc-cgmp-category-count' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('category_icon_heading', [
+            'label' => __('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('category_icon_size', [
+            'label' => __('Icon Size', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 14, 'max' => 28],
+            ],
+            'default' => ['size' => 18, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-icon .dashicons' => 'font-size: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('category_icon_color', [
+            'label' => __('Icon Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#6b7280',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-icon .dashicons' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('active_category_icon_color', [
+            'label' => __('Active Icon Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-category-item.active .wc-cgmp-category-icon .dashicons' => 'color: {{VALUE}};',
             ],
         ]);
 
@@ -1924,8 +2258,15 @@ class Marketplace_Widget extends Widget_Base
             'enable_button_override' => ($settings['enable_button_override'] ?? 'no') === 'yes' ? 'true' : 'false',
             'override_button_text' => $settings['override_button_text'] ?? 'Get Quote',
             'override_button_url' => $settings['override_button_url']['url'] ?? '',
+            'include_total_param' => ($settings['include_total_param'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'total_url_param' => $settings['total_url_param'] ?? 'total',
             'open_in_new_tab' => ($settings['open_in_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'enable_above_button_link' => ($settings['enable_above_button_link'] ?? 'no') === 'yes' ? 'true' : 'false',
+            'above_link_icon' => $settings['above_link_icon'] ?? '',
+            'above_link_text' => $settings['above_link_text'] ?? '',
+            'above_link_url' => $settings['above_link_url']['url'] ?? '',
+            'above_link_highlight_text' => $settings['above_link_highlight_text'] ?? '',
+            'above_link_open_new_tab' => ($settings['above_link_open_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
         ];
 
         $shadow_class = '';

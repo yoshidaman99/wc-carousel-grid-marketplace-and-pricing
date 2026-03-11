@@ -227,15 +227,22 @@ class Marketplace
              </div>
              <?php endif; ?>
 
-             <?php 
-             $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
-             $show_total = ($atts['show_total'] ?? 'true') === 'true';
-             $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
-             $override_button_text = $atts['override_button_text'] ?? 'Get Quote';
-             $override_button_url = $atts['override_button_url'] ?? '';
-             $total_url_param = $atts['total_url_param'] ?? 'total';
-             $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
-             ?>
+              <?php 
+              $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
+              $show_total = ($atts['show_total'] ?? 'true') === 'true';
+              $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
+              $override_button_text = $atts['override_button_text'] ?? 'Get Quote';
+              $override_button_url = $atts['override_button_url'] ?? '';
+              $include_total_param = ($atts['include_total_param'] ?? 'true') === 'true';
+              $total_url_param = $atts['total_url_param'] ?? 'total';
+              $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
+              $enable_above_button_link = ($atts['enable_above_button_link'] ?? 'false') === 'true';
+              $above_link_icon = $atts['above_link_icon'] ?? '';
+              $above_link_text = $atts['above_link_text'] ?? '';
+              $above_link_url = $atts['above_link_url'] ?? '';
+              $above_link_highlight_text = $atts['above_link_highlight_text'] ?? '';
+              $above_link_open_new_tab = ($atts['above_link_open_new_tab'] ?? 'true') === 'true';
+              ?>
 
              <?php if ($show_headcount) : ?>
              <div class="wc-cgmp-headcount">
@@ -252,29 +259,49 @@ class Marketplace
              </div>
              <?php endif; ?>
 
-             <?php if ($show_total) : ?>
-             <div class="wc-cgmp-total">
-                 <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                 <span class="wc-cgmp-total-price"
-                       data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
-                       data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
-                     <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/mo' : ''; ?>
-                 </span>
-             </div>
-             <?php endif; ?>
+              <?php if ($show_total) : ?>
+              <div class="wc-cgmp-total">
+                  <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                  <span class="wc-cgmp-total-price"
+                        data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
+                        data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
+                      <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/mo' : ''; ?>
+                  </span>
+              </div>
+              <?php endif; ?>
 
-             <?php if ($enable_button_override && !empty($override_button_url)) : ?>
-             <?php 
-             $separator = (strpos($override_button_url, '?') !== false) ? '&' : '?';
-             $override_url_with_param = $override_button_url . $separator . $total_url_param . '=';
-             ?>
-             <a href="<?php echo esc_url($override_url_with_param); ?><?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
-                class="wc-cgmp-add-to-cart wc-cgmp-override-button"
-                data-override-url="<?php echo esc_url($override_url_with_param); ?>"
-                data-total-param="<?php echo esc_attr($total_url_param); ?>"
-                <?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-                 <span class="wc-cgmp-btn-text"><?php echo esc_html($override_button_text); ?></span>
-             </a>
+              <?php if ($enable_button_override && !empty($override_button_url)) : ?>
+              <?php 
+              $separator = (strpos($override_button_url, '?') !== false) ? '&' : '?';
+              $override_url_base = $override_button_url;
+              $override_url_with_param = '';
+              
+              if ($include_total_param) {
+                  $override_url_with_param = $override_button_url . $separator . $total_url_param . '=';
+              }
+              ?>
+              <?php if ($enable_above_button_link && !empty($above_link_url)) : ?>
+              <div class="wc-cgmp-above-button-link">
+                  <a href="<?php echo esc_url($above_link_url); ?>" 
+                     class="wc-cgmp-link-above-btn"
+                     <?php echo $above_link_open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                      <?php if (!empty($above_link_icon)) : ?>
+                          <span class="wc-cgmp-link-icon"><?php \Elementor\Icons_Manager::render_icon($above_link_icon, ['aria-hidden' => 'true']); ?></span>
+                      <?php endif; ?>
+                      <span class="wc-cgmp-link-text"><?php echo esc_html($above_link_text); ?> <?php if (!empty($above_link_highlight_text)) : ?><span class="wc-cgmp-link-highlight"><?php echo esc_html($above_link_highlight_text); ?></span><?php endif; ?></span>
+                  </a>
+              </div>
+              <?php endif; ?>
+              <a href="<?php echo esc_url($include_total_param ? $override_url_with_param . number_format($default_price, 2, '.', '') : $override_url_base); ?>"
+                 class="wc-cgmp-add-to-cart wc-cgmp-override-button"
+                 data-include-total-param="<?php echo $include_total_param ? 'true' : 'false'; ?>"
+                 <?php if ($include_total_param) : ?>
+                 data-override-url="<?php echo esc_url($override_url_with_param); ?>"
+                 data-total-param="<?php echo esc_attr($total_url_param); ?>"
+                 <?php endif; ?>
+                 <?php echo $open_in_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                  <span class="wc-cgmp-btn-text"><?php echo esc_html($override_button_text); ?></span>
+              </a>
              <?php else : ?>
              <button type="button"
                       class="wc-cgmp-add-to-cart"
