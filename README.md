@@ -195,6 +195,11 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.9
+- Fixed: Popular badge not showing when "Mark as Popular" checkbox enabled on products
+- Changed default popular_method from 'auto' to 'both' - now respects manual checkbox AND auto sales detection
+- New installations will automatically check both methods for popular products
+
 ### 1.6.8
 - Added documentation for Popular badge database structure and SQL queries
 - Documented `_wc_cgmp_popular` meta key for manual popular marking

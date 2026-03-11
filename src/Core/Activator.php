@@ -184,7 +184,7 @@ class Activator
             'wc_cgmp_load_all_products' => 'no',
             'wc_cgmp_enable_infinite_scroll' => 'no',
             'wc_cgmp_card_style' => 'default',
-            'wc_cgmp_popular_method' => 'auto',
+            'wc_cgmp_popular_method' => 'both',
             'wc_cgmp_popular_threshold' => 5,
             'wc_cgmp_popular_days' => 30,
             'wc_cgmp_default_tier_names' => [
