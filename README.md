@@ -195,6 +195,10 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.7
+- Changed show_popular_mark default to true - popular mark now shows automatically
+- Popular products will display ‹popular› text next to title by default
+
 ### 1.6.6
 - Added popular mark text next to service title for popular products
 - New Elementor controls: show/hide mark, customize text, color, and font size
