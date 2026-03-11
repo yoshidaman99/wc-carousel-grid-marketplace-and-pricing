@@ -232,14 +232,16 @@ class Marketplace
               $show_total = ($atts['show_total'] ?? 'true') === 'true';
               $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
               $override_button_text = $atts['override_button_text'] ?? 'Get Quote';
-              $override_button_url = $atts['override_button_url'] ?? '';
+              $override_button_url_raw = $atts['override_button_url'] ?? '';
+              $override_button_url = is_array($override_button_url_raw) ? ($override_button_url_raw['url'] ?? '') : $override_button_url_raw;
               $include_total_param = ($atts['include_total_param'] ?? 'true') === 'true';
               $total_url_param = $atts['total_url_param'] ?? 'total';
               $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
               $enable_above_button_link = ($atts['enable_above_button_link'] ?? 'false') === 'true';
               $above_link_icon = $atts['above_link_icon'] ?? '';
               $above_link_text = $atts['above_link_text'] ?? '';
-              $above_link_url = $atts['above_link_url'] ?? '';
+              $above_link_url_raw = $atts['above_link_url'] ?? '';
+              $above_link_url = is_array($above_link_url_raw) ? ($above_link_url_raw['url'] ?? '') : $above_link_url_raw;
               $above_link_highlight_text = $atts['above_link_highlight_text'] ?? '';
               $above_link_open_new_tab = ($atts['above_link_open_new_tab'] ?? 'true') === 'true';
               ?>
@@ -285,7 +287,7 @@ class Marketplace
                   <a href="<?php echo esc_url($above_link_url); ?>" 
                      class="wc-cgmp-link-above-btn"
                      <?php echo $above_link_open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-                      <?php if (!empty($above_link_icon)) : ?>
+                      <?php if (!empty($above_link_icon) && is_array($above_link_icon) && class_exists('\Elementor\Icons_Manager')) : ?>
                           <span class="wc-cgmp-link-icon"><?php \Elementor\Icons_Manager::render_icon($above_link_icon, ['aria-hidden' => 'true']); ?></span>
                       <?php endif; ?>
                       <span class="wc-cgmp-link-text"><?php echo esc_html($above_link_text); ?> <?php if (!empty($above_link_highlight_text)) : ?><span class="wc-cgmp-link-highlight"><?php echo esc_html($above_link_highlight_text); ?></span><?php endif; ?></span>
