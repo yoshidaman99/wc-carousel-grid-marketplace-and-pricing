@@ -195,6 +195,12 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.8
+- Added documentation for Popular badge database structure and SQL queries
+- Documented `_wc_cgmp_popular` meta key for manual popular marking
+- Added SQL examples for marking products as popular via database
+- Clarified popular method settings: auto (order-based), manual (meta-based), or both
+
 ### 1.6.7
 - Changed show_popular_mark default to true - popular mark now shows automatically
 - Popular products will display ‹popular› text next to title by default
