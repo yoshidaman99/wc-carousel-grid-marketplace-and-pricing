@@ -14,6 +14,7 @@ A powerful WordPress plugin that combines a modern service marketplace with tier
 - **Category Sidebar** - Filter services by WooCommerce product categories
 - **WooCommerce Reports** - Sales breakdown by tier
 - **Popular Badges** - Automatic or manual highlighting of popular services
+- **Dynamic Section Titles** - Category-based titles that update automatically
 
 ## Requirements
 
@@ -181,11 +182,23 @@ When uninstalling the plugin:
 
 Database tables and options are removed on uninstall if enabled in settings.
 
+## Documentation
+
+- [Wiki](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/wiki)
+- [Installation Guide](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/wiki/Installation)
+- [Shortcode Reference](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/wiki/Shortcode-Reference)
+- [Hooks and Filters](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/wiki/Hooks-and-Filters)
+
 ## Support
 
-- **GitHub Issues**: [https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing/issues)
+- **GitHub Issues**: [https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues](https://github.com/yoshidaman99/wc-carousel-grid-marketplace-and-pricing/issues)
 
 ## Changelog
+
+### 1.4.8
+- Dynamic section title based on category selection
+- Enhanced marketplace functionality
+- Multiple component improvements
 
 ### 1.4.0
 - Added rate limiting to public AJAX endpoints
@@ -205,4 +218,4 @@ GPL v2 or later. See [LICENSE](LICENSE) for more information.
 ## Author
 
 **Jerel Yoshida**
-- GitHub: [https://github.com/Jerel-R-Yoshida](https://github.com/Jerel-R-Yoshida)
+- GitHub: [https://github.com/yoshidaman99](https://github.com/yoshidaman99)
