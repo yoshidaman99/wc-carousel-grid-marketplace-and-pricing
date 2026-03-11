@@ -25,6 +25,10 @@ class Cart_Integration
         add_action('wp_ajax_nopriv_wc_cgmp_load_more', [$this, 'ajax_load_more']);
         add_action('wp_ajax_wc_cgmp_search_products', [$this, 'ajax_search_products']);
         add_action('wp_ajax_nopriv_wc_cgmp_search_products', [$this, 'ajax_search_products']);
+        add_action('wp_ajax_wc_cgmp_remove_cart_item', [$this, 'ajax_remove_cart_item']);
+        add_action('wp_ajax_nopriv_wc_cgmp_remove_cart_item', [$this, 'ajax_remove_cart_item']);
+        add_action('wp_ajax_wc_cgmp_update_cart_quantity', [$this, 'ajax_update_cart_quantity']);
+        add_action('wp_ajax_nopriv_wc_cgmp_update_cart_quantity', [$this, 'ajax_update_cart_quantity']);
     }
 
     private function log(string $message, array $context = []): void
@@ -404,44 +408,13 @@ class Cart_Integration
 
             WC()->cart->calculate_totals();
 
-            $cart_count = WC()->cart->get_cart_contents_count();
-            $cart_total = WC()->cart->get_cart_total();
-
-            $cart_items = [];
-            foreach (WC()->cart->get_cart() as $item_key => $cart_item) {
-                $product = $cart_item['data'];
-
-                $tier_data = isset($cart_item['wc_cgmp_tier']) ? [
-                    'tier_level' => $cart_item['wc_cgmp_tier']['level'] ?? '',
-                    'tier_name' => $cart_item['wc_cgmp_tier']['name'] ?? '',
-                    'monthly_price' => (float) ($cart_item['wc_cgmp_tier']['price'] ?? 0),
-                ] : null;
-
-                $cart_items[] = [
-                    'key' => $item_key,
-                    'product_id' => $cart_item['product_id'],
-                    'product_name' => $product->get_name(),
-                    'product_url' => $product->get_permalink(),
-                    'product_image' => $product->get_image(),
-                    'quantity' => $cart_item['quantity'],
-                    'price' => $product->get_price_html(),
-                    'line_total' => wc_price($cart_item['line_total']),
-                    'tier_data' => $tier_data,
-                ];
-            }
-
-            $cart_data = [
-                'items' => $cart_items,
-                'count' => $cart_count,
-                'subtotal' => WC()->cart->get_cart_subtotal(),
-                'is_empty' => WC()->cart->is_empty(),
-            ];
+            $cart_data = $this->prepare_cart_data();
 
             wp_send_json_success([
                 'message' => __('Product added to cart!', 'wc-carousel-grid-marketplace-and-pricing'),
                 'cart_item_key' => $cart_item_key,
-                'cart_count' => $cart_count,
-                'cart_total' => $cart_total,
+                'cart_count' => $cart_data['count'],
+                'cart_total' => WC()->cart->get_cart_total(),
                 'cart_hash' => WC()->cart->get_cart_hash(),
                 'cart_data' => $cart_data,
             ]);
@@ -582,5 +555,131 @@ class Cart_Integration
         $html = ob_get_clean();
 
         wp_send_json_success(['html' => $html, 'count' => count($products)]);
+    }
+
+    public function ajax_remove_cart_item(): void
+    {
+        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('remove_cart_item')) {
+            return;
+        }
+
+        $cart_item_key = isset($_POST['cart_item_key']) ? sanitize_text_field($_POST['cart_item_key']) : '';
+
+        if (empty($cart_item_key)) {
+            wp_send_json_error(['message' => __('Invalid cart item.', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        if (!\WC()->cart) {
+            wp_send_json_error(['message' => __('Cart not available.', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        $success = \WC()->cart->remove_cart_item($cart_item_key);
+
+        if ($success) {
+            \WC()->cart->calculate_totals();
+
+            wp_send_json_success([
+                'message' => __('Item removed from cart.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'cart_data' => $this->prepare_cart_data(),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Could not remove item from cart.', 'wc-carousel-grid-marketplace-and-pricing')]);
+        }
+    }
+
+    public function ajax_update_cart_quantity(): void
+    {
+        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('update_cart_quantity')) {
+            return;
+        }
+
+        $cart_item_key = isset($_POST['cart_item_key']) ? sanitize_text_field($_POST['cart_item_key']) : '';
+        $quantity = isset($_POST['quantity']) ? absint($_POST['quantity']) : 1;
+        $action = isset($_POST['cart_action']) ? sanitize_text_field($_POST['cart_action']) : 'set';
+
+        if (empty($cart_item_key)) {
+            wp_send_json_error(['message' => __('Invalid cart item.', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        if (!\WC()->cart) {
+            wp_send_json_error(['message' => __('Cart not available.', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        $cart_item = \WC()->cart->get_cart_item($cart_item_key);
+        if (!$cart_item) {
+            wp_send_json_error(['message' => __('Cart item not found.', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        $current_qty = $cart_item['quantity'];
+
+        if ($action === 'increase') {
+            $new_qty = min($current_qty + 1, 99);
+        } elseif ($action === 'decrease') {
+            $new_qty = max($current_qty - 1, 0);
+        } else {
+            $new_qty = max(0, min($quantity, 99));
+        }
+
+        if ($new_qty <= 0) {
+            $success = \WC()->cart->remove_cart_item($cart_item_key);
+            $message = __('Item removed from cart.', 'wc-carousel-grid-marketplace-and-pricing');
+        } else {
+            $success = \WC()->cart->set_quantity($cart_item_key, $new_qty, true);
+            $message = __('Quantity updated.', 'wc-carousel-grid-marketplace-and-pricing');
+        }
+
+        if ($success) {
+            \WC()->cart->calculate_totals();
+
+            wp_send_json_success([
+                'message' => $message,
+                'new_quantity' => $new_qty,
+                'cart_data' => $this->prepare_cart_data(),
+            ]);
+        } else {
+            wp_send_json_error(['message' => __('Could not update cart.', 'wc-carousel-grid-marketplace-and-pricing')]);
+        }
+    }
+
+    private function prepare_cart_data(): array
+    {
+        $cart_items = [];
+        foreach (\WC()->cart->get_cart() as $item_key => $cart_item) {
+            $product = $cart_item['data'];
+
+            $tier_data = isset($cart_item['wc_cgmp_tier']) ? [
+                'tier_level' => $cart_item['wc_cgmp_tier']['level'] ?? '',
+                'tier_name' => $cart_item['wc_cgmp_tier']['name'] ?? '',
+                'monthly_price' => (float) ($cart_item['wc_cgmp_tier']['price'] ?? 0),
+            ] : null;
+
+            $cart_items[] = [
+                'key' => $item_key,
+                'product_id' => $cart_item['product_id'],
+                'product_name' => $product->get_name(),
+                'product_url' => $product->get_permalink(),
+                'product_image' => $product->get_image(),
+                'quantity' => $cart_item['quantity'],
+                'price' => $product->get_price_html(),
+                'line_total' => \wc_price($cart_item['line_total']),
+                'tier_data' => $tier_data,
+            ];
+        }
+
+        return [
+            'items' => $cart_items,
+            'count' => \WC()->cart->get_cart_contents_count(),
+            'subtotal' => \WC()->cart->get_cart_subtotal(),
+            'is_empty' => \WC()->cart->is_empty(),
+        ];
     }
 }
