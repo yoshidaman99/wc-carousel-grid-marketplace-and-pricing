@@ -240,6 +240,14 @@
                     $btn.attr('data-tier-level', tierLevel);
                 }
                 
+                var $overrideBtn = $panel.find('.wc-cgmp-override-button');
+                if ($overrideBtn.length) {
+                    var overrideUrl = $overrideBtn.data('override-url');
+                    var $totalPrice = $panel.find('.wc-cgmp-total-price');
+                    var currentTotal = $totalPrice.data('total') || newPrice;
+                    $overrideBtn.attr('href', overrideUrl + parseFloat(currentTotal).toFixed(2));
+                }
+                
                 $panel.find('.wc-cgmp-quantity-input').trigger('change');
             });
             
@@ -260,7 +268,14 @@
                 price_prefix_separator: $grid.data('price-prefix-separator') ?? '|',
                 price_prefix_position: $grid.data('price-prefix-position') ?? 'inline',
                 columns: $grid.data('columns') ?? 3,
-                layout: $grid.data('layout') ?? 'grid'
+                layout: $grid.data('layout') ?? 'grid',
+                show_headcount: $grid.data('show-headcount') ?? 'true',
+                show_total: $grid.data('show-total') ?? 'true',
+                enable_button_override: $grid.data('enable-button-override') ?? 'false',
+                override_button_text: $grid.data('override-button-text') ?? 'Get Quote',
+                override_button_url: $grid.data('override-button-url') ?? '',
+                total_url_param: $grid.data('total-url-param') ?? 'total',
+                open_in_new_tab: $grid.data('open-in-new-tab') ?? 'true',
             };
         },
 
@@ -668,6 +683,14 @@
 
             var formattedTotal = WC_CGMP_Marketplace.formatPrice(total);
             $panel.find('.wc-cgmp-total-price').html(formattedTotal + (hasTiers ? '/mo' : ''));
+
+            var $overrideBtn = $panel.find('.wc-cgmp-override-button');
+            if ($overrideBtn.length) {
+                var overrideUrl = $overrideBtn.data('override-url');
+                if (overrideUrl) {
+                    $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+                }
+            }
         },
 
         updateTierPrice: function(e) {
@@ -688,6 +711,8 @@
 
             $btn.attr('data-tier-level', newTierLevel);
             
+            $panel.find('.wc-cgmp-total-price').data('monthly-price', monthlyPrice);
+            
             WC_CGMP_Marketplace.log('Dropdown changed - tier level updated', {
                 product_id: $panel.data('product-id'),
                 new_tier_level: newTierLevel,
@@ -695,6 +720,14 @@
                 hourly_price: hourlyPrice,
                 monthly_price: monthlyPrice
             });
+
+            var $overrideBtn = $panel.find('.wc-cgmp-override-button');
+            if ($overrideBtn.length) {
+                var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+                var total = price * quantity;
+                var overrideUrl = $overrideBtn.data('override-url');
+                $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
+            }
 
             $panel.find('.wc-cgmp-quantity-input').trigger('change');
         },
@@ -724,6 +757,14 @@
                 $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice) + '/hr');
             } else {
                 $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice) + '/mo');
+            }
+
+            var $overrideBtn = $panel.find('.wc-cgmp-override-button');
+            if ($overrideBtn.length) {
+                var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+                var total = newPrice * quantity;
+                var overrideUrl = $overrideBtn.data('override-url');
+                $overrideBtn.attr('href', overrideUrl + total.toFixed(2));
             }
             
             $panel.find('.wc-cgmp-quantity-input').trigger('change');

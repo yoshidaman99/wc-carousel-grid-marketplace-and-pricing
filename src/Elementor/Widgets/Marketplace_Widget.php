@@ -320,6 +320,69 @@ class Marketplace_Widget extends Widget_Base
 
         $this->end_controls_section();
 
+        $this->start_controls_section('display_options_section', [
+            'label' => __('Display Options', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_CONTENT,
+        ]);
+
+        $this->add_control('show_headcount', [
+            'label' => __('Show Headcount', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+        ]);
+
+        $this->add_control('show_total', [
+            'label' => __('Show Total', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Show', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('Hide', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+        ]);
+
+        $this->add_control('enable_button_override', [
+            'label' => __('Enable Button Override', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'no',
+            'description' => __('Replace Add to Cart button with custom button that links to a URL with the total value.', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control('override_button_text', [
+            'label' => __('Button Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => __('Get Quote', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->add_control('override_button_url', [
+            'label' => __('Button URL', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::URL,
+            'placeholder' => __('https://your-link.com', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->add_control('total_url_param', [
+            'label' => __('Total URL Parameter', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::TEXT,
+            'default' => 'total',
+            'description' => __('The URL parameter name for the total value (e.g., ?total=1500)', 'wc-carousel-grid-marketplace-and-pricing'),
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->add_control('open_in_new_tab', [
+            'label' => __('Open in New Tab', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'yes',
+            'condition' => ['enable_button_override' => 'yes'],
+        ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section('price_display_section', [
             'label' => __('Price Display', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_CONTENT,
@@ -1856,6 +1919,13 @@ class Marketplace_Widget extends Widget_Base
             'price_prefix_position' => $settings['price_prefix_position'] ?? 'inline',
             'show_popular_badge' => ($settings['show_popular_badge'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'popular_badge_text' => $settings['popular_badge_text'] ?? 'Popular',
+            'show_headcount' => ($settings['show_headcount'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'show_total' => ($settings['show_total'] ?? 'yes') === 'yes' ? 'true' : 'false',
+            'enable_button_override' => ($settings['enable_button_override'] ?? 'no') === 'yes' ? 'true' : 'false',
+            'override_button_text' => $settings['override_button_text'] ?? 'Get Quote',
+            'override_button_url' => $settings['override_button_url']['url'] ?? '',
+            'total_url_param' => $settings['total_url_param'] ?? 'total',
+            'open_in_new_tab' => ($settings['open_in_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
         ];
 
         $shadow_class = '';
