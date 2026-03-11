@@ -172,6 +172,9 @@ class Plugin
                 'select_tier' => __('Please select an experience level before adding to cart.', 'wc-carousel-grid-marketplace-and-pricing'),
                 'invalid_tier' => __('Selected experience level is not available for this product.', 'wc-carousel-grid-marketplace-and-pricing'),
                 'invalid_price_type' => __('Pricing option is not available for this experience level. Please select a different option.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'confirm_remove' => __('Remove this item from cart?', 'wc-carousel-grid-marketplace-and-pricing'),
+                'item_removed' => __('Item removed from cart.', 'wc-carousel-grid-marketplace-and-pricing'),
+                'quantity_updated' => __('Quantity updated.', 'wc-carousel-grid-marketplace-and-pricing'),
             ],
         ]);
 
