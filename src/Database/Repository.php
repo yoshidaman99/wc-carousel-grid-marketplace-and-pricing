@@ -548,14 +548,22 @@ class Repository
         }
 
         if ($args['tier'] > 0) {
-            $product_ids = $this->get_products_with_tier((int) $args['tier']);
-            if (!empty($product_ids)) {
-                $query_args['post__in'] = isset($query_args['post__in'])
-                    ? array_intersect($query_args['post__in'] ?? [], $product_ids)
-                    : $product_ids;
-            } else {
+            $tier_product_ids = $this->get_products_with_tier((int) $args['tier']);
+            if (empty($tier_product_ids)) {
                 return [];
             }
+            if (isset($query_args['post__in'])) {
+                $query_args['post__in'] = array_values(array_intersect($query_args['post__in'], $tier_product_ids));
+                if (empty($query_args['post__in'])) {
+                    return [];
+                }
+            } else {
+                $query_args['post__in'] = $tier_product_ids;
+            }
+        }
+
+        if (!empty($args['category']) && !isset($query_args['tax_query']['relation'])) {
+            $query_args['tax_query']['relation'] = 'AND';
         }
 
         $query = new \WP_Query($query_args);

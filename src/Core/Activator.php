@@ -181,6 +181,7 @@ class Activator
             'wc_cgmp_show_sidebar' => 'yes',
             'wc_cgmp_show_filter_bar' => 'yes',
             'wc_cgmp_cards_per_page' => 12,
+            'wc_cgmp_load_all_products' => 'no',
             'wc_cgmp_enable_infinite_scroll' => 'no',
             'wc_cgmp_card_style' => 'default',
             'wc_cgmp_popular_method' => 'auto',

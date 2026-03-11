@@ -65,6 +65,7 @@ class Admin_Manager
         $settings = [
             'wc_cgmp_grid_columns' => absint($_POST['wc_cgmp_grid_columns'] ?? 3),
             'wc_cgmp_cards_per_page' => absint($_POST['wc_cgmp_cards_per_page'] ?? 12),
+            'wc_cgmp_load_all_products' => isset($_POST['wc_cgmp_load_all_products']),
             'wc_cgmp_mobile_carousel' => isset($_POST['wc_cgmp_mobile_carousel']),
             'wc_cgmp_show_sidebar' => isset($_POST['wc_cgmp_show_sidebar']),
             'wc_cgmp_show_filter_bar' => isset($_POST['wc_cgmp_show_filter_bar']),
@@ -112,6 +113,16 @@ class Admin_Manager
                             <td>
                                 <input type="number" name="wc_cgmp_cards_per_page" value="<?php echo esc_attr(get_option('wc_cgmp_cards_per_page', 12)); ?>" min="1" max="100">
                                 <p class="description"><?php esc_html_e('Maximum number of products to display per page.', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php esc_html_e('Load All Products', 'wc-carousel-grid-marketplace-and-pricing'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="wc_cgmp_load_all_products" value="1" <?php checked(get_option('wc_cgmp_load_all_products', false)); ?>>
+                                    <?php esc_html_e('Load all services on initial page load (disable pagination)', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                                </label>
+                                <p class="description"><?php esc_html_e('When enabled, all services will be loaded at once instead of using pagination.', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
                             </td>
                         </tr>
                         <tr>

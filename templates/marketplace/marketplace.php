@@ -14,6 +14,7 @@ $show_search = ($atts['show_search'] ?? 'false') === 'true';
 $layout = $atts['layout'] ?? 'grid';
 $mobile_carousel = ($atts['mobile_carousel'] ?? 'true') === 'true';
 $class = $atts['class'] ?? '';
+$load_all = (bool) get_option('wc_cgmp_load_all_products', false);
 ?>
 
 <?php if (!empty($admin_notice)) : ?>
@@ -23,6 +24,8 @@ $class = $atts['class'] ?? '';
 <div class="wc-cgmp-marketplace wc-cgmp-loading <?php echo esc_attr($class); ?>"
      data-columns="<?php echo esc_attr($columns); ?>"
      data-layout="<?php echo esc_attr($layout); ?>"
+     data-limit="<?php echo esc_attr($atts['limit']); ?>"
+     data-load-all="<?php echo esc_attr($load_all ? 'true' : 'false'); ?>"
      data-mobile-carousel="<?php echo esc_attr($mobile_carousel ? 'true' : 'false'); ?>">
 
     <!-- Loading Overlay -->
@@ -60,7 +63,7 @@ $class = $atts['class'] ?? '';
         <?php endif; ?>
 
         <div class="wc-cgmp-section-header">
-            <h2 class="wc-cgmp-section-title"><?php esc_html_e('Available Services', 'wc-carousel-grid-marketplace'); ?></h2>
+            <h2 class="wc-cgmp-section-title" id="wc-cgmp-section-title"><?php esc_html_e('Available Services', 'wc-carousel-grid-marketplace'); ?></h2>
             <p class="wc-cgmp-section-count">
                 <?php
                 printf(
@@ -94,7 +97,7 @@ $class = $atts['class'] ?? '';
         </div>
         <?php endif; ?>
 
-        <?php if (($atts['infinite_scroll'] ?? 'false') !== 'true' && count($products) >= (int) $atts['limit']) : ?>
+        <?php if (!$load_all && ($atts['infinite_scroll'] ?? 'false') !== 'true' && count($products) >= (int) $atts['limit']) : ?>
         <div class="wc-cgmp-load-more-wrap">
             <button type="button" class="wc-cgmp-load-more" data-offset="<?php echo esc_attr(count($products)); ?>">
                 <?php esc_html_e('Load More', 'wc-carousel-grid-marketplace'); ?>

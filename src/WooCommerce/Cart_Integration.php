@@ -270,7 +270,8 @@ class Cart_Integration
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
         $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
         $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
-        $limit = isset($_POST['limit']) ? absint($_POST['limit']) : 12;
+        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+        $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
         $offset = isset($_POST['offset']) ? absint($_POST['offset']) : 0;
 
         $plugin = wc_cgmp();
@@ -446,20 +447,36 @@ class Cart_Integration
         $offset = isset($_POST['offset']) ? absint($_POST['offset']) : 0;
         $category = isset($_POST['category']) ? absint($_POST['category']) : 0;
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
-        $limit = isset($_POST['limit']) ? absint($_POST['limit']) : 12;
+        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+        $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
 
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
 
-        $args = [
-            'category' => $category > 0 ? $category : '',
-            'tier' => $tier,
-            'limit' => $limit,
-            'offset' => $offset,
-            'marketplace_only' => true,
-        ];
-
-        $products = $repository->get_marketplace_products($args);
+        if ($load_all) {
+            $args = [
+                'category' => $category > 0 ? $category : '',
+                'tier' => $tier,
+                'limit' => -1,
+                'offset' => 0,
+                'marketplace_only' => true,
+            ];
+            $products = $repository->get_marketplace_products($args);
+            $has_more = false;
+        } else {
+            $args = [
+                'category' => $category > 0 ? $category : '',
+                'tier' => $tier,
+                'limit' => $limit + 1,
+                'offset' => $offset,
+                'marketplace_only' => true,
+            ];
+            $products = $repository->get_marketplace_products($args);
+            $has_more = count($products) > $limit;
+            if ($has_more) {
+                $products = array_slice($products, 0, $limit);
+            }
+        }
 
         $atts = [
             'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
@@ -479,7 +496,7 @@ class Cart_Integration
         wp_send_json_success([
             'html' => $html,
             'count' => count($products),
-            'has_more' => count($products) === $limit,
+            'has_more' => $has_more,
         ]);
     }
 
@@ -493,7 +510,8 @@ class Cart_Integration
 
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
         $search = substr($search, 0, 100);
-        $limit = isset($_POST['limit']) ? absint($_POST['limit']) : 12;
+        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+        $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
         $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
 
         if (strlen($search) < 2) {

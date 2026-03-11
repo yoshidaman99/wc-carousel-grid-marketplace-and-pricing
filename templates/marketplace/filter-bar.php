@@ -2,16 +2,19 @@
 defined('ABSPATH') || exit;
 
 $atts = $atts ?? [];
-$default_tier = (int) ($atts['selected_tier'] ?? $atts['tier'] ?? 1);
-if ($default_tier === 0) {
-    $default_tier = 1;
-}
+$default_tier = (int) ($atts['selected_tier'] ?? $atts['tier'] ?? 0);
 ?>
 
 <div class="wc-cgmp-filter-bar">
     <span class="wc-cgmp-filter-label"><?php esc_html_e('Experience Level:', 'wc-carousel-grid-marketplace'); ?></span>
 
     <div class="wc-cgmp-tier-filters">
+        <button type="button"
+                class="wc-cgmp-tier-btn wc-cgmp-tier-all <?php echo $default_tier === 0 ? 'active' : ''; ?>"
+                data-tier="0">
+            <?php esc_html_e('All', 'wc-carousel-grid-marketplace'); ?>
+        </button>
+
         <button type="button"
                 class="wc-cgmp-tier-btn wc-cgmp-tier-entry <?php echo $default_tier === 1 ? 'active' : ''; ?>"
                 data-tier="1">

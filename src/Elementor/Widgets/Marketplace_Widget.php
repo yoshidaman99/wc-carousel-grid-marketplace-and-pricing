@@ -235,7 +235,7 @@ class Marketplace_Widget extends Widget_Base
         $this->add_control('default_tier', [
             'label' => __('Default Tier Filter', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::SELECT,
-            'default' => '1',
+            'default' => '0',
             'options' => [
                 '0' => __('All Tiers', 'wc-carousel-grid-marketplace-and-pricing'),
                 '1' => __('Entry', 'wc-carousel-grid-marketplace-and-pricing'),

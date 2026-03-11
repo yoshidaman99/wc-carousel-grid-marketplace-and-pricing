@@ -19,6 +19,8 @@ class Frontend_Manager
 
     public function render_marketplace_shortcode(array $atts = []): string
     {
+        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+
         $defaults = [
             'columns' => (int) get_option('wc_cgmp_grid_columns', 3),
             'columns_tablet' => 2,
@@ -27,7 +29,7 @@ class Frontend_Manager
             'exclude_category' => '',
             'products' => '',
             'tier' => 0,
-            'limit' => (int) get_option('wc_cgmp_cards_per_page', 12),
+            'limit' => $load_all ? -1 : (int) get_option('wc_cgmp_cards_per_page', 12),
             'orderby' => 'date',
             'order' => 'DESC',
             'show_sidebar' => get_option('wc_cgmp_show_sidebar', true) ? 'true' : 'false',
