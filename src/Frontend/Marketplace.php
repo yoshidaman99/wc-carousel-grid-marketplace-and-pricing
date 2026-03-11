@@ -35,9 +35,6 @@ class Marketplace
     public static function render_pricing_panel(\WC_Product $product, array $tiers, array $atts): string
     {
         $product_id = $product->get_id();
-        $plugin = wc_cgmp();
-        $repository = $plugin->get_service('repository');
-        $specialization = $repository ? $repository->get_specialization($product_id) : '';
         $tiers = $tiers ?? [];
 
         $tier_data = [
@@ -135,7 +132,16 @@ class Marketplace
             <h4 class="wc-cgmp-tier-description"><?php echo esc_html($default_tier_description); ?></h4>
             <?php endif; ?>
 
-            <?php if ($has_tiers && count($price_types) > 1) : ?>
+            <?php 
+            $price_display_mode = $atts['price_display_mode'] ?? 'both';
+            $show_price_prefix = ($atts['show_price_prefix'] ?? 'false') === 'true';
+            $price_prefix_text = $atts['price_prefix_text'] ?? '';
+            $price_prefix_separator = $atts['price_prefix_separator'] ?? '|';
+            $price_prefix_position = $atts['price_prefix_position'] ?? 'inline';
+            $prefix_text = $show_price_prefix && !empty($price_prefix_text) ? esc_html__($price_prefix_text, 'wc-carousel-grid-marketplace-and-pricing') : '';
+            ?>
+
+            <?php if ($has_tiers && count($price_types) > 1 && $price_display_mode === 'both') : ?>
             <div class="wc-cgmp-price-type-switch">
                 <span class="wc-cgmp-switch-label <?php echo $default_price_type === 'monthly' ? 'active' : ''; ?>">
                     <?php esc_html_e('Monthly', 'wc-carousel-grid-marketplace-and-pricing'); ?>
@@ -151,22 +157,53 @@ class Marketplace
             <?php endif; ?>
 
             <div class="wc-cgmp-pricing-amount">
+                <?php if (!empty($prefix_text) && $price_prefix_position === 'inline') : ?>
+                <span class="wc-cgmp-price-prefix"><?php echo esc_html($prefix_text); ?></span>
+                <?php if (!empty($price_prefix_separator)) : ?>
+                <span class="wc-cgmp-price-prefix-separator"><?php echo esc_html($price_prefix_separator); ?></span>
+                <?php endif; ?>
+                <?php endif; ?>
+                
+                <?php if ($price_display_mode === 'both' || $price_display_mode === 'monthly_only') : ?>
                 <span class="wc-cgmp-price-main" data-price="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>">
                     <?php echo wc_price(number_format($default_price, 2, '.', '')); ?>
                 </span>
+                <?php endif; ?>
+                
+                <?php 
+                $secondary_price = 0;
+                $secondary_label = '';
+                if ($price_display_mode === 'both') :
+                    if ($default_price_type === 'monthly') :
+                        $secondary_price = $default_tier->hourly_price ?? 0;
+                        $secondary_label = '/hr';
+                    else :
+                        $secondary_price = $default_tier->monthly_price ?? 0;
+                        $secondary_label = '/mo';
+                    endif;
+                    
+                    if ($secondary_price > 0) :
+                ?>
                 <span class="wc-cgmp-price-sub">
-                    <?php if ($default_price_type === 'monthly') : ?>
-                        <?php
-                        $hourly_price = $default_tier->hourly_price ?? 0;
-                        echo wc_price(number_format($hourly_price, 2, '.', '')) . '/hr';
-                        ?>
-                    <?php else : ?>
-                        <?php
-                        $monthly_price = $default_tier->monthly_price ?? 0;
-                        echo wc_price(number_format($monthly_price, 2, '.', '')) . '/mo';
-                        ?>
-                    <?php endif; ?>
+                    <?php echo wc_price(number_format($secondary_price, 2, '.', '')) . $secondary_label; ?>
                 </span>
+                <?php 
+                    endif;
+                elseif ($price_display_mode === 'hourly_only') : 
+                ?>
+                <?php 
+                $display_hourly_price = $default_tier->hourly_price ?? 0;
+                if ($display_hourly_price <= 0) {
+                    $display_hourly_price = $default_price;
+                }
+                ?>
+                <span class="wc-cgmp-price-wrapper">
+                    <span class="wc-cgmp-price-main" data-price="<?php echo esc_attr(number_format($display_hourly_price, 2, '.', '')); ?>">
+                        <?php echo wc_price(number_format($display_hourly_price, 2, '.', '')); ?>
+                    </span>
+                    <span class="wc-cgmp-price-period">/hr</span>
+                </span>
+                <?php endif; ?>
             </div>
 
             <?php if ($has_multiple_tiers) : ?>

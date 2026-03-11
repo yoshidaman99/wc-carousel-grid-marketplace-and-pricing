@@ -3,28 +3,31 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.4.8
+ * Version: 1.5.7
  * Author: Jerel Yoshida
- * Author URI: https://github.com/Jerel-R-Yoshida
+ * Author URI: https://github.com/Jerel-r-yoshida
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wc-carousel-grid-marketplace-and-pricing
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * WC requires at least: 6.0
  * WC tested up to: 8.0
- * License: GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.4.8');
+define('WC_CGMP_VERSION', '1.5.7');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('WC_CGMP_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
-wc_cgmp_repair_stale_paths();
+// Only run stale path repair in admin context (not on every frontend page load)
+if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
+    wc_cgmp_repair_stale_paths();
+}
 
 function wc_cgmp_repair_stale_paths(): void {
     $correct_path = 'wc-carousel-grid-marketplace-and-pricing/wc-carousel-grid-marketplace-and-pricing.php';
