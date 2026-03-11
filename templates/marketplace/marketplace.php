@@ -110,13 +110,13 @@ if ($repository && !empty($products)) {
              data-show-total="<?php echo esc_attr($atts['show_total'] ?? 'true'); ?>"
              data-enable-button-override="<?php echo esc_attr($atts['enable_button_override'] ?? 'false'); ?>"
              data-override-button-text="<?php echo esc_attr($atts['override_button_text'] ?? 'Get Quote'); ?>"
-             data-override-button-url="<?php echo esc_attr($atts['override_button_url'] ?? ''); ?>"
+             data-override-button-url="<?php echo esc_attr(is_array($atts['override_button_url'] ?? '') ? ($atts['override_button_url']['url'] ?? '') : ($atts['override_button_url'] ?? '')); ?>"
              data-include-total-param="<?php echo esc_attr($atts['include_total_param'] ?? 'true'); ?>"
              data-total-url-param="<?php echo esc_attr($atts['total_url_param'] ?? 'total'); ?>"
              data-open-in-new-tab="<?php echo esc_attr($atts['open_in_new_tab'] ?? 'true'); ?>"
              data-enable-above-button-link="<?php echo esc_attr($atts['enable_above_button_link'] ?? 'false'); ?>"
              data-above-link-text="<?php echo esc_attr($atts['above_link_text'] ?? ''); ?>"
-             data-above-link-url="<?php echo esc_attr($atts['above_link_url'] ?? ''); ?>"
+             data-above-link-url="<?php echo esc_attr(is_array($atts['above_link_url'] ?? '') ? ($atts['above_link_url']['url'] ?? '') : ($atts['above_link_url'] ?? '')); ?>"
              data-above-link-highlight-text="<?php echo esc_attr($atts['above_link_highlight_text'] ?? ''); ?>"
              data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>">
 
