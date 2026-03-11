@@ -68,6 +68,14 @@ if (!$default_tier && !empty($tiers)) {
         <?php endif; ?>
     </h3>
 
+    <?php
+    $show_debug_popular = ($atts['show_debug_popular'] ?? 'false') === 'true';
+    if ($show_debug_popular) : ?>
+    <div class="wc-cgmp-debug-popular" style="font-size: 11px; color: #888; margin-bottom: 4px;">
+        [DEBUG] Popular: <?php echo $is_popular ? 'true' : 'false'; ?> | Method: <?php echo esc_html(get_option('wc_cgmp_popular_method', 'auto')); ?> | Meta: <?php echo esc_html(get_post_meta($product_id, '_wc_cgmp_popular', true) ?: 'not set'); ?>
+    </div>
+    <?php endif; ?>
+
     <p class="wc-cgmp-card-desc">
         <?php
         $description = $product->get_description();
