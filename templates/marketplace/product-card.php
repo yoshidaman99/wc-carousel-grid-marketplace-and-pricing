@@ -41,11 +41,12 @@ if (!$default_tier && !empty($tiers)) {
 
     <?php 
     $show_popular_badge = ($atts['show_popular_badge'] ?? 'true') === 'true';
-    $popular_badge_text = $atts['popular_badge_text'] ?? 'Popular';
+    $popular_badge_text_raw = $atts['popular_badge_text'] ?? 'Popular';
+    $popular_badge_text = is_array($popular_badge_text_raw) ? ($popular_badge_text_raw['text'] ?? $popular_badge_text_raw[0] ?? 'Popular') : $popular_badge_text_raw;
     if ($is_popular && $show_popular_badge) : 
     ?>
     <span class="wc-cgmp-badge-popular">
-        <?php echo esc_html__($popular_badge_text, 'wc-carousel-grid-marketplace-and-pricing'); ?>
+        <?php echo esc_html($popular_badge_text); ?>
     </span>
     <?php endif; ?>
 

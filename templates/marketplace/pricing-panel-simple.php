@@ -50,8 +50,10 @@ if (!$has_tiers && $product) {
 $show_headcount = ($atts['show_headcount'] ?? 'true') === 'true';
 $show_total = ($atts['show_total'] ?? 'true') === 'true';
 $enable_button_override = ($atts['enable_button_override'] ?? 'false') === 'true';
-$override_button_text = $atts['override_button_text'] ?? 'Get Quote';
-$override_button_url = $atts['override_button_url'] ?? '';
+$override_button_text_raw = $atts['override_button_text'] ?? 'Get Quote';
+$override_button_text = is_array($override_button_text_raw) ? ($override_button_text_raw['text'] ?? $override_button_text_raw[0] ?? 'Get Quote') : $override_button_text_raw;
+$override_button_url_raw = $atts['override_button_url'] ?? '';
+$override_button_url = is_array($override_button_url_raw) ? ($override_button_url_raw['url'] ?? '') : $override_button_url_raw;
 $total_url_param = $atts['total_url_param'] ?? 'total';
 $open_in_new_tab = ($atts['open_in_new_tab'] ?? 'true') === 'true';
 ?>
