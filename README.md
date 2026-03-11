@@ -195,6 +195,12 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.6.3
+- Fix: Array to string conversion warning in wp-includes/formatting.php line 1128
+- Fix: Added array check in build_shortcode_string() for Elementor icon controls
+- Fix: Added safeSanitize helper in Cart_Integration.php to handle array values from AJAX
+- Fix: Added array check for data-limit attribute in marketplace template
+
 ### 1.6.2
 - Fix: Array to string conversion warning for text attributes (popular_badge_text, override_button_text, above_link_text, etc.)
 - Fix: Proper handling of Elementor text control arrays across all templates
