@@ -195,6 +195,10 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.7.30
+- Added multi-line item input for Key Responsibilities in product edit modal
+- Users can now paste multiple items at once (one per line) for faster entry
+
 ### 1.7.29
 - Added multi-line item input for Key Responsibilities in product edit modal
 - Users can now paste multiple items at once (one per line) for faster entry
