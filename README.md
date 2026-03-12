@@ -195,6 +195,15 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.7.31
+- Changed role count display to be inline with section title (format: "· X roles")
+- Added Elementor controls for modal content padding (top/bottom, left/right)
+- Added Elementor control for modal title padding
+- Added Elementor control for modal description margin
+- Added Elementor control for modal responsibility item gap
+- Added !important to modal styling selectors for better Elementor compatibility
+- Removed hardcoded padding-right from modal title (now configurable via Elementor)
+
 ### 1.7.30
 - Added multi-line item input for Key Responsibilities in product edit modal
 - Users can now paste multiple items at once (one per line) for faster entry

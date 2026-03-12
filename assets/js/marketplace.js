@@ -843,9 +843,7 @@
         },
 
         updateSectionHeader: function(count) {
-            var text = count === 1 
-                ? '1 role available' 
-                : count + ' roles available';
+            var text = '· ' + count + ' roles';
             $('.wc-cgmp-section-count').text(text);
         },
 

@@ -293,6 +293,9 @@
     max-width: 100%;
     margin-bottom: 24px;
     box-sizing: border-box;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
 }
 
 .wc-cgmp-section-title {
@@ -303,8 +306,8 @@
 }
 
 .wc-cgmp-section-count {
-    margin: 4px 0 0 0;
-    font-size: 14px;
+    margin: 0;
+    font-size: 16px;
     color: var(--wc-cgmp-text-medium, #6b7280);
     pointer-events: none !important;
 }
@@ -1331,7 +1334,6 @@
     font-weight: 800;
     color: #0f172a;
     margin: 0 0 24px 0;
-    padding-right: 50px;
     line-height: 1.2;
     letter-spacing: -0.02em;
 }
@@ -1380,7 +1382,7 @@
 
 .wc-cgmp-modal-responsibilities {
     border-top: 2px dashed #e2e8f0;
-    padding-top: 32px;
+    padding-top: 32px !important;
     margin-top: 32px;
 }
 
