@@ -79,14 +79,14 @@ if ($repository && !empty($products)) {
 
         <div class="wc-cgmp-section-header">
             <h2 class="wc-cgmp-section-title" id="wc-cgmp-section-title"><?php esc_html_e('Available Services', 'wc-carousel-grid-marketplace'); ?></h2>
-            <p class="wc-cgmp-section-count">
+            <span class="wc-cgmp-section-count">
                 <?php
                 printf(
-                    _n('%s role available', '%s roles available', count($products), 'wc-carousel-grid-marketplace'),
+                    esc_html__('· %s roles', 'wc-carousel-grid-marketplace'),
                     number_format_i18n(count($products))
                 );
                 ?>
-            </p>
+            </span>
         </div>
 
         <div class="wc-cgmp-grid <?php echo $layout === 'hybrid' ? 'wc-cgmp-hybrid' : ''; ?>"
