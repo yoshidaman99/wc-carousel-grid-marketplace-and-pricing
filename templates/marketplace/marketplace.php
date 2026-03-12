@@ -122,8 +122,11 @@ if ($repository && !empty($products)) {
               data-above-link-url="<?php echo esc_attr(is_array($atts['above_link_url'] ?? '') ? ($atts['above_link_url']['url'] ?? '') : ($atts['above_link_url'] ?? '')); ?>"
               data-above-link-highlight-text="<?php echo esc_attr(is_array($atts['above_link_highlight_text'] ?? '') ? ($atts['above_link_highlight_text']['text'] ?? $atts['above_link_highlight_text'][0] ?? '') : ($atts['above_link_highlight_text'] ?? '')); ?>"
              data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>"
-             data-orderby="<?php echo esc_attr($atts['orderby'] ?? 'date'); ?>"
-             data-order="<?php echo esc_attr($atts['order'] ?? 'DESC'); ?>">
+              data-orderby="<?php echo esc_attr($atts['orderby'] ?? 'date'); ?>"
+              data-order="<?php echo esc_attr($atts['order'] ?? 'DESC'); ?>"
+              data-modal-icon-color="<?php echo esc_attr($atts['modal_icon_color'] ?? '#dc2626'); ?>"
+              data-modal-icon-size="<?php echo esc_attr($atts['modal_icon_size'] ?? 16); ?>"
+              data-modal-responsibilities-title="<?php echo esc_attr($atts['modal_responsibilities_title'] ?? 'Key Responsibilities'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);
