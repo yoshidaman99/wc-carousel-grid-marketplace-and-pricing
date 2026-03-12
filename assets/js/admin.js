@@ -16,6 +16,7 @@
             $(document).on('input', '.wc-cgmp-url-input', this.validateUrlInput);
             $(document).on('click', '.wc-cgmp-add-responsibility', this.addResponsibility);
             $(document).on('click', '.wc-cgmp-remove-responsibility', this.removeResponsibility);
+            $(document).on('click', '.wc-cgmp-add-multiple-responsibilities', this.addMultipleResponsibilities);
         },
 
         toggleMarketplace: function() {
@@ -149,6 +150,41 @@
             $(this).closest('.wc-cgmp-responsibility-item').fadeOut(200, function() {
                 $(this).remove();
             });
+        },
+
+        addMultipleResponsibilities: function(e) {
+            e.preventDefault();
+            var $textarea = $('#wc-cgmp-multi-responsibilities');
+            var $list = $('#wc-cgmp-responsibilities-list');
+            var lines = $textarea.val().split('\n');
+            
+            var items = lines.filter(function(line) {
+                return line.trim() !== '';
+            }).map(function(line) {
+                return line.trim();
+            });
+            
+            if (items.length === 0) {
+                return;
+            }
+            
+            items.forEach(function(item) {
+                var escapedItem = item.replace(/"/g, '&quot;');
+                var itemHtml = '<div class="wc-cgmp-responsibility-item">' +
+                    '<span class="wc-cgmp-drag-handle">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>' +
+                    '</span>' +
+                    '<input type="text" name="wc_cgmp_key_responsibilities[]" value="' + escapedItem + '" placeholder="Enter responsibility...">' +
+                    '<button type="button" class="wc-cgmp-remove-responsibility" title="Remove">' +
+                    '<span class="dashicons dashicons-no-alt"></span>' +
+                    '</button>' +
+                    '</div>';
+                $list.append(itemHtml);
+            });
+            
+            $textarea.val('');
+            $list.find('.wc-cgmp-responsibility-item:last-child input').focus();
+            wc_cgmp_admin.initResponsibilitiesSortable();
         },
 
         placeholderText: 'Enter prices to preview'
