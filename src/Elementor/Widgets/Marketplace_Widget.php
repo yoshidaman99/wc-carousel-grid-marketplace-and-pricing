@@ -866,6 +866,42 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
+        $this->add_control('modal_trigger_border_color', [
+            'label' => __('Border Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-trigger' => 'border-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_control('modal_trigger_border_width', [
+            'label' => __('Border Width', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 10],
+            ],
+            'default' => ['size' => 0, 'unit' => 'px'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-trigger' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
+            ],
+        ]);
+
+        $this->add_control('modal_trigger_border_radius', [
+            'label' => __('Border Radius', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px', '%'],
+            'range' => [
+                'px' => ['min' => 0, 'max' => 50],
+                '%' => ['min' => 0, 'max' => 100],
+            ],
+            'default' => ['size' => 50, 'unit' => '%'],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-modal-trigger' => 'border-radius: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
         $this->add_control('modal_heading', [
             'label' => __('Modal Container', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::HEADING,
@@ -881,16 +917,18 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
-        $this->add_control('modal_max_width', [
-            'label' => __('Max Width', 'wc-carousel-grid-marketplace-and-pricing'),
+        $this->add_control('modal_width', [
+            'label' => __('Width', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::SLIDER,
-            'size_units' => ['px'],
+            'size_units' => ['px', '%', 'vw'],
             'range' => [
-                'px' => ['min' => 300, 'max' => 800],
+                'px' => ['min' => 300, 'max' => 1200],
+                '%' => ['min' => 0, 'max' => 100],
+                'vw' => ['min' => 0, 'max' => 100],
             ],
-            'default' => ['size' => 600, 'unit' => 'px'],
+            'default' => ['size' => 510, 'unit' => 'px'],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal' => 'max-width: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-width: {{SIZE}}{{UNIT}};',
             ],
         ]);
 
@@ -2783,6 +2821,15 @@ class Marketplace_Widget extends Widget_Base
         if (!empty($settings['_element_id'])) {
             $wrapper_class .= ' elementor-element-' . $settings['_element_id'];
         }
+
+        $modal_icon_html = wc_cgmp_get_check_icon();
+        if (!empty($settings['modal_responsibilities_icon']['value'])) {
+            ob_start();
+            \Elementor\Icons_Manager::render_icon($settings['modal_responsibilities_icon'], ['aria-hidden' => 'true']);
+            $modal_icon_html = ob_get_clean();
+        }
+
+        $shortcode_atts['modal_responsibilities_icon_html'] = $modal_icon_html;
 
         echo '<div class="' . esc_attr($wrapper_class) . '">';
         echo do_shortcode('[wc_cgmp_marketplace ' . $this->build_shortcode_string($shortcode_atts) . ']');

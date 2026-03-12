@@ -198,10 +198,10 @@ class Handlers
         }
         
         $atts = [
-            'modal_responsibilities_title' => __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'),
+            'modal_responsibilities_title' => sanitize_text_field($_POST['modal_responsibilities_title'] ?? __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing')),
             'modal_responsibilities_icon_html' => wc_cgmp_get_check_icon(),
-            'modal_responsibilities_icon_color' => '#dc2626',
-            'modal_responsibilities_icon_size' => 16,
+            'modal_responsibilities_icon_color' => sanitize_hex_color($_POST['modal_icon_color'] ?? '#dc2626'),
+            'modal_responsibilities_icon_size' => absint($_POST['modal_icon_size'] ?? 16),
         ];
         
         include WC_CGMP_PLUGIN_DIR . 'templates/marketplace/product-modal.php';

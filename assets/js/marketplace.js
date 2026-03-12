@@ -884,6 +884,13 @@
             var productId = $trigger.data('product-id');
             var $card = $trigger.closest('.wc-cgmp-card');
             var $marketplace = $card.closest('.wc-cgmp-marketplace');
+            var $grid = $card.closest('.wc-cgmp-grid');
+            
+            var modalSettings = {
+                icon_color: $grid.data('modal-icon-color') || '#dc2626',
+                icon_size: $grid.data('modal-icon-size') || 16,
+                title: $grid.data('modal-responsibilities-title') || 'Key Responsibilities'
+            };
             
             WC_CGMP_Marketplace.log('Opening modal for product:', productId);
             
@@ -893,7 +900,10 @@
                 data: {
                     action: 'wc_cgmp_get_modal_content',
                     nonce: wc_cgmp_ajax.nonce,
-                    product_id: productId
+                    product_id: productId,
+                    modal_icon_color: modalSettings.icon_color,
+                    modal_icon_size: modalSettings.icon_size,
+                    modal_responsibilities_title: modalSettings.title
                 },
                 success: function(response) {
                     if (response.success) {

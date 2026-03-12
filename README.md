@@ -195,6 +195,71 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
+### 1.7.29
+- Added multi-line item input for Key Responsibilities in product edit modal
+- Users can now paste multiple items at once (one per line) for faster entry
+
+### 1.7.28
+- Added !important to modal close button background/background-image to override Elementor kit styles
+
+### 1.7.27
+- Added background-image: none to modal close button to prevent gradient overrides
+
+### 1.7.26
+- Removed background color from modal close button (transparent on static and hover)
+
+### 1.7.25
+- Fixed modal close button styling (40x40px circle, centered icon)
+- Removed rotate and transition animations from close button
+
+### 1.7.24
+- Changed modal close button height to 0
+- Changed modal default width from 640px to 510px
+
+### 1.7.23
+- Fixed modal close icon line-height to 0 for better centering
+
+### 1.7.22
+- Fixed modal close button padding to 10px for Elementor kit compatibility
+
+### 1.7.21
+- Modal width now uses CSS variable controlled by Elementor width setting
+- Changed modal width default to 640px
+
+### 1.7.20
+- Added border settings for Question Mark Icon (border color, width, radius)
+- Updated modal width control to support px, %, and vw units
+
+### 1.7.19
+- Fixed modal close button padding override for Elementor kit compatibility
+- Adjusted responsibility item gap to 5px for better spacing
+
+### 1.7.18
+- Updated modal close icon color to white with adjusted line-height
+- Simplified responsibility item styling (centered alignment, minimal padding)
+- Removed background, border, and border-radius from responsibility items
+- Removed shadow and border-radius from responsibility icons
+
+### 1.7.17
+- Removed hover effects from Key Responsibilities list items
+- Set gap and padding to 0 for responsibilities list
+- Added margin-top to question mark icon for better alignment
+
+### 1.7.16
+- Fixed: Marketplace widget no longer stretches beyond container limits
+- Added proper width constraints (max-width, box-sizing) to marketplace, grid, cards, and content
+- Fixed: Key Responsibilities icons now display correctly in modal popups
+- Fixed: Hover effects restored for responsibility list items (background, shadow, transform)
+- Improved: Tier filter buttons now wrap responsively on smaller screens
+- Added CSS variable support for dynamic modal icon sizing
+
+### 1.7.15
+- Fixed: Question mark icon now positioned at far right of card title
+- Improved: Modal popup completely redesigned with modern styling
+- Added smooth animations and hover effects on modal and responsibility items
+- Enhanced modal typography, spacing, and visual hierarchy
+- Mobile responsive improvements for modal display
+
 ### 1.7.14
 - Added modal popup feature with question mark icon trigger on card titles
 - New "Modal Content" section in product edit with rich text description (TinyMCE)
