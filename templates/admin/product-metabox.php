@@ -286,6 +286,20 @@ $tooltips['key_responsibilities'] = __('List of responsibilities shown in the mo
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Add Item', 'wc-carousel-grid-marketplace-and-pricing'); ?>
                 </button>
+                <div class="wc-cgmp-multi-add-field">
+                    <label for="wc-cgmp-multi-responsibilities">
+                        <?php esc_html_e('Quick Add (Multiple Items)', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                        <span class="wc-cgmp-tooltip">
+                            <?php echo wc_cgmp_get_help_icon(); ?>
+                            <span class="wc-cgmp-tooltip-text"><?php esc_html_e('Enter multiple items, one per line. Each line will become a separate item.', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                        </span>
+                    </label>
+                    <textarea id="wc-cgmp-multi-responsibilities" rows="5" placeholder="<?php esc_attr_e('Enter multiple items, one per line...', 'wc-carousel-grid-marketplace-and-pricing'); ?>"></textarea>
+                    <button type="button" class="button wc-cgmp-add-multiple-responsibilities">
+                        <span class="dashicons dashicons-plus-alt2"></span>
+                        <?php esc_html_e('Add Multiple Items', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
