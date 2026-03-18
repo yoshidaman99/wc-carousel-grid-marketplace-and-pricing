@@ -23,8 +23,6 @@ class Cart_Integration
         add_action('wp_ajax_nopriv_wc_cgmp_add_to_cart', [$this, 'ajax_add_to_cart']);
         add_action('wp_ajax_wc_cgmp_load_more', [$this, 'ajax_load_more']);
         add_action('wp_ajax_nopriv_wc_cgmp_load_more', [$this, 'ajax_load_more']);
-        add_action('wp_ajax_wc_cgmp_search_products', [$this, 'ajax_search_products']);
-        add_action('wp_ajax_nopriv_wc_cgmp_search_products', [$this, 'ajax_search_products']);
         add_action('wp_ajax_wc_cgmp_remove_cart_item', [$this, 'ajax_remove_cart_item']);
         add_action('wp_ajax_nopriv_wc_cgmp_remove_cart_item', [$this, 'ajax_remove_cart_item']);
         add_action('wp_ajax_wc_cgmp_update_cart_quantity', [$this, 'ajax_update_cart_quantity']);
@@ -555,90 +553,6 @@ class Cart_Integration
             'count' => count($products),
             'has_more' => $has_more,
         ]);
-    }
-
-    public function ajax_search_products(): void
-    {
-        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
-
-        if (!$this->check_rate_limit('search_products')) {
-            return;
-        }
-
-        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
-        $search = substr($search, 0, 100);
-        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
-        $limit = $load_all ? -1 : (isset($_POST['limit']) ? max(-1, (int) $_POST['limit']) : 12);
-        $tier = isset($_POST['tier']) ? absint($_POST['tier']) : 0;
-        $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
-        $order = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
-
-        if (strlen($search) < 2) {
-            wp_send_json_success(['html' => '', 'count' => 0]);
-            return;
-        }
-
-        $plugin = wc_cgmp();
-        $repository = $plugin->get_service('repository');
-
-        $products = $repository->search_products($search, ['limit' => $limit, 'marketplace_only' => true, 'orderby' => $orderby, 'order' => $order]);
-
-        $safeSanitize = function($key, $default = '') {
-            $val = $_POST[$key] ?? $default;
-            if (is_array($val)) {
-                return $val['value'] ?? $val['url'] ?? $val[0] ?? $default;
-            }
-            return sanitize_text_field($val);
-        };
-
-        $atts = [
-            'show_tier_badge' => $safeSanitize('show_tier_badge', 'true'),
-            'show_tier_description' => $safeSanitize('show_tier_description', 'true'),
-            'show_popular_badge' => $safeSanitize('show_popular_badge', 'true'),
-            'popular_badge_text' => $safeSanitize('popular_badge_text', 'Popular'),
-            'show_popular_mark' => $safeSanitize('show_popular_mark', 'false'),
-            'popular_mark_text' => $safeSanitize('popular_mark_text', '‹popular›'),
-            'price_display_mode' => $safeSanitize('price_display_mode', 'both'),
-            'show_price_prefix' => $safeSanitize('show_price_prefix', 'false'),
-            'price_prefix_text' => $safeSanitize('price_prefix_text', ''),
-            'price_prefix_separator' => $safeSanitize('price_prefix_separator', '|'),
-            'price_prefix_position' => $safeSanitize('price_prefix_position', 'inline'),
-            'columns' => absint($_POST['columns'] ?? 3),
-            'layout' => $safeSanitize('layout', 'grid'),
-            'selected_tier' => $tier,
-            'show_headcount' => $safeSanitize('show_headcount', 'true'),
-            'show_total' => $safeSanitize('show_total', 'true'),
-            'enable_button_override' => $safeSanitize('enable_button_override', 'false'),
-            'override_button_text' => $safeSanitize('override_button_text', 'Get Quote'),
-            'override_button_url' => esc_url_raw($_POST['override_button_url'] ?? ''),
-            'include_total_param' => $safeSanitize('include_total_param', 'true'),
-            'total_url_param' => $safeSanitize('total_url_param', 'total'),
-            'open_in_new_tab' => $safeSanitize('open_in_new_tab', 'true'),
-            'enable_above_button_link' => $safeSanitize('enable_above_button_link', 'false'),
-            'above_link_icon' => isset($_POST['above_link_icon']) ? sanitize_text_field($_POST['above_link_icon']) : '',
-            'above_link_text' => $safeSanitize('above_link_text', ''),
-            'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
-            'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
-            'above_link_open_new_tab' => $safeSanitize('above_link_open_new_tab', 'true'),
-            'remove_price_decimals' => $safeSanitize('remove_price_decimals', 'false'),
-            'card_desc_limit' => absint($_POST['card_desc_limit'] ?? 75),
-        ];
-
-        // Batch preload tiers to eliminate N+1 queries
-        if (!empty($products)) {
-            $repository->preload_tiers(array_map('intval', $products));
-        }
-
-        ob_start();
-        foreach ($products as $product_id) {
-            $product = wc_get_product($product_id);
-            if ($product) {
-                echo \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
-            }
-        }
-        $html = ob_get_clean();
-
-        wp_send_json_success(['html' => $html, 'count' => count($products), 'columns' => $atts['columns']]);
     }
 
     public function ajax_remove_cart_item(): void

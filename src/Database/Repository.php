@@ -602,10 +602,9 @@ class Repository
         }
 
         if (!empty($args['search'])) {
-            $search_term = sanitize_text_field($args['search']);
+            $search_term = trim($args['search']);
             $this->current_search_term = $search_term;
             add_filter('posts_where', [$this, 'filter_search_by_title_only'], 10, 2);
-            $query_args['s'] = $search_term;
         }
 
         if ($args['orderby'] === 'popularity') {
@@ -672,13 +671,7 @@ class Repository
     {
         global $wpdb;
 
-        if (!empty($this->current_search_term) && $query->is_main_query()) {
-            $where = preg_replace(
-                "/AND\s*\(\(.*?{$wpdb->posts}\.post_title\s+LIKE\s+[^)]+\)\s+OR\s*\([^)]+\)\s+OR\s*\([^)]+\)\s*\)/",
-                "",
-                $where
-            );
-
+        if (!empty($this->current_search_term)) {
             $search_term = '%' . $wpdb->esc_like($this->current_search_term) . '%';
             $where .= $wpdb->prepare(
                 " AND ({$wpdb->posts}.post_title LIKE %s)",

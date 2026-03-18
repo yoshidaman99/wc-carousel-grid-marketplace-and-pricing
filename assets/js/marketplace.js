@@ -92,7 +92,8 @@
             $(document).on('change', '.wc-cgmp-tier-select', this.updateTierPrice);
             $(document).on('change', '.wc-cgmp-switch-input', this.updatePriceType);
             $(document).on('click', '.wc-cgmp-load-more', this.loadMore);
-            $(document).on('input', '.wc-cgmp-search-input', this.debounce(this.searchProducts, 300));
+            $(document).on('click', '.wc-cgmp-search-btn', this.triggerSearch);
+            $(document).on('keydown', '.wc-cgmp-search-input', this.handleSearchKeydown);
             $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
             $(document).on('click', '.wc-cgmp-cart-qty-btn', this.updateCartQuantity);
             $(document).on('click', '.wc-cgmp-modal-trigger', this.openModal);
@@ -450,10 +451,27 @@
             });
         },
 
-        searchProducts: function(e) {
-            var search = $(e.target).val();
-            var $grid = $('.wc-cgmp-grid');
-            var $marketplace = $grid.closest('.wc-cgmp-marketplace');
+        triggerSearch: function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var $marketplace = $btn.closest('.wc-cgmp-marketplace');
+            var $input = $marketplace.find('.wc-cgmp-search-input');
+            WC_CGMP_Marketplace.performSearch($input, $marketplace);
+        },
+
+        handleSearchKeydown: function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                var $input = $(this);
+                var $marketplace = $input.closest('.wc-cgmp-marketplace');
+                WC_CGMP_Marketplace.performSearch($input, $marketplace);
+            }
+        },
+
+        performSearch: function($input, $marketplace) {
+            var search = $.trim($input.val());
+            console.log('[WC_CGMP] Search triggered:', { value: search, length: search.length });
+            var $grid = $marketplace.find('.wc-cgmp-grid');
             var loadAll = $marketplace.attr('data-load-all') === 'true';
             var limit = loadAll ? -1 : (parseInt($marketplace.attr('data-limit')) || 12);
             var gridAtts = WC_CGMP_Marketplace.getGridAtts();
