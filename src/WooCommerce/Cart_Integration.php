@@ -331,12 +331,61 @@ class Cart_Integration
         }
 
         ob_start();
-        foreach ($products as $product_id) {
-            $product = wc_get_product($product_id);
-            if ($product) {
-                echo \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+
+        echo '<div class="wc-cgmp-grid ' . ($atts['layout'] === 'hybrid' ? 'wc-cgmp-hybrid' : '') . '"';
+        echo ' data-current-category="' . esc_attr($category) . '"';
+        echo ' data-current-tier="' . esc_attr($tier) . '"';
+        echo ' data-show-tier-badge="' . esc_attr($atts['show_tier_badge']) . '"';
+        echo ' data-show-tier-description="' . esc_attr($atts['show_tier_description']) . '"';
+        echo ' data-show-search="false"';
+        echo ' data-show-sidebar="true"';
+        echo ' data-show-filter="true"';
+        echo ' data-columns="' . esc_attr($atts['columns']) . '"';
+        echo ' data-layout="' . esc_attr($atts['layout']) . '"';
+        echo ' data-show-popular-badge="' . esc_attr($atts['show_popular_badge']) . '"';
+        echo ' data-popular-badge-text="' . esc_attr($atts['popular_badge_text']) . '"';
+        echo ' data-show-popular-mark="' . esc_attr($atts['show_popular_mark']) . '"';
+        echo ' data-popular-mark-text="' . esc_attr($atts['popular_mark_text']) . '"';
+        echo ' data-price-display-mode="' . esc_attr($atts['price_display_mode']) . '"';
+        echo ' data-show-price-prefix="' . esc_attr($atts['show_price_prefix']) . '"';
+        echo ' data-price-prefix-text="' . esc_attr($atts['price_prefix_text']) . '"';
+        echo ' data-price-prefix-separator="' . esc_attr($atts['price_prefix_separator']) . '"';
+        echo ' data-price-prefix-position="' . esc_attr($atts['price_prefix_position']) . '"';
+        echo ' data-show-headcount="' . esc_attr($atts['show_headcount']) . '"';
+        echo ' data-show-total="' . esc_attr($atts['show_total']) . '"';
+        echo ' data-enable-button-override="' . esc_attr($atts['enable_button_override']) . '"';
+        echo ' data-override-button-text="' . esc_attr($atts['override_button_text']) . '"';
+        echo ' data-override-button-url="' . esc_attr($atts['override_button_url']) . '"';
+        echo ' data-include-total-param="' . esc_attr($atts['include_total_param']) . '"';
+        echo ' data-total-url-param="' . esc_attr($atts['total_url_param']) . '"';
+        echo ' data-open-in-new-tab="' . esc_attr($atts['open_in_new_tab']) . '"';
+        echo ' data-enable-above-button-link="' . esc_attr($atts['enable_above_button_link']) . '"';
+        echo ' data-above-link-icon="' . esc_attr($atts['above_link_icon']) . '"';
+        echo ' data-above-link-text="' . esc_attr($atts['above_link_text']) . '"';
+        echo ' data-above-link-url="' . esc_attr($atts['above_link_url']) . '"';
+        echo ' data-above-link-highlight-text="' . esc_attr($atts['above_link_highlight_text']) . '"';
+        echo ' data-above-link-open-new-tab="' . esc_attr($atts['above_link_open_new_tab']) . '"';
+        echo ' data-orderby="' . esc_attr($orderby) . '"';
+        echo ' data-order="' . esc_attr($order) . '"';
+        echo ' data-modal-icon-color="#dc2626"';
+        echo ' data-modal-icon-size="16"';
+        echo ' data-modal-responsibilities-title="Key Responsibilities"';
+        echo ' data-remove-price-decimals="' . esc_attr($atts['remove_price_decimals']) . '"';
+        echo '>';
+
+        if (!empty($products)) {
+            foreach ($products as $product_id) {
+                $product = wc_get_product($product_id);
+                if ($product) {
+                    echo \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+                }
             }
+        } else {
+            echo '<div class="wc-cgmp-no-products"><p>' . esc_html__('No services found matching your criteria.', 'wc-carousel-grid-marketplace') . '</p></div>';
         }
+
+        echo '</div>';
+
         $html = ob_get_clean();
 
         wp_send_json_success(['html' => $html, 'count' => count($products)]);
