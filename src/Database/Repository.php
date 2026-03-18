@@ -9,6 +9,7 @@ class Repository
     private $wpdb;
     private string $tiers_table;
     private string $sales_table;
+    private $current_search_term = null;
 
     public function __construct()
     {
@@ -535,11 +536,16 @@ class Repository
         ];
 
         $args = wp_parse_args($args, $defaults);
-        $cache_key = 'wc_cgmp_products_' . md5(wp_json_encode($args));
-        $cached = wp_cache_get($cache_key, 'wc_cgmp');
 
-        if (false !== $cached) {
-            return $cached;
+        $skip_cache = !empty($args['search']);
+
+        if (!$skip_cache) {
+            $cache_key = 'wc_cgmp_products_' . md5(wp_json_encode($args));
+            $cached = wp_cache_get($cache_key, 'wc_cgmp');
+
+            if (false !== $cached) {
+                return $cached;
+            }
         }
 
         $query_args = [
@@ -596,7 +602,10 @@ class Repository
         }
 
         if (!empty($args['search'])) {
-            $query_args['s'] = sanitize_text_field($args['search']);
+            $search_term = sanitize_text_field($args['search']);
+            $this->current_search_term = $search_term;
+            add_filter('posts_where', [$this, 'filter_search_by_title_only'], 10, 2);
+            $query_args['s'] = $search_term;
         }
 
         if ($args['orderby'] === 'popularity') {
@@ -652,9 +661,35 @@ class Repository
         $query = new \WP_Query($query_args);
         $products = $query->posts;
 
-        wp_cache_set($cache_key, $products, 'wc_cgmp', HOUR_IN_SECONDS);
+        if (!$skip_cache) {
+            wp_cache_set($cache_key, $products, 'wc_cgmp', HOUR_IN_SECONDS);
+        }
 
         return $products;
+    }
+
+    public function filter_search_by_title_only($where, $query)
+    {
+        global $wpdb;
+
+        if (!empty($this->current_search_term) && $query->is_main_query()) {
+            $where = preg_replace(
+                "/AND\s*\(\(.*?{$wpdb->posts}\.post_title\s+LIKE\s+[^)]+\)\s+OR\s*\([^)]+\)\s+OR\s*\([^)]+\)\s*\)/",
+                "",
+                $where
+            );
+
+            $search_term = '%' . $wpdb->esc_like($this->current_search_term) . '%';
+            $where .= $wpdb->prepare(
+                " AND ({$wpdb->posts}.post_title LIKE %s)",
+                $search_term
+            );
+
+            remove_filter('posts_where', [$this, 'filter_search_by_title_only']);
+            $this->current_search_term = null;
+        }
+
+        return $where;
     }
 
     public function get_products_by_category(int $category_id, array $args = []): array
