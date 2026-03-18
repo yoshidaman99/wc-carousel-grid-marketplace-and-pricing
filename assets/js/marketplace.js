@@ -280,7 +280,7 @@
                 price_prefix_text: $grid.data('price-prefix-text') ?? '',
                 price_prefix_separator: $grid.data('price-prefix-separator') ?? '|',
                 price_prefix_position: $grid.data('price-prefix-position') ?? 'inline',
-                remove_price_decimals: $grid.data('remove-price-decimals') ?? 'false',
+                remove_price_decimals: $grid.attr('data-remove-price-decimals') ?? 'false',
                 columns: $grid.data('columns') ?? 3,
                 layout: $grid.data('layout') ?? 'grid',
                 show_headcount: $grid.data('show-headcount') ?? 'true',
@@ -876,12 +876,12 @@
             if ($context && $context.length) {
                 var $panel = $context.closest('.wc-cgmp-pricing-panel');
                 if ($panel.length) {
-                    removeDecimals = $panel.data('remove-decimals') === true || $panel.attr('data-remove-decimals') === 'true';
+                    removeDecimals = $panel.attr('data-remove-decimals') === 'true';
                 }
                 if (!removeDecimals) {
                     var $grid = $context.closest('.wc-cgmp-grid');
                     if ($grid.length) {
-                        removeDecimals = $grid.data('remove-price-decimals') === 'true';
+                        removeDecimals = $grid.attr('data-remove-price-decimals') === 'true';
                     }
                 }
             }
