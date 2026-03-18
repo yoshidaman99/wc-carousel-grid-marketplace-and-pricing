@@ -89,11 +89,11 @@ $show_modal_trigger = $enable_modal && $has_modal_content;
 
     <p class="wc-cgmp-card-desc">
         <?php
-        $description = $product->get_description();
-        if ($description) {
-            echo esc_html(wp_trim_words($description, 30, '...'));
+        $description = $product->get_description() ?: $product->get_short_description();
+        if (strlen($description) > 81) {
+            echo esc_html(substr($description, 0, 81)) . '...';
         } else {
-            echo esc_html(wp_trim_words($product->get_short_description(), 30, '...'));
+            echo esc_html($description);
         }
         ?>
     </p>

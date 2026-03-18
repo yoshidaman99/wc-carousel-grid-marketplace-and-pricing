@@ -436,6 +436,7 @@
     line-height: 1.5;
     color: var(--wc-cgmp-text-medium, #6b7280);
     transition: none;
+    min-height: 42px;
 }
 
 .wc-cgmp-card-desc a,
