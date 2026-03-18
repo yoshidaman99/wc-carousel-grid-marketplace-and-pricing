@@ -28,15 +28,24 @@
 
 .wc-cgmp-sidebar-header h3 {
     margin: 0 0 4px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--wc-cgmp-text-dark, #1f2937);
+    font-size: var(--wc-cgmp-sidebar-h3-size, 16px);
+    font-weight: var(--wc-cgmp-sidebar-h3-weight, 600);
+    color: var(--wc-cgmp-sidebar-h3-color, #1f2937);
+    line-height: var(--wc-cgmp-sidebar-h3-height, 1.4);
+    letter-spacing: var(--wc-cgmp-sidebar-h3-spacing, normal);
+    text-transform: var(--wc-cgmp-sidebar-h3-transform, none);
+    font-style: var(--wc-cgmp-sidebar-h3-style, normal);
 }
 
 .wc-cgmp-sidebar-header p {
     margin: 0 0 20px 0;
-    font-size: 13px;
-    color: var(--wc-cgmp-text-medium, #6b7280);
+    font-size: var(--wc-cgmp-sidebar-p-size, 13px);
+    font-weight: var(--wc-cgmp-sidebar-p-weight, 400);
+    color: var(--wc-cgmp-sidebar-p-color, #6b7280);
+    line-height: var(--wc-cgmp-sidebar-p-height, 1.5);
+    letter-spacing: var(--wc-cgmp-sidebar-p-spacing, normal);
+    text-transform: var(--wc-cgmp-sidebar-p-transform, none);
+    font-style: var(--wc-cgmp-sidebar-p-style, normal);
     pointer-events: none !important;
 }
 
@@ -436,7 +445,7 @@
     line-height: 1.5;
     color: var(--wc-cgmp-text-medium, #6b7280);
     transition: none;
-    min-height: 42px;
+    min-height: 60px;
 }
 
 .wc-cgmp-card-desc a,

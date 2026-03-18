@@ -181,6 +181,15 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
+        $this->add_control('card_desc_limit', [
+            'label' => __('Card Description Limit', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::NUMBER,
+            'min' => 0,
+            'max' => 500,
+            'default' => 75,
+            'description' => __('Maximum characters for card description. Set to 0 to hide.', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
         $this->end_controls_section();
 
         $this->start_controls_section('layout_section', [
@@ -2732,7 +2741,7 @@ class Marketplace_Widget extends Widget_Base
 
         $this->add_group_control(Group_Control_Typography::get_type(), [
             'name' => 'sidebar_header_title_typography',
-            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header h3',
+            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header h3, {{WRAPPER}} .wc-cgmp-sidebar',
             'global' => ['default' => Global_Typography::TYPOGRAPHY_PRIMARY],
         ]);
 
@@ -2741,7 +2750,8 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::COLOR,
             'default' => '#1f2937',
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-sidebar-header h3' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .wc-cgmp-sidebar-header h3' => 'color: {{VALUE}}; --wc-cgmp-sidebar-h3-color: {{VALUE}};',
+                '{{WRAPPER}} .wc-cgmp-sidebar' => '--wc-cgmp-sidebar-h3-color: {{VALUE}};',
             ],
         ]);
 
@@ -2770,7 +2780,7 @@ class Marketplace_Widget extends Widget_Base
 
         $this->add_group_control(Group_Control_Typography::get_type(), [
             'name' => 'sidebar_header_desc_typography',
-            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header p',
+            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header p, {{WRAPPER}} .wc-cgmp-sidebar',
             'global' => ['default' => Global_Typography::TYPOGRAPHY_SECONDARY],
         ]);
 
@@ -2779,7 +2789,8 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::COLOR,
             'default' => '#6b7280',
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-sidebar-header p' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .wc-cgmp-sidebar-header p' => 'color: {{VALUE}}; --wc-cgmp-sidebar-p-color: {{VALUE}};',
+                '{{WRAPPER}} .wc-cgmp-sidebar' => '--wc-cgmp-sidebar-p-color: {{VALUE}};',
             ],
         ]);
 
@@ -3112,6 +3123,7 @@ class Marketplace_Widget extends Widget_Base
             'modal_icon_color' => $settings['modal_icon_color'] ?? '#dc2626',
             'modal_icon_size' => $settings['modal_icon_size']['size'] ?? 16,
             'remove_price_decimals' => ($settings['remove_price_decimals'] ?? 'no') === 'yes' ? 'true' : 'false',
+            'card_desc_limit' => $settings['card_desc_limit'] ?? 75,
         ];
 
         $shadow_class = '';
@@ -3161,6 +3173,7 @@ class Marketplace_Widget extends Widget_Base
         var popularBadgeText = settings.popular_badge_text || 'Popular';
         var columns = settings.columns || '3';
         var defaultTier = settings.default_tier || '1';
+        var descLimit = settings.card_desc_limit !== undefined ? parseInt(settings.card_desc_limit) : 75;
 
         var tierLabels = { '0': 'All', '1': 'Entry', '2': 'Mid', '3': 'Expert' };
         var tierColors = {
@@ -3242,7 +3255,9 @@ class Marketplace_Widget extends Widget_Base
                             }
                             #>
                         </h3>
-                        <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5; min-height: 42px;"><# var truncatedDesc = product.desc.length > 75 ? product.desc.substring(0, 75) + '...' : product.desc; #>{{{truncatedDesc}}}</p>
+                        <# if (descLimit > 0) { #>
+                        <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5; min-height: 60px;"><# var truncatedDesc = product.desc.length > descLimit ? product.desc.substring(0, descLimit) + '...' : product.desc; #>{{{truncatedDesc}}}</p>
+                        <# } #>
                         <div class="wc-cgmp-pricing-panel" data-tier="{{product.tier}}" style="border-radius: 8px; padding: 12px; margin-bottom: 12px;">
                             <#
                             var priceDisplay = '';

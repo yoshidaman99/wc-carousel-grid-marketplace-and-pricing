@@ -87,16 +87,21 @@ $show_modal_trigger = $enable_modal && $has_modal_content;
     </div>
     <?php endif; ?>
 
+    <?php
+    $desc_limit = isset($args['card_desc_limit']) ? (int) $args['card_desc_limit'] : 75;
+    if ($desc_limit > 0) :
+        $description = $product->get_description() ?: $product->get_short_description();
+    ?>
     <p class="wc-cgmp-card-desc">
         <?php
-        $description = $product->get_description() ?: $product->get_short_description();
-        if (strlen($description) > 75) {
-            echo esc_html(substr($description, 0, 75)) . '...';
+        if (strlen($description) > $desc_limit) {
+            echo esc_html(substr($description, 0, $desc_limit)) . '...';
         } else {
             echo esc_html($description);
         }
         ?>
     </p>
+    <?php endif; ?>
 
     <?php echo \WC_CGMP\Frontend\Marketplace::render_pricing_panel($product, $tiers, $atts); ?>
 
