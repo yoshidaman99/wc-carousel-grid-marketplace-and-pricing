@@ -517,7 +517,16 @@
                         if (WC_CGMP_Marketplace.currentTier > 0) {
                             WC_CGMP_Marketplace.updateAllPricingPanels(WC_CGMP_Marketplace.currentTier);
                         }
+                    } else {
+                        var errorMsg = response.data && response.data.message ? response.data.message : 'Search failed. Please try again.';
+                        $grid.html('<div class="wc-cgmp-search-error" style="padding:20px;text-align:center;color:#666;">' + errorMsg + '</div>');
+                        WC_CGMP_Marketplace.updateSectionHeader(0, '');
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Search AJAX error:', status, error);
+                    $grid.html('<div class="wc-cgmp-search-error" style="padding:20px;text-align:center;color:#666;">Search failed. Please try again.</div>');
+                    WC_CGMP_Marketplace.updateSectionHeader(0, '');
                 },
                 complete: function() {
                     WC_CGMP_Marketplace.hideLoading();

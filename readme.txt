@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.8.14
+Stable tag: 1.8.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,12 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 4. WooCommerce reports by tier
 
 == Changelog ==
+
+= 1.8.16 =
+* New: Search now filters marketplace cards by title only (not content)
+* Fix: Improved search error handling with user-friendly messages
+* Fix: Skip caching for search queries to ensure fresh results
+* Fix: Search AJAX error handling now displays error messages to users
 
 = 1.8.1 =
 * Fix: WC Marketplace widget layout consistency when clicking sidebar service categories

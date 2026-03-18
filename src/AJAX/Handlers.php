@@ -231,51 +231,69 @@ class Handlers
 
     public function handle_search_products(): void
     {
-        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+        try {
+            check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
 
-        if (!$this->check_rate_limit('search_products')) {
-            return;
-        }
-
-        $search = sanitize_text_field($_POST['search'] ?? '');
-        $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
-        $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
-        $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
-        $order = sanitize_text_field($_POST['order'] ?? 'DESC');
-
-        if (strlen($search) < 2) {
-            wp_send_json_error(['message' => __('Search term too short', 'wc-carousel-grid-marketplace-and-pricing')]);
-            return;
-        }
-
-        $plugin = wc_cgmp();
-        $repository = $plugin->get_service('repository');
-        $atts = $this->build_atts_from_request();
-
-        $args = [
-            'search' => $search,
-            'tier' => $tier,
-            'limit' => $limit > 0 ? $limit : -1,
-            'orderby' => $orderby,
-            'order' => $order,
-            'marketplace_only' => true,
-        ];
-
-        $product_ids = $repository->get_marketplace_products($args);
-
-        $html = '';
-        foreach ($product_ids as $product_id) {
-            $product = wc_get_product($product_id);
-            if ($product) {
-                $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+            if (!$this->check_rate_limit('search_products')) {
+                wp_send_json_error([
+                    'message' => __('Too many requests. Please wait a moment and try again.', 'wc-carousel-grid-marketplace-and-pricing'),
+                ]);
+                return;
             }
-        }
 
-        wp_send_json_success([
-            'html' => $html,
-            'count' => count($product_ids),
-            'columns' => (int) ($atts['columns'] ?? 3),
-        ]);
+            $search = sanitize_text_field($_POST['search'] ?? '');
+            $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
+            $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
+            $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
+            $order = sanitize_text_field($_POST['order'] ?? 'DESC');
+
+            if (strlen($search) < 2) {
+                wp_send_json_error(['message' => __('Please enter at least 2 characters', 'wc-carousel-grid-marketplace-and-pricing')]);
+                return;
+            }
+
+            $plugin = wc_cgmp();
+            $repository = $plugin->get_service('repository');
+            $atts = $this->build_atts_from_request();
+
+            $args = [
+                'search' => $search,
+                'tier' => $tier,
+                'limit' => $limit > 0 ? $limit : -1,
+                'orderby' => $orderby,
+                'order' => $order,
+                'marketplace_only' => true,
+            ];
+
+            $product_ids = $repository->get_marketplace_products($args);
+
+            if (empty($product_ids)) {
+                wp_send_json_success([
+                    'html' => '<div class="wc-cgmp-no-results" style="padding:20px;text-align:center;color:#666;">' . __('No products found matching your search.', 'wc-carousel-grid-marketplace-and-pricing') . '</div>',
+                    'count' => 0,
+                    'columns' => (int) ($atts['columns'] ?? 3),
+                ]);
+                return;
+            }
+
+            $html = '';
+            foreach ($product_ids as $product_id) {
+                $product = wc_get_product($product_id);
+                if ($product) {
+                    $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+                }
+            }
+
+            wp_send_json_success([
+                'html' => $html,
+                'count' => count($product_ids),
+                'columns' => (int) ($atts['columns'] ?? 3),
+            ]);
+        } catch (\Exception $e) {
+            wp_send_json_error([
+                'message' => __('An error occurred while searching. Please try again.', 'wc-carousel-grid-marketplace-and-pricing'),
+            ]);
+        }
     }
 
     public function handle_filter_products(): void
