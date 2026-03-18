@@ -17,6 +17,10 @@ class Handlers
         add_action('wp_ajax_wc_cgmp_get_tier_price', [$this, 'handle_get_tier_price']);
         add_action('wp_ajax_nopriv_wc_cgmp_get_modal_content', [$this, 'handle_get_modal_content']);
         add_action('wp_ajax_wc_cgmp_get_modal_content', [$this, 'handle_get_modal_content']);
+        add_action('wp_ajax_nopriv_wc_cgmp_search_products', [$this, 'handle_search_products']);
+        add_action('wp_ajax_wc_cgmp_search_products', [$this, 'handle_search_products']);
+        add_action('wp_ajax_nopriv_wc_cgmp_filter_products', [$this, 'handle_filter_products']);
+        add_action('wp_ajax_wc_cgmp_filter_products', [$this, 'handle_filter_products']);
     }
 
     private function check_rate_limit(string $action): bool
@@ -223,5 +227,150 @@ class Handlers
         set_transient($cache_key, $html, HOUR_IN_SECONDS);
 
         wp_send_json_success(['html' => $html, 'cached' => false]);
+    }
+
+    public function handle_search_products(): void
+    {
+        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('search_products')) {
+            return;
+        }
+
+        $search = sanitize_text_field($_POST['search'] ?? '');
+        $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
+        $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
+        $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
+        $order = sanitize_text_field($_POST['order'] ?? 'DESC');
+
+        if (strlen($search) < 2) {
+            wp_send_json_error(['message' => __('Search term too short', 'wc-carousel-grid-marketplace-and-pricing')]);
+            return;
+        }
+
+        $args = [
+            'status' => 'publish',
+            'limit' => $limit > 0 ? $limit : -1,
+            'orderby' => $orderby,
+            'order' => $order,
+            's' => $search,
+        ];
+
+        if ($tier > 0) {
+            $args['meta_query'] = [
+                [
+                    'key' => '_wc_cgmp_enabled',
+                    'value' => 'yes',
+                ],
+            ];
+        }
+
+        $products_query = new \WC_Product_Query($args);
+        $products = $products_query->get_products();
+
+        $plugin = wc_cgmp();
+        $repository = $plugin->get_service('repository');
+        $atts = $this->build_atts_from_request();
+
+        $html = '';
+        foreach ($products as $product) {
+            $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+        }
+
+        wp_send_json_success([
+            'html' => $html,
+            'count' => count($products),
+            'columns' => (int) ($atts['columns'] ?? 3),
+        ]);
+    }
+
+    public function handle_filter_products(): void
+    {
+        check_ajax_referer('wc_cgmp_frontend_nonce', 'nonce');
+
+        if (!$this->check_rate_limit('filter_products')) {
+            return;
+        }
+
+        $category = isset($_POST['category']) ? (int) $_POST['category'] : 0;
+        $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
+        $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
+        $offset = isset($_POST['offset']) ? (int) $_POST['offset'] : 0;
+        $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
+        $order = sanitize_text_field($_POST['order'] ?? 'DESC');
+
+        $args = [
+            'status' => 'publish',
+            'limit' => $limit > 0 ? $limit : -1,
+            'offset' => $offset,
+            'orderby' => $orderby,
+            'order' => $order,
+        ];
+
+        if ($category > 0) {
+            $args['category'] = [$category];
+        }
+
+        if ($tier > 0) {
+            $args['meta_query'] = [
+                [
+                    'key' => '_wc_cgmp_enabled',
+                    'value' => 'yes',
+                ],
+            ];
+        }
+
+        $products_query = new \WC_Product_Query($args);
+        $products = $products_query->get_products();
+
+        $plugin = wc_cgmp();
+        $repository = $plugin->get_service('repository');
+        $atts = $this->build_atts_from_request();
+
+        $html = '';
+        foreach ($products as $product) {
+            $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+        }
+
+        wp_send_json_success([
+            'html' => $html,
+            'count' => count($products),
+            'columns' => (int) ($atts['columns'] ?? 3),
+        ]);
+    }
+
+    private function build_atts_from_request(): array
+    {
+        return [
+            'show_tier_badge' => sanitize_text_field($_POST['show_tier_badge'] ?? 'true'),
+            'show_tier_description' => sanitize_text_field($_POST['show_tier_description'] ?? 'true'),
+            'show_popular_badge' => sanitize_text_field($_POST['show_popular_badge'] ?? 'true'),
+            'popular_badge_text' => sanitize_text_field($_POST['popular_badge_text'] ?? 'Popular'),
+            'price_display_mode' => sanitize_text_field($_POST['price_display_mode'] ?? 'both'),
+            'show_price_prefix' => sanitize_text_field($_POST['show_price_prefix'] ?? 'false'),
+            'price_prefix_text' => sanitize_text_field($_POST['price_prefix_text'] ?? ''),
+            'price_prefix_separator' => sanitize_text_field($_POST['price_prefix_separator'] ?? '|'),
+            'price_prefix_position' => sanitize_text_field($_POST['price_prefix_position'] ?? 'inline'),
+            'columns' => sanitize_text_field($_POST['columns'] ?? '3'),
+            'layout' => sanitize_text_field($_POST['layout'] ?? 'grid'),
+            'show_headcount' => sanitize_text_field($_POST['show_headcount'] ?? 'true'),
+            'show_total' => sanitize_text_field($_POST['show_total'] ?? 'true'),
+            'enable_button_override' => sanitize_text_field($_POST['enable_button_override'] ?? 'false'),
+            'override_button_text' => sanitize_text_field($_POST['override_button_text'] ?? 'Get Quote'),
+            'override_button_url' => sanitize_text_field($_POST['override_button_url'] ?? ''),
+            'include_total_param' => sanitize_text_field($_POST['include_total_param'] ?? 'true'),
+            'total_url_param' => sanitize_text_field($_POST['total_url_param'] ?? 'total'),
+            'open_in_new_tab' => sanitize_text_field($_POST['open_in_new_tab'] ?? 'true'),
+            'enable_above_button_link' => sanitize_text_field($_POST['enable_above_button_link'] ?? 'false'),
+            'above_link_icon' => sanitize_text_field($_POST['above_link_icon'] ?? ''),
+            'above_link_text' => sanitize_text_field($_POST['above_link_text'] ?? ''),
+            'above_link_url' => sanitize_text_field($_POST['above_link_url'] ?? ''),
+            'above_link_highlight_text' => sanitize_text_field($_POST['above_link_highlight_text'] ?? ''),
+            'above_link_open_new_tab' => sanitize_text_field($_POST['above_link_open_new_tab'] ?? 'true'),
+            'orderby' => sanitize_text_field($_POST['orderby'] ?? 'date'),
+            'order' => sanitize_text_field($_POST['order'] ?? 'DESC'),
+            'remove_price_decimals' => sanitize_text_field($_POST['remove_price_decimals'] ?? 'false'),
+            'card_desc_limit' => sanitize_text_field($_POST['card_desc_limit'] ?? '75'),
+        ];
     }
 }

@@ -10,7 +10,7 @@ $admin_notice = $admin_notice ?? '';
 $columns = (int) ($atts['columns'] ?? 3);
 $show_sidebar = ($atts['show_sidebar'] ?? 'true') === 'true';
 $show_filter = ($atts['show_filter'] ?? 'true') === 'true';
-$show_search = ($atts['show_search'] ?? 'false') === 'true';
+$show_search = ($atts['show_search'] ?? 'true') === 'true';
 $layout = $atts['layout'] ?? 'grid';
 $mobile_carousel = ($atts['mobile_carousel'] ?? 'true') === 'true';
 $class = $atts['class'] ?? '';
