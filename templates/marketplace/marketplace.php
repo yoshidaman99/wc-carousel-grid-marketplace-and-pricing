@@ -124,8 +124,9 @@ if ($repository && !empty($products)) {
               data-orderby="<?php echo esc_attr($atts['orderby'] ?? 'date'); ?>"
               data-order="<?php echo esc_attr($atts['order'] ?? 'DESC'); ?>"
               data-modal-icon-color="<?php echo esc_attr($atts['modal_icon_color'] ?? '#dc2626'); ?>"
-              data-modal-icon-size="<?php echo esc_attr($atts['modal_icon_size'] ?? 16); ?>"
-              data-modal-responsibilities-title="<?php echo esc_attr($atts['modal_responsibilities_title'] ?? 'Key Responsibilities'); ?>">
+               data-modal-icon-size="<?php echo esc_attr($atts['modal_icon_size'] ?? 16); ?>"
+               data-modal-responsibilities-title="<?php echo esc_attr($atts['modal_responsibilities_title'] ?? 'Key Responsibilities'); ?>"
+               data-remove-price-decimals="<?php echo esc_attr($atts['remove_price_decimals'] ?? 'false'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);

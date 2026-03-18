@@ -119,6 +119,7 @@ class Marketplace
         $show_price_prefix = ($atts['show_price_prefix'] ?? 'true') === 'true';
         $price_prefix_text_raw = $atts['price_prefix_text'] ?? 'Starting at';
         $price_prefix_text = is_array($price_prefix_text_raw) ? ($price_prefix_text_raw['text'] ?? $price_prefix_text_raw[0] ?? 'Starting at') : $price_prefix_text_raw;
+        $remove_decimals = ($atts['remove_price_decimals'] ?? 'false') === 'true';
         ?>
         <div class="wc-cgmp-pricing-panel"
              data-product-id="<?php echo esc_attr($product_id); ?>"
@@ -127,6 +128,7 @@ class Marketplace
              data-product-price="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
              data-default-tier="<?php echo esc_attr($default_tier_level); ?>"
              data-default-price-type="<?php echo esc_attr($default_price_type); ?>"
+             data-remove-decimals="<?php echo $remove_decimals ? 'true' : 'false'; ?>"
              <?php foreach ([1, 2, 3] as $level) : ?>
              data-tier-<?php echo esc_attr($level); ?>-hourly="<?php echo esc_attr($tier_data[$level]['hourly']); ?>"
              data-tier-<?php echo esc_attr($level); ?>-monthly="<?php echo esc_attr($tier_data[$level]['monthly']); ?>"
@@ -140,7 +142,7 @@ class Marketplace
                 <?php endif; ?>
                 <span class="wc-cgmp-price-wrapper">
                     <span class="wc-cgmp-price-main" data-price="<?php echo esc_attr(number_format($display_hourly_price, 2, '.', '')); ?>">
-                        <?php echo wc_price(number_format($display_hourly_price, 2, '.', '')); ?>
+                        <?php echo self::format_price(number_format($display_hourly_price, 2, '.', ''), $remove_decimals); ?>
                     </span>
                     <span class="wc-cgmp-price-period">/hr</span>
                 </span>
@@ -161,7 +163,7 @@ class Marketplace
                     data-hourly="<?php echo esc_attr($hourly); ?>"
                     data-monthly="<?php echo esc_attr($monthly); ?>"
                     <?php selected($tier->tier_level, $default_tier_level); ?>>
-                    <?php echo esc_html($tier->tier_name); ?> - <?php echo wc_price(number_format($show_price, 2, '.', '')); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
+                    <?php echo esc_html($tier->tier_name); ?> - <?php echo self::format_price(number_format($show_price, 2, '.', ''), $remove_decimals); ?>/<?php echo $default_price_type === 'monthly' ? 'mo' : 'hr'; ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -213,15 +215,15 @@ class Marketplace
              <?php endif; ?>
 
               <?php if ($show_total) : ?>
-              <div class="wc-cgmp-total">
-                  <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                  <span class="wc-cgmp-total-price"
-                        data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
-                        data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
-                      <?php echo wc_price(number_format($default_price, 2, '.', '')); ?><?php echo $has_tiers ? '/mo' : ''; ?>
-                  </span>
-              </div>
-              <?php endif; ?>
+               <div class="wc-cgmp-total">
+                   <span class="wc-cgmp-total-label"><?php esc_html_e('Total', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                   <span class="wc-cgmp-total-price"
+                         data-total="<?php echo esc_attr(number_format($default_price, 2, '.', '')); ?>"
+                         data-monthly-price="<?php echo esc_attr(number_format($monthly_price, 2, '.', '')); ?>">
+                       <?php echo self::format_price(number_format($default_price, 2, '.', ''), $remove_decimals); ?><?php echo $has_tiers ? '/mo' : ''; ?>
+                   </span>
+               </div>
+               <?php endif; ?>
 
               <?php if ($enable_button_override && !empty($override_button_url)) : ?>
               <?php 
@@ -308,5 +310,14 @@ class Marketplace
             }
         }
         return !empty($tiers) ? $tiers[0] : null;
+    }
+
+    public static function format_price(float $price, bool $remove_decimals = false): string
+    {
+        $formatted = wc_price($price);
+        if ($remove_decimals) {
+            $formatted = preg_replace('/\.00(<\/span>)?/', '$1', $formatted);
+        }
+        return $formatted;
     }
 }

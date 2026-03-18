@@ -511,6 +511,15 @@ class Marketplace_Widget extends Widget_Base
             'condition' => ['show_price_prefix' => 'yes'],
         ]);
 
+        $this->add_control('remove_price_decimals', [
+            'label' => __('Remove .00 from Prices', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SWITCHER,
+            'label_on' => __('Yes', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label_off' => __('No', 'wc-carousel-grid-marketplace-and-pricing'),
+            'default' => 'no',
+            'description' => __('When enabled, prices like $50.00 will display as $50', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
         $this->end_controls_section();
 
         $this->start_controls_section('modal_settings_section', [
@@ -3026,6 +3035,7 @@ class Marketplace_Widget extends Widget_Base
             'modal_responsibilities_title' => $settings['modal_responsibilities_title'] ?? __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'),
             'modal_icon_color' => $settings['modal_icon_color'] ?? '#dc2626',
             'modal_icon_size' => $settings['modal_icon_size']['size'] ?? 16,
+            'remove_price_decimals' => ($settings['remove_price_decimals'] ?? 'no') === 'yes' ? 'true' : 'false',
         ];
 
         $shadow_class = '';
