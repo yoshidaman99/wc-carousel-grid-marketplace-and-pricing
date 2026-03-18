@@ -189,6 +189,18 @@ class Handlers
             return;
         }
 
+        $icon_color = sanitize_hex_color($_POST['modal_icon_color'] ?? '#dc2626');
+        $icon_size = absint($_POST['modal_icon_size'] ?? 16);
+        $title = sanitize_text_field($_POST['modal_responsibilities_title'] ?? __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing'));
+        
+        $cache_key = 'wc_cgmp_modal_' . $product_id . '_' . md5($icon_color . $icon_size . $title);
+        $cached_html = get_transient($cache_key);
+        
+        if ($cached_html !== false) {
+            wp_send_json_success(['html' => $cached_html, 'cached' => true]);
+            return;
+        }
+
         ob_start();
         
         $modal_description = get_post_meta($product_id, '_wc_cgmp_modal_description', true) ?: '';
@@ -198,16 +210,18 @@ class Handlers
         }
         
         $atts = [
-            'modal_responsibilities_title' => sanitize_text_field($_POST['modal_responsibilities_title'] ?? __('Key Responsibilities', 'wc-carousel-grid-marketplace-and-pricing')),
+            'modal_responsibilities_title' => $title,
             'modal_responsibilities_icon_html' => wc_cgmp_get_check_icon(),
-            'modal_responsibilities_icon_color' => sanitize_hex_color($_POST['modal_icon_color'] ?? '#dc2626'),
-            'modal_responsibilities_icon_size' => absint($_POST['modal_icon_size'] ?? 16),
+            'modal_responsibilities_icon_color' => $icon_color,
+            'modal_responsibilities_icon_size' => $icon_size,
         ];
         
         include WC_CGMP_PLUGIN_DIR . 'templates/marketplace/product-modal.php';
         
         $html = ob_get_clean();
+        
+        set_transient($cache_key, $html, HOUR_IN_SECONDS);
 
-        wp_send_json_success(['html' => $html]);
+        wp_send_json_success(['html' => $html, 'cached' => false]);
     }
 }

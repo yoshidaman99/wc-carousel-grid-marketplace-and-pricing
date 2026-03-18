@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.7.31
+ * Version: 1.7.60
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-r-yoshida
  * License: GPL v2 or later
@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.7.31');
+define('WC_CGMP_VERSION', '1.7.60');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -279,6 +279,12 @@ function wc_cgmp_init() {
     wc_cgmp();
 }
 
+add_action('plugins_loaded', 'wc_cgmp_init_category_icon_field', 15);
+
+function wc_cgmp_init_category_icon_field(): void {
+    new \WC_CGMP\Admin\Category_Icon_Field();
+}
+
 add_action('plugins_loaded', 'wc_cgmp_init_elementor', 5);
 
 function wc_cgmp_init_elementor(): void {
@@ -347,4 +353,34 @@ function wc_cgmp_check_plugin_path_health(): void {
             break;
         }
     }
+}
+
+add_action('plugins_loaded', 'wc_cgmp_init_sanitize_email_fix', 0);
+
+function wc_cgmp_init_sanitize_email_fix(): void {
+    if (get_option('wc_cgmp_fix_sanitize_email_null', true)) {
+        add_filter('sanitize_email', 'wc_cgmp_sanitize_email_null_handler', 0, 3);
+    }
+}
+
+function wc_cgmp_sanitize_email_null_handler($sanitized_email, $email, $context) {
+    if ($email === null) {
+        return '';
+    }
+    return $sanitized_email;
+}
+
+add_action('init', 'wc_cgmp_suppress_sanitize_email_deprecation', 0);
+
+function wc_cgmp_suppress_sanitize_email_deprecation(): void {
+    if (!get_option('wc_cgmp_fix_sanitize_email_null', true)) {
+        return;
+    }
+    
+    set_error_handler(function($errno, $errstr, $errfile, $errline) {
+        if ($errno === E_DEPRECATED && strpos($errstr, 'strlen()') !== false && strpos($errfile, 'formatting.php') !== false) {
+            return true;
+        }
+        return false;
+    }, E_DEPRECATED);
 }
