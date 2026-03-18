@@ -90,8 +90,8 @@ $show_modal_trigger = $enable_modal && $has_modal_content;
     <p class="wc-cgmp-card-desc">
         <?php
         $description = $product->get_description() ?: $product->get_short_description();
-        if (strlen($description) > 81) {
-            echo esc_html(substr($description, 0, 81)) . '...';
+        if (strlen($description) > 75) {
+            echo esc_html(substr($description, 0, 75)) . '...';
         } else {
             echo esc_html($description);
         }
