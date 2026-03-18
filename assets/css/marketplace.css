@@ -446,13 +446,11 @@
 }
 
 .wc-cgmp-pricing-panel {
-    background: var(--wc-cgmp-secondary-light, #f3e8ff);
     border-radius: var(--wc-cgmp-radius-sm, 8px);
     padding: 16px;
 }
 
 .wc-cgmp-pricing-panel.wc-cgmp-simple {
-    background: #f9fafb;
 }
 
 .wc-cgmp-pricing-header {

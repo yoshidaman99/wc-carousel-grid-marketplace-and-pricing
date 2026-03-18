@@ -2481,7 +2481,7 @@ class Marketplace_Widget extends Widget_Base
         $this->end_controls_section();
 
         $this->start_controls_section('pricing_panel_style_section', [
-            'label' => __('Pricing Panel', 'wc-carousel-grid-marketplace-and-pricing'),
+            'label' => __('Pricing Display', 'wc-carousel-grid-marketplace-and-pricing'),
             'tab' => Controls_Manager::TAB_STYLE,
         ]);
 
