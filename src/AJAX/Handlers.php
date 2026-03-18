@@ -249,37 +249,45 @@ class Handlers
         }
 
         $args = [
-            'status' => 'publish',
-            'limit' => $limit > 0 ? $limit : -1,
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => $limit > 0 ? $limit : -1,
             'orderby' => $orderby,
             'order' => $order,
             's' => $search,
+            'meta_query' => [],
+        ];
+
+        $args['meta_query'][] = [
+            'key' => '_wc_cgmp_enabled',
+            'value' => 'yes',
         ];
 
         if ($tier > 0) {
-            $args['meta_query'] = [
-                [
-                    'key' => '_wc_cgmp_enabled',
-                    'value' => 'yes',
-                ],
+            $args['meta_query'][] = [
+                'key' => '_wc_cgmp_tier_' . $tier . '_monthly',
+                'compare' => 'EXISTS',
             ];
         }
 
-        $products_query = new \WC_Product_Query($args);
-        $products = $products_query->get_products();
+        $query = new \WP_Query($args);
+        $posts = $query->get_posts();
 
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
         $atts = $this->build_atts_from_request();
 
         $html = '';
-        foreach ($products as $product) {
-            $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+        foreach ($posts as $post) {
+            $product = wc_get_product($post->ID);
+            if ($product) {
+                $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+            }
         }
 
         wp_send_json_success([
             'html' => $html,
-            'count' => count($products),
+            'count' => count($posts),
             'columns' => (int) ($atts['columns'] ?? 3),
         ]);
     }
@@ -300,41 +308,55 @@ class Handlers
         $order = sanitize_text_field($_POST['order'] ?? 'DESC');
 
         $args = [
-            'status' => 'publish',
-            'limit' => $limit > 0 ? $limit : -1,
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => $limit > 0 ? $limit : -1,
             'offset' => $offset,
             'orderby' => $orderby,
             'order' => $order,
+            'meta_query' => [],
+        ];
+
+        $args['meta_query'][] = [
+            'key' => '_wc_cgmp_enabled',
+            'value' => 'yes',
         ];
 
         if ($category > 0) {
-            $args['category'] = [$category];
-        }
-
-        if ($tier > 0) {
-            $args['meta_query'] = [
+            $args['tax_query'] = [
                 [
-                    'key' => '_wc_cgmp_enabled',
-                    'value' => 'yes',
+                    'taxonomy' => 'product_cat',
+                    'field' => 'term_id',
+                    'terms' => $category,
                 ],
             ];
         }
 
-        $products_query = new \WC_Product_Query($args);
-        $products = $products_query->get_products();
+        if ($tier > 0) {
+            $args['meta_query'][] = [
+                'key' => '_wc_cgmp_tier_' . $tier . '_monthly',
+                'compare' => 'EXISTS',
+            ];
+        }
+
+        $query = new \WP_Query($args);
+        $posts = $query->get_posts();
 
         $plugin = wc_cgmp();
         $repository = $plugin->get_service('repository');
         $atts = $this->build_atts_from_request();
 
         $html = '';
-        foreach ($products as $product) {
-            $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+        foreach ($posts as $post) {
+            $product = wc_get_product($post->ID);
+            if ($product) {
+                $html .= \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
+            }
         }
 
         wp_send_json_success([
             'html' => $html,
-            'count' => count($products),
+            'count' => count($posts),
             'columns' => (int) ($atts['columns'] ?? 3),
         ]);
     }
