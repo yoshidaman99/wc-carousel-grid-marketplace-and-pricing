@@ -65,6 +65,12 @@ class Frontend_Manager
             'above_link_url' => '',
             'above_link_highlight_text' => '',
             'above_link_open_new_tab' => 'true',
+            'enable_modal' => 'true',
+            'modal_responsibilities_title' => 'Key Responsibilities',
+            'modal_responsibilities_icon_html' => wc_cgmp_get_check_icon(),
+            'modal_icon_color' => '#dc2626',
+            'modal_icon_size' => '16',
+            'remove_price_decimals' => 'false',
         ];
 
         $atts = shortcode_atts($defaults, $atts, 'wc_cgmp_marketplace');

@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Carousel/Grid Marketplace & Pricing
  * Plugin URI: https://github.com/Jerel-R-Yoshida/wc-carousel-grid-marketplace-and-pricing
  * Description: Service marketplace with carousel/grid layout and tiered pricing (Entry/Mid/Expert) with monthly/hourly rates.
- * Version: 1.7.9
+ * Version: 1.8.0
  * Author: Jerel Yoshida
  * Author URI: https://github.com/Jerel-r-yoshida
  * License: GPL v2 or later
@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CGMP_VERSION', '1.7.9');
+define('WC_CGMP_VERSION', '1.8.0');
 define('WC_CGMP_PLUGIN_FILE', __FILE__);
 define('WC_CGMP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CGMP_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -210,6 +210,14 @@ function wc_cgmp_get_chevron_icon(): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 }
 
+function wc_cgmp_get_drag_icon(): string {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>';
+}
+
+function wc_cgmp_get_check_icon(): string {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+}
+
 function welp_is_enabled(int $product_id): bool {
     return wc_cgmp_is_enabled($product_id);
 }
@@ -269,6 +277,12 @@ function wc_cgmp_init() {
     }
 
     wc_cgmp();
+}
+
+add_action('plugins_loaded', 'wc_cgmp_init_category_icon_field', 15);
+
+function wc_cgmp_init_category_icon_field(): void {
+    new \WC_CGMP\Admin\Category_Icon_Field();
 }
 
 add_action('plugins_loaded', 'wc_cgmp_init_elementor', 5);
@@ -339,4 +353,34 @@ function wc_cgmp_check_plugin_path_health(): void {
             break;
         }
     }
+}
+
+add_action('plugins_loaded', 'wc_cgmp_init_sanitize_email_fix', 0);
+
+function wc_cgmp_init_sanitize_email_fix(): void {
+    if (get_option('wc_cgmp_fix_sanitize_email_null', true)) {
+        add_filter('sanitize_email', 'wc_cgmp_sanitize_email_null_handler', 0, 3);
+    }
+}
+
+function wc_cgmp_sanitize_email_null_handler($sanitized_email, $email, $context) {
+    if ($email === null) {
+        return '';
+    }
+    return $sanitized_email;
+}
+
+add_action('init', 'wc_cgmp_suppress_sanitize_email_deprecation', 0);
+
+function wc_cgmp_suppress_sanitize_email_deprecation(): void {
+    if (!get_option('wc_cgmp_fix_sanitize_email_null', true)) {
+        return;
+    }
+    
+    set_error_handler(function($errno, $errstr, $errfile, $errline) {
+        if ($errno === E_DEPRECATED && strpos($errstr, 'strlen()') !== false && strpos($errfile, 'formatting.php') !== false) {
+            return true;
+        }
+        return false;
+    }, E_DEPRECATED);
 }

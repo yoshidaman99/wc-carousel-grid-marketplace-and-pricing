@@ -4,7 +4,7 @@ Tags: woocommerce, marketplace, tiered pricing, elementor, carousel, grid, servi
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.7.9
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,32 +66,55 @@ Yes! The shortcode `[wc_cgmp_marketplace]` works on any page or post.
 
 == Changelog ==
 
-= 1.6.8 =
-* Added documentation for Popular badge database structure and SQL queries
-* Documented _wc_cgmp_popular meta key for manual popular marking
-* Clarified popular method settings: auto, manual, or both
+= 1.7.57 =
+* Fix: "All Services" sidebar item now uses a static gear icon that won't be overridden
 
-= 1.6.1 =
-* Fix: Array to string conversion error when using Elementor URL control arrays
-* Fix: Proper handling of URL attributes in templates
+= 1.7.56 =
+* Feature: Replaced favicon URL option with Font Awesome icon picker for category icons
+* Feature: Added 200+ free Font Awesome icons (Solid + Brands categories)
+* Feature: Added search functionality to filter icons by name
+* Feature: Added category tabs (Solid/Brands) for easy icon browsing
+* Enhancement: Icon picker now includes visual preview with Font Awesome CDN
+* Enhancement: Frontend now loads Font Awesome CSS for proper icon display
 
-= 1.6.0 =
-* Feature: Toggle to include/exclude total parameter in button override URL
-* Feature: Link above button with icon, text, highlight text, and URL (like "Need 5+ headcount? Get volume pricing")
-* Feature: Comprehensive sidebar category style controls in Elementor (colors, fonts, padding, radius, icons)
-* Enhancement: Popular badge now also shows for WooCommerce featured products
-* Fix: Category click now properly passes all button override settings to AJAX requests
-* Fix: Search and load more now include all button override settings
+= 1.7.55 =
+* Fix: Added missing get_instance() singleton method to Category_Icon class
+* Fix: Fixed Shortcodes service registration in Plugin.php
+* Fix: Removed duplicate service registration in register_woocommerce_services_fallback()
+* Fix: Security - capability check now runs before nonce verification in Category_Icon_Field
+* Fix: Removed unnecessary base64 encoding of JSON data in Marketplace_Widget
 
-= 1.5.9 =
-* Added Display Options section in Elementor widget
-* Toggle to show/hide headcount selector on product cards
-* Toggle to show/hide total display on product cards
-* Button override feature: Replace Add to Cart with custom button
-* Custom button URL with dynamic total value parameter
-* Configurable URL parameter name for total (default: "total")
-* Open custom button link in new tab option
-* Dynamic URL updates when quantity, tier, or price type changes
+= 1.7.50 =
+* Feature: Added favicon URL option for category icons - enter any favicon or image URL
+* Fix: Category icon upload button now properly allows changing icons multiple times
+* Fix: Media frame now properly disposes and recreates on each upload click
+* Fix: Admin scripts now load correctly on both category add and edit pages
+
+= 1.7.49 =
+* Feature: Added PHP 8.1+ compatibility fix for sanitize_email() null deprecation warning
+* Feature: New "Compatibility Fixes" settings section in WooCommerce > Marketplace & Pricing
+* Feature: Toggle to enable/disable the sanitize_email null fix (enabled by default)
+* Fix: Suppresses "Deprecated: strlen(): Passing null to parameter #1 ($string) is deprecated" warning
+
+= 1.7.44 =
+* Feature: Category icons system - select dashicons or custom images for product categories
+* Feature: Admin UI on category edit page for icon selection with visual dashicon picker
+* Feature: Image upload support via WordPress media library for category icons
+* Feature: Shortcode [wc_cgmp_category_icon] for displaying category icons anywhere
+* Feature: Template functions for PHP integration (wc_cgmp_render_category_icon, wc_cgmp_get_category_icon_data)
+* Feature: Elementor Category Icon widget with styling controls
+* Enhancement: Category sidebar now supports both dashicons and custom images
+
+= 1.7.12 =
+* Fix: Icon in "Link Above Button" now persists when filtering by category
+
+= 1.7.11 =
+* Fix: Category filter now preserves layout and sort order settings from initial load
+* Fix: Search and Load More now respect orderby/order parameters
+
+= 1.7.10 =
+* Feature: Added alignment control (left/center/right) for Link Above Button
+* Feature: Added responsive margin top control for Link Above Button spacing
 
 = 1.5.0 =
 * Release version 1.5.0

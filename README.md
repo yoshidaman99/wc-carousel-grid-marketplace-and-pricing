@@ -12,6 +12,7 @@ A powerful WordPress plugin that combines a modern service marketplace with tier
 - **Shortcode Support** - Use `[wc_cgmp_marketplace]` anywhere
 - **AJAX Filtering** - Fast filtering without page reloads
 - **Category Sidebar** - Filter services by WooCommerce product categories
+- **Category Icons** - Custom dashicons, Font Awesome, images, or SVG for product categories
 - **WooCommerce Reports** - Sales breakdown by tier
 - **Popular Badges** - Automatic or manual highlighting of popular services
 - **Dynamic Section Titles** - Category-based titles that update automatically
@@ -65,11 +66,29 @@ Display the marketplace anywhere using the shortcode:
 | `show_search` | true | Show search input |
 | `show_tier_badge` | true | Show tier badge on cards |
 
+### Category Icon Shortcode
+
+Display category icons anywhere:
+
+```
+[wc_cgmp_category_icon category="design" size="48" class="my-icon"]
+```
+
+#### Category Icon Attributes
+
+| Attribute | Default | Description |
+|-----------|---------|-------------|
+| `category` | (required) | Category slug or ID |
+| `size` | 24 | Icon size in pixels |
+| `class` | | Additional CSS class |
+| `link` | false | Wrap in category link |
+| `return` | html | Return type (html or url) |
+
 ### Elementor Widget
 
 1. Edit a page with Elementor
-2. Search for **"Marketplace"** in the widgets panel
-3. Drag the **WooCommerce Marketplace** widget to your page
+2. Search for **"Marketplace"** or **"Category Icon"** in the widgets panel
+3. Drag the widget to your page
 4. Configure settings in the Content and Style tabs
 
 ### Product Setup
@@ -83,6 +102,15 @@ Display the marketplace anywhere using the shortcode:
    - **Expert Level** - Premium tier with highest pricing
 5. Set monthly and/or hourly rates for each tier
 6. Optionally add descriptions for each tier
+
+### Category Icon Setup
+
+1. Go to **Products > Categories** in WordPress admin
+2. Edit a category
+3. Find the **Category Icon** section
+4. Choose **Dashicon** or **Custom Image**
+5. Select a dashicon from the visual picker OR upload a custom image
+6. Click **Update Category**
 
 ## Tiered Pricing
 
@@ -126,6 +154,19 @@ Products can have optional action buttons:
 - **Apply Now** - Link to application form
 
 Configure in the product metabox under **Action Buttons**.
+
+## Template Functions
+
+```php
+// Render category icon
+echo wc_cgmp_render_category_icon($category_id, ['size' => 48, 'link' => true]);
+
+// Get icon data
+$icon_data = wc_cgmp_get_category_icon_data($category_id);
+
+// Get icon URL (for images)
+$url = wc_cgmp_get_category_icon_url($category_id);
+```
 
 ## Hooks
 
@@ -195,201 +236,97 @@ Database tables and options are removed on uninstall if enabled in settings.
 
 ## Changelog
 
-### 1.7.9
-- Fixed: Icon not displaying in "above button link" on marketplace cards
-- Improved icon data handling using base64 encoding for shortcode attribute passing
-- Added SVG icon support in fallback rendering
-- Removed `position: static` from mobile Popular badge for proper positioning
+### 1.7.59
+- Fix: Category SVG icons now save and display correctly on frontend
+- Fix: Added missing META_ICON_SVG_CODE constant to Frontend Category_Icon class
+- Fix: SVG icon type now properly handled in get_icon() and render() methods
 
-### 1.7.8
-- Added individual border radius controls for Popular badge (Top-Left, Top-Right, Bottom-Right, Bottom-Left)
-- Fixed padding control for Popular badge - now works correctly with responsive settings
-- Default radius: TL=0, TR=0, BR=20px, BL=0
-- Default padding: 0px 12px 0px 12px
+### 1.7.58
+- Performance: Modal ("?" button) now loads near-instantly with client-side caching
+- Performance: Added server-side transient caching for modal content (1 hour)
+- Performance: CSS variables are now cached per marketplace instance
+- Performance: Preload modal content on hover for instant display on click
 
-### 1.7.7
-- Updated Popular badge position to top-left corner (0, 0)
-- Changed border-radius to 0 0 20px 0 (rounded bottom-right only)
-- Reduced padding to 0px 12px and font-size to 10px
-- Removed text-transform uppercase styling
+### 1.7.57
+- Fix: "All Services" sidebar item now uses a static gear icon that won't be overridden
 
-### 1.7.6
-- Removed bottom margin from .wc-cgmp-pricing-amount for tighter layout
+### 1.7.56
+- Feature: Replaced favicon URL option with Font Awesome icon picker for category icons
+- Feature: Added 200+ free Font Awesome icons (Solid + Brands categories)
+- Feature: Added search functionality to filter icons by name
+- Feature: Added category tabs (Solid/Brands) for easy icon browsing
+- Enhancement: Icon picker now includes visual preview with Font Awesome CDN
+- Enhancement: Frontend now loads Font Awesome CSS for proper icon display
 
-### 1.7.5
-- Fixed: Icon not showing in "above button link" section
-- Added fallback icon rendering when Elementor Icons_Manager is unavailable
-- Improved icon data handling for better JSON decode reliability
+### 1.7.55
+- Fix: Added missing `get_instance()` singleton method to `Category_Icon` class
+- Fix: Fixed `Shortcodes` service registration in Plugin.php
+- Fix: Removed duplicate service registration in `register_woocommerce_services_fallback()`
+- Fix: Security - capability check now runs before nonce verification in `Category_Icon_Field`
+- Fix: Removed unnecessary base64 encoding of JSON data in Marketplace_Widget
 
-### 1.7.4
-- Version bump for release
+### 1.7.53
+- Feature: Added SVG code option for category icons - paste your SVG code directly
+- Feature: Category icons now support 4 types: Dashicon, Custom Image, Favicon URL, and SVG Code
+- Enhancement: Improved admin UI for category icon selection
 
-### 1.7.3
-- Redesigned pricing panel layout: "Starting at $X/hr" now displays first
-- Tier selector moved outside pricing panel div for cleaner structure
-- Simplified price display - always shows hourly rate with /hr suffix
-- "Starting at" prefix enabled by default
+### 1.7.50
+- Feature: Added favicon URL option for category icons - enter any favicon or image URL
+- Fix: Category icon upload button now properly allows changing icons multiple times
+- Fix: Media frame now properly disposes and recreates on each upload click
+- Fix: Admin scripts now load correctly on both category add and edit pages
 
-### 1.7.2
-- Moved Popular badge from right to left side of the card
+### 1.7.49
+- Feature: Added PHP 8.1+ compatibility fix for `sanitize_email()` null deprecation warning
+- Feature: New "Compatibility Fixes" settings section in WooCommerce > Marketplace & Pricing
+- Feature: Toggle to enable/disable the sanitize_email null fix (enabled by default)
+- Fix: Suppresses "Deprecated: strlen(): Passing null to parameter #1 ($string) is deprecated" warning in wp-includes/formatting.php
 
-### 1.7.1
-- Added "Debug Popular Status" toggle in Elementor widget (Popular Badge section)
-- Debug info now hidden by default - enable via Elementor when troubleshooting
-- Shows: Popular status, Method setting, and Meta value for each product
+### 1.7.45
+- Fixed: Category icon save now properly works with nonce verification and capability checks
+- Fixed: Security enhancement - added nonce fields to category add/edit forms
+- Enhancement: Expanded dashicon selection from ~126 to 300+ icons
+- Enhancement: Added social media icons (Facebook, Instagram, Twitter, YouTube, LinkedIn, etc.)
+- Enhancement: Added arrow icons, editor formatting icons, media icons, and admin icons
 
-### 1.7.0
-- Added debug info below card title to troubleshoot Popular badge display issues
-- Shows Popular status (true/false), Method setting, and Meta value
-- Fixed: Popular badge not showing when method is set to 'auto' (now requires 'both' or 'manual')
-- Note: Existing sites need to update `wc_cgmp_popular_method` option to 'both' in database
+### 1.7.44
+- Feature: Category icons system - select dashicons or custom images for product categories
+- Feature: Admin UI on category edit page for icon selection with visual dashicon picker
+- Feature: Image upload support via WordPress media library for category icons
+- Feature: Shortcode `[wc_cgmp_category_icon]` for displaying category icons anywhere
+- Feature: Elementor Category Icon widget with styling controls
+- Feature: Template function `wc_cgmp_render_category_icon()` for theme integration
+- Enhancement: Category sidebar now supports both dashicons and custom images
 
-### 1.6.10
-- Added debug text below title showing Popular status, method, and meta value
-- Helps troubleshoot why popular badge may not be showing on live site
+### 1.7.43
+- Moved typography CSS variables to .wc-cgmp-responsibility-item class for proper styling
 
-### 1.6.9
-- Fixed: Popular badge not showing when "Mark as Popular" checkbox enabled on products
-- Changed default popular_method from 'auto' to 'both' - now respects manual checkbox AND auto sales detection
-- New installations will automatically check both methods for popular products
+### 1.7.42
+- Added font-style control for responsibility text in Elementor widget
+- Fixed CSS with !important flags and proper var() syntax for all typography properties
 
-### 1.6.8
-- Added documentation for Popular badge database structure and SQL queries
-- Documented `_wc_cgmp_popular` meta key for manual popular marking
-- Added SQL examples for marking products as popular via database
-- Clarified popular method settings: auto (order-based), manual (meta-based), or both
+### 1.7.41
+- Fixed: Responsibility text CSS variables now properly copied to modal via JavaScript
 
-### 1.6.7
-- Changed show_popular_mark default to true - popular mark now shows automatically
-- Popular products will display ‹popular› text next to title by default
+### 1.7.40
+- Added Elementor typography controls for modal responsibility list text (font size, color, line-height, letter-spacing, font family)
+- Updated modal responsibility text CSS to use CSS variables for full customization
 
-### 1.6.6
-- Added popular mark text next to service title for popular products
-- New Elementor controls: show/hide mark, customize text, color, and font size
-- Default mark text: ‹popular› with customizable styling
-- Works alongside existing Popular badge
-- Available via shortcode: show_popular_mark, popular_mark_text
+### 1.7.39
+- Fixed: Modal title CSS now uses CSS variables with !important
+- Added Elementor controls for Responsibility Item padding and icon gap
+- Modal responsibilities section padding and margin now use CSS variables via JavaScript
 
-### 1.6.5
-- Version bump for release
-
-### 1.6.4
-- Added Link Above Button style controls in Elementor widget
-- New style options: text color, hover color, typography (font settings)
-- Icon color, hover color, and size controls (10-40px)
-- Highlight text color and hover color controls
-- Icon gap and margin bottom spacing controls
-- Fixed icon not showing - proper JSON encoding/decoding for Elementor icons
-- Added SVG icon support in CSS
-
-### 1.6.3
-- Fix: Array to string conversion warning in wp-includes/formatting.php line 1128
-- Fix: Added array check in build_shortcode_string() for Elementor icon controls
-- Fix: Added safeSanitize helper in Cart_Integration.php to handle array values from AJAX
-- Fix: Added array check for data-limit attribute in marketplace template
-
-### 1.6.2
-- Fix: Array to string conversion warning for text attributes (popular_badge_text, override_button_text, above_link_text, etc.)
-- Fix: Proper handling of Elementor text control arrays across all templates
-
-### 1.6.1
-- Fix: Array to string conversion error when using Elementor URL control arrays
-- Fix: Proper handling of URL attributes in templates
-
-### 1.6.0
-- Toggle to include/exclude total parameter in button override URL
-- Link above button with icon, text, highlight text, and URL (e.g., "Need 5+ headcount? Get volume pricing")
-- Comprehensive sidebar category style controls in Elementor (colors, fonts, padding, radius, icons)
-- Popular badge now also shows for WooCommerce featured products
-- Fixed category click to properly pass all button override settings
-- Fixed search and load more to include all button override settings
-
-### 1.5.9
-- Added Display Options section in Elementor widget
-- Toggle to show/hide headcount selector on product cards
-- Toggle to show/hide total display on product cards
-- Button override feature: Replace Add to Cart with custom button
-- Custom button URL with dynamic total value parameter
-- Configurable URL parameter name for total (default: "total")
-- Open custom button link in new tab option
-- Dynamic URL updates when quantity, tier, or price type changes
-
-### 1.5.8
-- Added remove cart item functionality for mini cart widget
-- Added quantity update controls (increase/decrease) for cart items
-- New AJAX endpoints: `wc_cgmp_remove_cart_item`, `wc_cgmp_update_cart_quantity`
-- Refactored cart data preparation into shared `prepare_cart_data()` helper
-- Added i18n strings for cart operations (confirm_remove, item_removed, quantity_updated)
-
-### 1.5.7
-- Fixed layout sync between initial load and AJAX category filtering
-- Added missing data attributes to grid container for AJAX requests
-- Fixed missing tier badges and descriptions on category click
-- Fixed missing popular badges on AJAX filtered results
-- Fixed missing price prefix options on category filter
-- Added `getGridAtts()` helper to collect all grid attributes consistently
-- Updated all AJAX handlers (filter, load-more, search) to pass complete `$atts` array
-
-### 1.5.6
-- Fixed WP_Post object to int conversion warning in marketplace template (line 21)
-- Fixed popular products aggregation query running once per request instead of per product
-- Batch preload tier data with `preload_tiers()``
-- Assets only load on pages with marketplace
-- Conditional assets loading on pages with shortcode/Elementor widget
-- Moved stale path repair to admin only (### 1.5.5
-- Major performance optimization for loading 100+ products
-- Fixed N+1 query problem: batch preload all tier data in a single SQL query instead of 1 query per product
-- Fixed popular products aggregation query running once per product (now cached per request)
-- Added in-memory tier cache to avoid duplicate queries within a single request
-- Conditional asset loading: CSS/JS only loads on pages with the marketplace shortcode or Elementor widget
-- Moved stale path repair to admin-only context (no longer runs on every frontend page)
-- Removed duplicate get_specialization() call in pricing panel rendering
-- Added preload_tiers() to all AJAX handlers (filter, load-more, search)
-- Query reduction: ~500-800 queries for 100 products reduced to ~5-10 queries
-
-### 1.5.6
-- Fixed WP_Post object to int conversion warning in marketplace template (line 21)
-- Properly extracts IDs from WP_Post objects
-- Fixed wp_post object to int conversion in preload_tiers()
-- Updated version and README to 1.5.6
-- Updated readme.txt stable tag to 1.5.6
-- Fixed price alignment - price now displays on far right with prefix on left
-- Improved pricing panel layout with space-between justification
-- Fixed price and period (/hr) spacing - now closer together
-
-### 1.5.3
-- Fixed price prefix display to align inline with price
-- Fixed separator display when only one price type (hourly or monthly) exists
-- Improved price prefix CSS styling for better alignment
-
-### 1.5.2
-- Fixed undefined array key warnings for exclude_category and popular_only
-- Fixed secondary price showing $0.00 when only hourly or monthly price set
-
-### 1.5.1
-- Fixed undefined array key warnings in Frontend_Manager.php
-- Fixed price display alignment for inline prefix
-
-### 1.5.0
-- Major update with enhanced pricing panel
-- Added price prefix support (inline and above positions)
-- Improved Elementor widget styling controls
-
-### 1.4.8
-- Dynamic section title based on category selection
-- Enhanced marketplace functionality
-- Multiple component improvements
-
-### 1.4.0
-- Added rate limiting to public AJAX endpoints
-- Improved cache invalidation on tier updates
-- Fixed ZIP path separators for cross-platform compatibility
-
-### 1.3.9
-- Stable release with Elementor widget improvements
-
-### 1.3.8
-- Bug fixes and performance improvements
+### 1.7.38
+- Added section title margin control
+- Updated .wc-cgmp-modal-section-title CSS to use CSS variables
+- Added !important to modal section title CSS
+- Updated CSS with consolidated responsibility items
+- Fixed duplicate CSS blocks
+- Added Elementor controls for list item padding, icon gap, icon padding
+- Updated version to 1.7.38 and changelog
+- Cleaned up and built the release ZIP
+- Confirmed --wc-cgmp-modal-title-padding CSS variable is included in JavaScript
 
 ## License
 
