@@ -88,7 +88,7 @@ $show_modal_trigger = $enable_modal && $has_modal_content;
     <?php endif; ?>
 
     <?php
-    $desc_limit = isset($args['card_desc_limit']) ? (int) $args['card_desc_limit'] : 75;
+    $desc_limit = isset($atts['card_desc_limit']) ? (int) $atts['card_desc_limit'] : 75;
     if ($desc_limit > 0) :
         $description = $product->get_description() ?: $product->get_short_description();
     ?>
