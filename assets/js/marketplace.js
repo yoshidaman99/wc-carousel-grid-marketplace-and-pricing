@@ -357,7 +357,7 @@
                     if (response.success) {
                         if (WC_CGMP_Marketplace.currentOffset === 0) {
                             $grid.html(response.data.html);
-                            var columns = $grid.data('columns') || 3;
+                            var columns = response.data.columns || 3;
                             $grid.get(0).style.setProperty('--wc-cgmp-columns', columns);
                         } else {
                             $grid.append(response.data.html);
@@ -506,7 +506,7 @@
                 success: function(response) {
                     if (response.success) {
                         $grid.html(response.data.html);
-                        var columns = $grid.data('columns') || 3;
+                        var columns = response.data.columns || 3;
                         $grid.get(0).style.setProperty('--wc-cgmp-columns', columns);
                         WC_CGMP_Marketplace.updateSectionHeader(response.data.count);
                         WC_CGMP_Marketplace.syncAllPanelsFromDropdowns();
