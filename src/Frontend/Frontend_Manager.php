@@ -71,6 +71,7 @@ class Frontend_Manager
             'modal_icon_color' => '#dc2626',
             'modal_icon_size' => '16',
             'remove_price_decimals' => 'false',
+            'card_desc_limit' => 75,
         ];
 
         $atts = shortcode_atts($defaults, $atts, 'wc_cgmp_marketplace');
