@@ -2724,6 +2724,82 @@ class Marketplace_Widget extends Widget_Base
             ],
         ]);
 
+        $this->add_control('sidebar_header_title_heading', [
+            'label' => __('Header Title', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'sidebar_header_title_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header h3',
+            'global' => ['default' => Global_Typography::TYPOGRAPHY_PRIMARY],
+        ]);
+
+        $this->add_control('sidebar_header_title_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#1f2937',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar-header h3' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('sidebar_header_title_margin', [
+            'label' => __('Margin', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em', '%'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '4',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar-header h3' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('sidebar_header_desc_heading', [
+            'label' => __('Header Description', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'sidebar_header_desc_typography',
+            'selector' => '{{WRAPPER}} .wc-cgmp-sidebar-header p',
+            'global' => ['default' => Global_Typography::TYPOGRAPHY_SECONDARY],
+        ]);
+
+        $this->add_control('sidebar_header_desc_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#6b7280',
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar-header p' => 'color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('sidebar_header_desc_margin', [
+            'label' => __('Margin', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em', '%'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '20',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}} .wc-cgmp-sidebar-header p' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+        ]);
+
         $this->add_control('category_heading', [
             'label' => __('Category Items', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::HEADING,
