@@ -322,6 +322,7 @@ class Cart_Integration
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
             'above_link_highlight_text' => sanitize_text_field($_POST['above_link_highlight_text'] ?? ''),
             'above_link_open_new_tab' => sanitize_text_field($_POST['above_link_open_new_tab'] ?? 'true'),
+            'remove_price_decimals' => sanitize_text_field($_POST['remove_price_decimals'] ?? 'false'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries
@@ -524,6 +525,7 @@ class Cart_Integration
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
             'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
             'above_link_open_new_tab' => $safeSanitize('above_link_open_new_tab', 'true'),
+            'remove_price_decimals' => $safeSanitize('remove_price_decimals', 'false'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries
@@ -610,6 +612,7 @@ class Cart_Integration
             'above_link_url' => esc_url_raw($_POST['above_link_url'] ?? ''),
             'above_link_highlight_text' => $safeSanitize('above_link_highlight_text', ''),
             'above_link_open_new_tab' => $safeSanitize('above_link_open_new_tab', 'true'),
+            'remove_price_decimals' => $safeSanitize('remove_price_decimals', 'false'),
         ];
 
         // Batch preload tiers to eliminate N+1 queries

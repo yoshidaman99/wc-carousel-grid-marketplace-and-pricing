@@ -280,6 +280,7 @@
                 price_prefix_text: $grid.data('price-prefix-text') ?? '',
                 price_prefix_separator: $grid.data('price-prefix-separator') ?? '|',
                 price_prefix_position: $grid.data('price-prefix-position') ?? 'inline',
+                remove_price_decimals: $grid.data('remove-price-decimals') ?? 'false',
                 columns: $grid.data('columns') ?? 3,
                 layout: $grid.data('layout') ?? 'grid',
                 show_headcount: $grid.data('show-headcount') ?? 'true',
@@ -347,6 +348,7 @@
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
+                    remove_price_decimals: gridAtts.remove_price_decimals,
                 },
                 beforeSend: function() {
                     $grid.addClass('loading');
@@ -420,6 +422,7 @@
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
+                    remove_price_decimals: gridAtts.remove_price_decimals,
                 },
                 beforeSend: function() {
                     $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
@@ -496,6 +499,7 @@
                     above_link_open_new_tab: gridAtts.above_link_open_new_tab,
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
+                    remove_price_decimals: gridAtts.remove_price_decimals,
                 },
                 success: function(response) {
                     if (response.success) {
