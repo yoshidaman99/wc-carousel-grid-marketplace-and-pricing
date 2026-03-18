@@ -241,13 +241,20 @@ class Handlers
                 return;
             }
 
-            $search = sanitize_text_field($_POST['search'] ?? '');
+            $search = trim(sanitize_text_field($_POST['search'] ?? ''));
             $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
             $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
             $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
             $order = sanitize_text_field($_POST['order'] ?? 'DESC');
 
-            if (strlen($search) < 2) {
+            wc_cgmp_log('Search request', [
+                'raw' => $_POST['search'] ?? '',
+                'sanitized' => $search,
+                'length' => mb_strlen($search),
+                'tier' => $tier,
+            ]);
+
+            if (mb_strlen($search) < 2) {
                 wp_send_json_error(['message' => __('Please enter at least 2 characters', 'wc-carousel-grid-marketplace-and-pricing')]);
                 return;
             }
