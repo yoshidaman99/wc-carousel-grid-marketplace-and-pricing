@@ -497,6 +497,17 @@ class Repository
         return (int) $count > 0;
     }
 
+    public function get_specialization(int $product_id): string
+    {
+        $specialization = get_post_meta($product_id, '_wc_cgmp_specialization', true);
+        
+        if (empty($specialization)) {
+            $specialization = get_post_meta($product_id, '_wc_cgm_specialization', true);
+        }
+        
+        return $specialization ?: '';
+    }
+
     public function get_products_with_tier(int $tier_level): array
     {
         $results = $this->wpdb->get_col($this->wpdb->prepare(
@@ -800,97 +811,61 @@ class Repository
             $count = $combined_counts[$category->term_id] ?? 0;
 
             if ($count > 0) {
+                $icon_type = get_term_meta($category->term_id, 'wc_cgmp_icon_type', true) ?: 'dashicon';
+                $icon_data = [
+                    'type' => $icon_type,
+                    'dashicon' => '',
+                    'image_url' => '',
+                    'fontawesome' => '',
+                    'svg_code' => '',
+                ];
+
+                if ($icon_type === 'image') {
+                    $image_id = (int) get_term_meta($category->term_id, 'wc_cgmp_icon_image_id', true);
+                    if ($image_id) {
+                        $icon_data['image_url'] = wp_get_attachment_image_url($image_id, 'thumbnail') ?: '';
+                    }
+                } elseif ($icon_type === 'fontawesome') {
+                    $icon_data['fontawesome'] = get_term_meta($category->term_id, 'wc_cgmp_icon_fontawesome', true) ?: 'fa-solid fa-store';
+                } elseif ($icon_type === 'svg') {
+                    $icon_data['svg_code'] = get_term_meta($category->term_id, 'wc_cgmp_icon_svg_code', true) ?: '';
+                } else {
+                    $icon_data['dashicon'] = get_term_meta($category->term_id, 'wc_cgmp_icon_dashicon', true) 
+                        ?: get_term_meta($category->term_id, 'wc_cgmp_icon', true)
+                        ?: 'grid';
+                }
+
                 $result[] = [
                     'id' => $category->term_id,
                     'name' => $category->name,
                     'slug' => $category->slug,
                     'count' => $count,
-                    'icon' => get_term_meta($category->term_id, 'wc_cgmp_icon', true) ?: '',
+                    'icon' => $icon_data['dashicon'] ?: '',
+                    'icon_type' => $icon_data['type'],
+                    'icon_image_url' => $icon_data['image_url'],
+                    'icon_fontawesome' => $icon_data['fontawesome'],
+                    'icon_svg_code' => $icon_data['svg_code'],
                 ];
+
                 $total_count += $count;
             }
         }
-
+        
         array_unshift($result, [
             'id' => 0,
             'name' => __('All Services', 'wc-carousel-grid-marketplace-and-pricing'),
             'slug' => 'all',
             'count' => $total_count,
-            'icon' => 'grid',
+            'icon' => 'admin-generic',
+            'icon_type' => 'dashicon',
+            'icon_image_url' => '',
+            'icon_fontawesome' => '',
+            'icon_svg_code' => '',
         ]);
         
         wp_cache_set($cache_key, $result, 'wc_cgmp', HOUR_IN_SECONDS);
 
         return $result;
-    }
-
-    public function search_products(string $query, array $args = []): array
-    {
-        $args['search'] = $query;
-        return $this->get_marketplace_products($args);
-    }
-
-    public function get_specialization(int $product_id): string
-    {
-        $value = get_post_meta($product_id, '_wc_cgmp_specialization', true);
-        if (empty($value)) {
-            $value = get_post_meta($product_id, '_wc_cgm_specialization', true);
-        }
-        return $value ?: '';
-    }
-
-    public function get_learn_more_url(int $product_id): string
-    {
-        $url = get_post_meta($product_id, WC_CGMP_META_LEARN_MORE_URL, true);
-        return $url ?: '';
-    }
-
-    public function get_apply_now_url(int $product_id): string
-    {
-        $url = get_post_meta($product_id, WC_CGMP_META_APPLY_NOW_URL, true);
-        return $url ?: '';
-    }
-
-    public function is_action_buttons_enabled(int $product_id): bool
-    {
-        $enabled = get_post_meta($product_id, WC_CGMP_META_ACTION_BUTTONS_ENABLED, true);
-        if ($enabled === 'no') {
-            return false;
-        }
-        return true;
-    }
-
-    public function get_button_urls(int $product_id): array
-    {
-        return [
-            'learn_more' => $this->get_learn_more_url($product_id),
-            'apply_now' => $this->get_apply_now_url($product_id),
-        ];
-    }
-
-    public function update_button_urls(int $product_id, array $urls): bool
-    {
-        $success = true;
-
-        if (isset($urls['learn_more'])) {
-            $result = update_post_meta(
-                $product_id,
-                WC_CGMP_META_LEARN_MORE_URL,
-                esc_url_raw($urls['learn_more'])
-            );
-            $success = $success && ($result !== false);
-        }
-
-        if (isset($urls['apply_now'])) {
-            $result = update_post_meta(
-                $product_id,
-                WC_CGMP_META_APPLY_NOW_URL,
-                esc_url_raw($urls['apply_now'])
-            );
-            $success = $success && ($result !== false);
-        }
-
-        return $success;
     }
 
     public function get_total_marketplace_products(): int

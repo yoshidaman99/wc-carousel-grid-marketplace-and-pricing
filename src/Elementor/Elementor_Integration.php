@@ -57,15 +57,25 @@ class Elementor_Integration
         }
 
         require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Widgets/Marketplace_Widget.php';
+        require_once WC_CGMP_PLUGIN_DIR . 'src/Elementor/Widgets/Category_Icon_Widget.php';
+
         $widgets_manager->register(new Widgets\Marketplace_Widget());
+        $widgets_manager->register(new Widgets\Category_Icon_Widget());
     }
 
     public function register_styles(): void
     {
         \wp_register_style(
+            'fontawesome-free',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+            [],
+            '6.5.1'
+        );
+
+        \wp_register_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
-            [],
+            ['fontawesome-free'],
             WC_CGMP_VERSION
         );
 

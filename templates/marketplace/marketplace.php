@@ -43,12 +43,6 @@ if ($repository && !empty($products)) {
      data-load-all="<?php echo esc_attr($load_all ? 'true' : 'false'); ?>"
      data-mobile-carousel="<?php echo esc_attr($mobile_carousel ? 'true' : 'false'); ?>">
 
-    <!-- Loading Overlay -->
-    <div class="wc-cgmp-loading-overlay">
-        <div class="wc-cgmp-loading-spinner"></div>
-        <div class="wc-cgmp-loading-text"><?php esc_html_e('Loading services...', 'wc-carousel-grid-marketplace'); ?></div>
-    </div>
-
     <?php if ($show_sidebar && !empty($categories)) : ?>
     <aside class="wc-cgmp-sidebar">
         <div class="wc-cgmp-sidebar-header">
@@ -61,6 +55,11 @@ if ($repository && !empty($products)) {
     <?php endif; ?>
 
     <main class="wc-cgmp-content">
+        <div class="wc-cgmp-content-inner">
+            <div class="wc-cgmp-loading-overlay">
+                <div class="wc-cgmp-loading-spinner"></div>
+                <div class="wc-cgmp-loading-text"><?php esc_html_e('Loading services...', 'wc-carousel-grid-marketplace'); ?></div>
+            </div>
         <?php if ($show_search) : ?>
         <div class="wc-cgmp-search-bar">
             <input type="search"
@@ -79,14 +78,14 @@ if ($repository && !empty($products)) {
 
         <div class="wc-cgmp-section-header">
             <h2 class="wc-cgmp-section-title" id="wc-cgmp-section-title"><?php esc_html_e('Available Services', 'wc-carousel-grid-marketplace'); ?></h2>
-            <p class="wc-cgmp-section-count">
+            <span class="wc-cgmp-section-count">
                 <?php
                 printf(
-                    _n('%s role available', '%s roles available', count($products), 'wc-carousel-grid-marketplace'),
+                    esc_html__('· %s roles', 'wc-carousel-grid-marketplace'),
                     number_format_i18n(count($products))
                 );
                 ?>
-            </p>
+            </span>
         </div>
 
         <div class="wc-cgmp-grid <?php echo $layout === 'hybrid' ? 'wc-cgmp-hybrid' : ''; ?>"
@@ -116,11 +115,18 @@ if ($repository && !empty($products)) {
              data-include-total-param="<?php echo esc_attr($atts['include_total_param'] ?? 'true'); ?>"
              data-total-url-param="<?php echo esc_attr($atts['total_url_param'] ?? 'total'); ?>"
              data-open-in-new-tab="<?php echo esc_attr($atts['open_in_new_tab'] ?? 'true'); ?>"
-             data-enable-above-button-link="<?php echo esc_attr($atts['enable_above_button_link'] ?? 'false'); ?>"
-              data-above-link-text="<?php echo esc_attr(is_array($atts['above_link_text'] ?? '') ? ($atts['above_link_text']['text'] ?? $atts['above_link_text'][0] ?? '') : ($atts['above_link_text'] ?? '')); ?>"
+              data-enable-above-button-link="<?php echo esc_attr($atts['enable_above_button_link'] ?? 'false'); ?>"
+              data-above-link-icon="<?php echo esc_attr(is_string($atts['above_link_icon'] ?? '') ? $atts['above_link_icon'] : ''); ?>"
+               data-above-link-text="<?php echo esc_attr(is_array($atts['above_link_text'] ?? '') ? ($atts['above_link_text']['text'] ?? $atts['above_link_text'][0] ?? '') : ($atts['above_link_text'] ?? '')); ?>"
               data-above-link-url="<?php echo esc_attr(is_array($atts['above_link_url'] ?? '') ? ($atts['above_link_url']['url'] ?? '') : ($atts['above_link_url'] ?? '')); ?>"
               data-above-link-highlight-text="<?php echo esc_attr(is_array($atts['above_link_highlight_text'] ?? '') ? ($atts['above_link_highlight_text']['text'] ?? $atts['above_link_highlight_text'][0] ?? '') : ($atts['above_link_highlight_text'] ?? '')); ?>"
-             data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>">
+             data-above-link-open-new-tab="<?php echo esc_attr($atts['above_link_open_new_tab'] ?? 'true'); ?>"
+              data-orderby="<?php echo esc_attr($atts['orderby'] ?? 'date'); ?>"
+              data-order="<?php echo esc_attr($atts['order'] ?? 'DESC'); ?>"
+              data-modal-icon-color="<?php echo esc_attr($atts['modal_icon_color'] ?? '#dc2626'); ?>"
+               data-modal-icon-size="<?php echo esc_attr($atts['modal_icon_size'] ?? 16); ?>"
+               data-modal-responsibilities-title="<?php echo esc_attr($atts['modal_responsibilities_title'] ?? 'Key Responsibilities'); ?>"
+               data-remove-price-decimals="<?php echo esc_attr($atts['remove_price_decimals'] ?? 'false'); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);
@@ -143,5 +149,6 @@ if ($repository && !empty($products)) {
             </button>
         </div>
         <?php endif; ?>
+        </div>
     </main>
 </div>

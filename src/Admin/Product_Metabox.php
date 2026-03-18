@@ -42,6 +42,12 @@ class Product_Metabox
         $apply_now_url = get_post_meta($post->ID, WC_CGMP_META_APPLY_NOW_URL, true) ?: '';
         $action_buttons_enabled = get_post_meta($post->ID, WC_CGMP_META_ACTION_BUTTONS_ENABLED, true);
 
+        $modal_description = get_post_meta($post->ID, '_wc_cgmp_modal_description', true) ?: '';
+        $key_responsibilities = get_post_meta($post->ID, '_wc_cgmp_key_responsibilities', true);
+        if (!is_array($key_responsibilities)) {
+            $key_responsibilities = [];
+        }
+
         $repository = wc_cgmp()->get_service('repository');
         $tiers = $repository->get_tiers_by_product($post->ID);
 
@@ -111,6 +117,20 @@ class Product_Metabox
 
         $action_buttons_enabled = isset($_POST['_wc_cgmp_action_buttons_enabled']) && $_POST['_wc_cgmp_action_buttons_enabled'] === 'yes';
         update_post_meta($post_id, WC_CGMP_META_ACTION_BUTTONS_ENABLED, $action_buttons_enabled ? 'yes' : 'no');
+
+        if (isset($_POST['_wc_cgmp_modal_description'])) {
+            update_post_meta($post_id, '_wc_cgmp_modal_description', wp_kses_post($_POST['_wc_cgmp_modal_description']));
+        }
+
+        if (isset($_POST['wc_cgmp_key_responsibilities']) && is_array($_POST['wc_cgmp_key_responsibilities'])) {
+            $responsibilities = array_map('sanitize_text_field', $_POST['wc_cgmp_key_responsibilities']);
+            $responsibilities = array_filter($responsibilities, function($item) {
+                return !empty(trim($item));
+            });
+            update_post_meta($post_id, '_wc_cgmp_key_responsibilities', array_values($responsibilities));
+        } else {
+            delete_post_meta($post_id, '_wc_cgmp_key_responsibilities');
+        }
 
         if (!$enabled) {
             return;
