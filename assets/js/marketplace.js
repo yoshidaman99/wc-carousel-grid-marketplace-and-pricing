@@ -187,11 +187,11 @@
                             var firstName = $panel.attr('data-tier-' + firstAvailableTier + '-name') || '';
                             var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : 'monthly';
                             var newPrice = priceType === 'monthly' ? firstMonthly : firstHourly;
-                            $panel.find('.wc-cgmp-price-main').data('price', newPrice).html(WC_CGMP_Marketplace.formatPrice(newPrice));
+                            $panel.find('.wc-cgmp-price-main').data('price', newPrice).html(WC_CGMP_Marketplace.formatPrice(newPrice, $panel));
                             if (priceType === 'monthly') {
-                                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(firstHourly) + '/hr');
+                                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(firstHourly, $panel) + '/hr');
                             } else {
-                                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(firstMonthly) + '/mo');
+                                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(firstMonthly, $panel) + '/mo');
                             }
                             var badgeClass = ['entry', 'mid', 'expert'][firstAvailableTier - 1] || 'default';
                             $badge.removeClass('entry mid expert default').addClass(badgeClass).text(firstName);
@@ -220,12 +220,12 @@
                 
                 $panel.find('.wc-cgmp-price-main')
                     .data('price', newPrice)
-                    .html(WC_CGMP_Marketplace.formatPrice(newPrice));
+                    .html(WC_CGMP_Marketplace.formatPrice(newPrice, $panel));
                 
                 if (priceType === 'monthly') {
-                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice) + '/hr');
+                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice, $panel) + '/hr');
                 } else {
-                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice) + '/mo');
+                    $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice, $panel) + '/mo');
                 }
                 
                 $panel.find('.wc-cgmp-total-price').data('monthly-price', monthlyPrice);
@@ -751,7 +751,7 @@
 
             $panel.find('.wc-cgmp-total-price').data('total', total);
 
-            var formattedTotal = WC_CGMP_Marketplace.formatPrice(total);
+            var formattedTotal = WC_CGMP_Marketplace.formatPrice(total, $panel);
             $panel.find('.wc-cgmp-total-price').html(formattedTotal + (hasTiers ? '/mo' : ''));
 
             var $overrideBtn = $panel.find('.wc-cgmp-override-button');
@@ -778,7 +778,7 @@
             var price = priceType === 'monthly' ? monthlyPrice : hourlyPrice;
 
             $panel.find('.wc-cgmp-price-main').data('price', price);
-            $panel.find('.wc-cgmp-price-main').html(WC_CGMP_Marketplace.formatPrice(price));
+            $panel.find('.wc-cgmp-price-main').html(WC_CGMP_Marketplace.formatPrice(price, $panel));
 
             $btn.attr('data-tier-level', newTierLevel);
             
@@ -823,14 +823,14 @@
             
             $panel.find('.wc-cgmp-price-main')
                 .data('price', newPrice)
-                .html(WC_CGMP_Marketplace.formatPrice(newPrice));
+                .html(WC_CGMP_Marketplace.formatPrice(newPrice, $panel));
             
             $panel.find('.wc-cgmp-total-price').data('monthly-price', monthlyPrice);
             
             if (priceType === 'monthly') {
-                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice) + '/hr');
+                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(hourlyPrice, $panel) + '/hr');
             } else {
-                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice) + '/mo');
+                $panel.find('.wc-cgmp-price-sub').html(WC_CGMP_Marketplace.formatPrice(monthlyPrice, $panel) + '/mo');
             }
 
             var $overrideBtn = $panel.find('.wc-cgmp-override-button');
@@ -861,11 +861,31 @@
             }
         },
 
-        formatPrice: function(price) {
-            return '$' + price.toLocaleString('en-US', {
+        formatPrice: function(price, $context) {
+            var opts = {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-            });
+            };
+            var formatted = '$' + price.toLocaleString('en-US', opts);
+            
+            var removeDecimals = false;
+            if ($context && $context.length) {
+                var $panel = $context.closest('.wc-cgmp-pricing-panel');
+                if ($panel.length) {
+                    removeDecimals = $panel.data('remove-decimals') === true || $panel.attr('data-remove-decimals') === 'true';
+                }
+                if (!removeDecimals) {
+                    var $grid = $context.closest('.wc-cgmp-grid');
+                    if ($grid.length) {
+                        removeDecimals = $grid.data('remove-price-decimals') === 'true';
+                    }
+                }
+            }
+            
+            if (removeDecimals) {
+                formatted = formatted.replace(/\.00$/, '');
+            }
+            return formatted;
         },
 
         debounce: function(func, wait) {
