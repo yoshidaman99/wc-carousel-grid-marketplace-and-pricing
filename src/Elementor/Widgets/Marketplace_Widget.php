@@ -3166,7 +3166,7 @@ class Marketplace_Widget extends Widget_Base
                             }
                             #>
                         </h3>
-                        <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5; min-height: 42px;"><# var truncatedDesc = product.desc.length > 81 ? product.desc.substring(0, 81) + '...' : product.desc; #>{{{truncatedDesc}}}</p>
+                        <p class="wc-cgmp-card-desc" style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5; min-height: 42px;"><# var truncatedDesc = product.desc.length > 75 ? product.desc.substring(0, 75) + '...' : product.desc; #>{{{truncatedDesc}}}</p>
                         <div class="wc-cgmp-pricing-panel" data-tier="{{product.tier}}" style="border-radius: 8px; padding: 12px; margin-bottom: 12px;">
                             <#
                             var priceDisplay = '';
