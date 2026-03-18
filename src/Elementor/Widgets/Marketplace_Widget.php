@@ -982,14 +982,20 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::COLOR,
             'default' => '#1e293b',
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal-title' => 'color: {{VALUE}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-title-color: {{VALUE}};',
             ],
         ]);
 
         $this->add_group_control(Group_Control_Typography::get_type(), [
             'name' => 'modal_title_typography',
-            'selector' => '{{WRAPPER}} .wc-cgmp-modal-title',
+            'selector' => '{{WRAPPER}}',
             'global' => ['default' => Global_Typography::TYPOGRAPHY_PRIMARY],
+            'fields_options' => [
+                'font_size' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-title-font-size: {{SIZE}}{{UNIT}};']],
+                'font_weight' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-title-font-weight: {{VALUE}};']],
+                'line_height' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-title-line-height: {{SIZE}}{{UNIT}};']],
+                'letter_spacing' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-title-letter-spacing: {{SIZE}}{{UNIT}};']],
+            ],
         ]);
 
         $this->add_responsive_control('modal_title_padding', [
@@ -1005,7 +1011,7 @@ class Marketplace_Widget extends Widget_Base
                 'isLinked' => false,
             ],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-title-padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
         ]);
 
@@ -1020,14 +1026,20 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::COLOR,
             'default' => '#475569',
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal-description' => 'color: {{VALUE}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-desc-color: {{VALUE}};',
             ],
         ]);
 
         $this->add_group_control(Group_Control_Typography::get_type(), [
             'name' => 'modal_description_typography',
-            'selector' => '{{WRAPPER}} .wc-cgmp-modal-description',
+            'selector' => '{{WRAPPER}}',
             'global' => ['default' => Global_Typography::TYPOGRAPHY_TEXT],
+            'fields_options' => [
+                'font_size' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-desc-font-size: {{SIZE}}{{UNIT}};']],
+                'font_weight' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-desc-font-weight: {{VALUE}};']],
+                'line_height' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-desc-line-height: {{SIZE}}{{UNIT}};']],
+                'letter_spacing' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-desc-letter-spacing: {{SIZE}}{{UNIT}};']],
+            ],
         ]);
 
         $this->add_responsive_control('modal_description_margin', [
@@ -1043,7 +1055,7 @@ class Marketplace_Widget extends Widget_Base
                 'isLinked' => false,
             ],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal-description' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-desc-margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
         ]);
 
@@ -1058,13 +1070,64 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::COLOR,
             'default' => '#1e293b',
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-modal-section-title' => 'color: {{VALUE}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-section-color: {{VALUE}};',
             ],
         ]);
 
         $this->add_group_control(Group_Control_Typography::get_type(), [
             'name' => 'modal_section_title_typography',
-            'selector' => '{{WRAPPER}} .wc-cgmp-modal-section-title',
+            'selector' => '{{WRAPPER}}',
+            'fields_options' => [
+                'font_size' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-section-font-size: {{SIZE}}{{UNIT}};']],
+                'font_weight' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-section-font-weight: {{VALUE}};']],
+                'line_height' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-section-line-height: {{SIZE}}{{UNIT}};']],
+                'letter_spacing' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-section-letter-spacing: {{SIZE}}{{UNIT}};']],
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_section_title_margin', [
+            'label' => __('Section Title Margin', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '20',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-section-margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_control('modal_responsibility_text_heading', [
+            'label' => __('Responsibility List Text', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::HEADING,
+            'separator' => 'before',
+        ]);
+
+        $this->add_control('modal_responsibility_text_color', [
+            'label' => __('Text Color', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '#334155',
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibility-text-color: {{VALUE}};',
+            ],
+        ]);
+
+        $this->add_group_control(Group_Control_Typography::get_type(), [
+            'name' => 'modal_responsibility_text_typography',
+            'selector' => '{{WRAPPER}}',
+            'fields_options' => [
+                'font_size' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-font-size: {{SIZE}}{{UNIT}};']],
+                'font_weight' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-font-weight: {{VALUE}};']],
+                'font_style' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-font-style: {{VALUE}};']],
+                'line_height' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-line-height: {{SIZE}}{{UNIT}};']],
+                'letter_spacing' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-letter-spacing: {{SIZE}}{{UNIT}};']],
+                'font_family' => ['selectors' => ['{{SELECTOR}}' => '--wc-cgmp-modal-responsibility-text-font-family: {{VALUE}};']],
+            ],
         ]);
 
         $this->add_responsive_control('modal_responsibility_item_gap', [
@@ -1072,11 +1135,100 @@ class Marketplace_Widget extends Widget_Base
             'type' => Controls_Manager::SLIDER,
             'size_units' => ['px'],
             'range' => [
-                'px' => ['min' => 0, 'max' => 50],
+                'min' => 0,
+                'max' => 50,
             ],
-            'default' => ['size' => 5, 'unit' => 'px'],
+            'default' => [
+                'size' => 5,
+                'unit' => 'px',
+            ],
             'selectors' => [
-                '{{WRAPPER}} .wc-cgmp-responsibilities-list .wc-cgmp-responsibility-item' => 'gap: {{SIZE}}{{UNIT}} !important;',
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibility-item-gap: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_responsibilities_padding', [
+            'label' => __('Responsibilities Section Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px', 'em'],
+            'range' => [
+                'min' => 0,
+                'max' => 100,
+            ],
+            'default' => [
+                'size' => 32,
+                'unit' => 'px',
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibilities-padding: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_responsibilitiesMargin', [
+            'label' => __('Responsibilities Section Margin', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '0',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibilities-margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_responsibility_item_padding', [
+            'label' => __('Responsibility Item Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '0',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibility-item-padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_responsibility_icon_gap', [
+            'label' => __('Icon & Text Gap', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::SLIDER,
+            'size_units' => ['px'],
+            'range' => [
+                'min' => 0,
+                'max' => 30,
+            ],
+            'default' => [
+                'size' => 5,
+                'unit' => 'px',
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibility-item-icon-gap: {{SIZE}}{{UNIT}};',
+            ],
+        ]);
+
+        $this->add_responsive_control('modal_responsibility_icon_padding', [
+            'label' => __('Icon Padding', 'wc-carousel-grid-marketplace-and-pricing'),
+            'type' => Controls_Manager::DIMENSIONS,
+            'size_units' => ['px', 'em'],
+            'default' => [
+                'top' => '0',
+                'right' => '0',
+                'bottom' => '0',
+                'left' => '0',
+                'unit' => 'px',
+                'isLinked' => false,
+            ],
+            'selectors' => [
+                '{{WRAPPER}}' => '--wc-cgmp-modal-responsibility-icon-padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
         ]);
 
@@ -2865,7 +3017,7 @@ class Marketplace_Widget extends Widget_Base
             'total_url_param' => $settings['total_url_param'] ?? 'total',
             'open_in_new_tab' => ($settings['open_in_new_tab'] ?? 'yes') === 'yes' ? 'true' : 'false',
             'enable_above_button_link' => ($settings['enable_above_button_link'] ?? 'no') === 'yes' ? 'true' : 'false',
-            'above_link_icon' => !empty($settings['above_link_icon']) ? base64_encode(wp_json_encode($settings['above_link_icon'])) : '',
+            'above_link_icon' => !empty($settings['above_link_icon']) ? wp_json_encode($settings['above_link_icon']) : '',
             'above_link_text' => $settings['above_link_text'] ?? '',
             'above_link_url' => $settings['above_link_url']['url'] ?? '',
             'above_link_highlight_text' => $settings['above_link_highlight_text'] ?? '',

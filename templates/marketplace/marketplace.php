@@ -43,12 +43,6 @@ if ($repository && !empty($products)) {
      data-load-all="<?php echo esc_attr($load_all ? 'true' : 'false'); ?>"
      data-mobile-carousel="<?php echo esc_attr($mobile_carousel ? 'true' : 'false'); ?>">
 
-    <!-- Loading Overlay -->
-    <div class="wc-cgmp-loading-overlay">
-        <div class="wc-cgmp-loading-spinner"></div>
-        <div class="wc-cgmp-loading-text"><?php esc_html_e('Loading services...', 'wc-carousel-grid-marketplace'); ?></div>
-    </div>
-
     <?php if ($show_sidebar && !empty($categories)) : ?>
     <aside class="wc-cgmp-sidebar">
         <div class="wc-cgmp-sidebar-header">
@@ -61,6 +55,11 @@ if ($repository && !empty($products)) {
     <?php endif; ?>
 
     <main class="wc-cgmp-content">
+        <div class="wc-cgmp-content-inner">
+            <div class="wc-cgmp-loading-overlay">
+                <div class="wc-cgmp-loading-spinner"></div>
+                <div class="wc-cgmp-loading-text"><?php esc_html_e('Loading services...', 'wc-carousel-grid-marketplace'); ?></div>
+            </div>
         <?php if ($show_search) : ?>
         <div class="wc-cgmp-search-bar">
             <input type="search"
@@ -149,5 +148,6 @@ if ($repository && !empty($products)) {
             </button>
         </div>
         <?php endif; ?>
+        </div>
     </main>
 </div>

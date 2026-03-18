@@ -87,6 +87,12 @@ class Settings
             'default' => false,
             'sanitize_callback' => 'rest_sanitize_boolean',
         ]);
+
+        register_setting($this->option_group, 'wc_cgmp_fix_sanitize_email_null', [
+            'type' => 'boolean',
+            'default' => true,
+            'sanitize_callback' => 'rest_sanitize_boolean',
+        ]);
     }
 
     public static function get(string $key, mixed $default = null): mixed
@@ -137,5 +143,10 @@ class Settings
     public static function get_popular_days(): int
     {
         return (int) get_option('wc_cgmp_popular_days', 30);
+    }
+
+    public static function fix_sanitize_email_null(): bool
+    {
+        return (bool) get_option('wc_cgmp_fix_sanitize_email_null', true);
     }
 }

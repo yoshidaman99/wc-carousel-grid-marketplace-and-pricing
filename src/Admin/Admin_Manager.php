@@ -75,6 +75,7 @@ class Admin_Manager
             'wc_cgmp_popular_threshold' => absint($_POST['wc_cgmp_popular_threshold'] ?? 5),
             'wc_cgmp_popular_days' => absint($_POST['wc_cgmp_popular_days'] ?? 30),
             'wc_cgmp_remove_data_on_uninstall' => isset($_POST['wc_cgmp_remove_data_on_uninstall']),
+            'wc_cgmp_fix_sanitize_email_null' => isset($_POST['wc_cgmp_fix_sanitize_email_null']),
         ];
 
         foreach ($settings as $option => $value) {
@@ -218,6 +219,23 @@ class Admin_Manager
                         <p class="wc-cgmp-mt-2"><strong><?php esc_html_e('Elementor:', 'wc-carousel-grid-marketplace-and-pricing'); ?></strong></p>
                         <p><?php esc_html_e('Use the native "WC Marketplace" widget in Elementor for full visual controls.', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
                     </div>
+                </div>
+
+                <div class="wc-cgmp-settings-section">
+                    <h2><?php esc_html_e('Compatibility Fixes', 'wc-carousel-grid-marketplace-and-pricing'); ?></h2>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php esc_html_e('Fix sanitize_email() Null Warning', 'wc-carousel-grid-marketplace-and-pricing'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="wc_cgmp_fix_sanitize_email_null" value="1" <?php checked(get_option('wc_cgmp_fix_sanitize_email_null', true)); ?>>
+                                    <?php esc_html_e('Fix PHP 8.1+ deprecation warning for null values in sanitize_email()', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                                </label>
+                                <p class="description"><?php esc_html_e('Resolves: "Deprecated: strlen(): Passing null to parameter #1 ($string) of type string is deprecated" in wp-includes/formatting.php', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
                 <div class="wc-cgmp-settings-section">

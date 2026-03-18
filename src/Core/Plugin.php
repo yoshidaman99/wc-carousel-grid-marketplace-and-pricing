@@ -33,6 +33,7 @@ class Plugin
             'logger' => Debug_Logger::get_instance(),
             'repository' => new \WC_CGMP\Database\Repository(),
             'settings' => new \WC_CGMP\Admin\Settings(),
+            'category_icon' => \WC_CGMP\Frontend\Category_Icon::get_instance(),
         ];
     }
 
@@ -68,6 +69,7 @@ class Plugin
         $this->services['ajax'] = new \WC_CGMP\AJAX\Handlers();
         $this->services['product_metabox'] = new \WC_CGMP\Admin\Product_Metabox();
         $this->services['single_product'] = new \WC_CGMP\Frontend\Single_Product();
+        $this->services['shortcodes'] = \WC_CGMP\Frontend\Shortcodes::get_instance();
     }
 
     public function register_woocommerce_services_fallback(): void
@@ -140,9 +142,16 @@ class Plugin
     private function enqueue_frontend_assets(): void
     {
         wp_enqueue_style(
+            'fontawesome-free',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+            [],
+            '6.5.1'
+        );
+
+        wp_enqueue_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
-            [],
+            ['fontawesome-free'],
             WC_CGMP_VERSION
         );
 

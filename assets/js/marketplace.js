@@ -17,6 +17,10 @@
         currentTier: 0,
         currentOffset: 0,
         limit: 12,
+        
+        modalCache: {},
+        cssVarsCache: {},
+        preloadQueue: {},
 
         init: function() {
             if (this.initialized) {
@@ -53,18 +57,18 @@
         },
 
         showLoading: function() {
-            var $marketplace = $('.wc-cgmp-marketplace');
-            $marketplace.addClass('wc-cgmp-loading').removeClass('wc-cgmp-loaded');
-            $marketplace.find('.wc-cgmp-loading-overlay').removeClass('hidden');
+            var $content = $('.wc-cgmp-content-inner');
+            $content.addClass('wc-cgmp-loading').removeClass('wc-cgmp-loaded');
+            $content.find('.wc-cgmp-loading-overlay').removeClass('hidden');
             this.isLoading = true;
         },
 
         hideLoading: function() {
-            var $marketplace = $('.wc-cgmp-marketplace');
+            var $content = $('.wc-cgmp-content-inner');
             
             setTimeout(function() {
-                $marketplace.removeClass('wc-cgmp-loading').addClass('wc-cgmp-loaded');
-                $marketplace.find('.wc-cgmp-loading-overlay').addClass('hidden');
+                $content.removeClass('wc-cgmp-loading').addClass('wc-cgmp-loaded');
+                $content.find('.wc-cgmp-loading-overlay').addClass('hidden');
                 WC_CGMP_Marketplace.isLoading = false;
             }, 100);
         },
@@ -92,6 +96,7 @@
             $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
             $(document).on('click', '.wc-cgmp-cart-qty-btn', this.updateCartQuantity);
             $(document).on('click', '.wc-cgmp-modal-trigger', this.openModal);
+            $(document).on('mouseenter', '.wc-cgmp-modal-trigger', this.preloadModal);
             $(document).on('click', '.wc-cgmp-modal-close, .wc-cgmp-modal-overlay', this.closeModal);
             $(document).on('keydown', this.handleModalKeydown);
         },
@@ -892,6 +897,38 @@
             
             WC_CGMP_Marketplace.log('Opening modal for product:', productId);
             
+            var cacheKey = productId + '_' + modalSettings.icon_color + '_' + modalSettings.icon_size + '_' + modalSettings.title;
+            
+            if (WC_CGMP_Marketplace.modalCache[cacheKey]) {
+                WC_CGMP_Marketplace.log('Using cached modal content for product:', productId);
+                WC_CGMP_Marketplace.showCachedModal(WC_CGMP_Marketplace.modalCache[cacheKey], $marketplace);
+                return;
+            }
+            
+            WC_CGMP_Marketplace.fetchAndShowModal(productId, modalSettings, $marketplace, cacheKey);
+        },
+        
+        preloadModal: function(e) {
+            var $trigger = $(this);
+            var productId = $trigger.data('product-id');
+            var $card = $trigger.closest('.wc-cgmp-card');
+            var $grid = $card.closest('.wc-cgmp-grid');
+            
+            var modalSettings = {
+                icon_color: $grid.data('modal-icon-color') || '#dc2626',
+                icon_size: $grid.data('modal-icon-size') || 16,
+                title: $grid.data('modal-responsibilities-title') || 'Key Responsibilities'
+            };
+            
+            var cacheKey = productId + '_' + modalSettings.icon_color + '_' + modalSettings.icon_size + '_' + modalSettings.title;
+            
+            if (WC_CGMP_Marketplace.modalCache[cacheKey] || WC_CGMP_Marketplace.preloadQueue[cacheKey]) {
+                return;
+            }
+            
+            WC_CGMP_Marketplace.log('Preloading modal for product:', productId);
+            WC_CGMP_Marketplace.preloadQueue[cacheKey] = true;
+            
             $.ajax({
                 url: wc_cgmp_ajax.ajax_url,
                 type: 'POST',
@@ -905,14 +942,33 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        var $modal = $(response.data.html);
-                        $('body').append($modal);
-                        $('body').addClass('wc-cgmp-modal-open');
-                        
-                        setTimeout(function() {
-                            $modal.addClass('wc-cgmp-modal-visible');
-                        }, 10);
-                        
+                        WC_CGMP_Marketplace.modalCache[cacheKey] = response.data.html;
+                        WC_CGMP_Marketplace.log('Modal preloaded for product:', productId);
+                    }
+                    delete WC_CGMP_Marketplace.preloadQueue[cacheKey];
+                },
+                error: function() {
+                    delete WC_CGMP_Marketplace.preloadQueue[cacheKey];
+                }
+            });
+        },
+        
+        fetchAndShowModal: function(productId, modalSettings, $marketplace, cacheKey) {
+            $.ajax({
+                url: wc_cgmp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'wc_cgmp_get_modal_content',
+                    nonce: wc_cgmp_ajax.nonce,
+                    product_id: productId,
+                    modal_icon_color: modalSettings.icon_color,
+                    modal_icon_size: modalSettings.icon_size,
+                    modal_responsibilities_title: modalSettings.title
+                },
+                success: function(response) {
+                    if (response.success) {
+                        WC_CGMP_Marketplace.modalCache[cacheKey] = response.data.html;
+                        WC_CGMP_Marketplace.showCachedModal(response.data.html, $marketplace);
                         WC_CGMP_Marketplace.log('Modal opened successfully');
                     }
                 },
@@ -920,6 +976,82 @@
                     WC_CGMP_Marketplace.log('Modal AJAX error:', error);
                 }
             });
+        },
+        
+        showCachedModal: function(html, $marketplace) {
+            var $modal = $(html);
+            
+            var marketplaceId = $marketplace.attr('id') || 'default';
+            var cssVars = WC_CGMP_Marketplace.getCssVars(marketplaceId, $marketplace);
+            
+            for (var varName in cssVars) {
+                if (cssVars[varName]) {
+                    $modal.get(0).style.setProperty(varName, cssVars[varName]);
+                }
+            }
+            
+            $('body').append($modal);
+            $('body').addClass('wc-cgmp-modal-open');
+            
+            setTimeout(function() {
+                $modal.addClass('wc-cgmp-modal-visible');
+            }, 10);
+        },
+        
+        getCssVars: function(marketplaceId, $marketplace) {
+            if (WC_CGMP_Marketplace.cssVarsCache[marketplaceId]) {
+                return WC_CGMP_Marketplace.cssVarsCache[marketplaceId];
+            }
+            
+            var cssVarNames = [
+                '--wc-cgmp-modal-title-color',
+                '--wc-cgmp-modal-title-font-size',
+                '--wc-cgmp-modal-title-font-weight',
+                '--wc-cgmp-modal-title-line-height',
+                '--wc-cgmp-modal-title-letter-spacing',
+                '--wc-cgmp-modal-title-padding',
+                '--wc-cgmp-modal-desc-color',
+                '--wc-cgmp-modal-desc-font-size',
+                '--wc-cgmp-modal-desc-font-weight',
+                '--wc-cgmp-modal-desc-line-height',
+                '--wc-cgmp-modal-desc-letter-spacing',
+                '--wc-cgmp-modal-desc-margin',
+                '--wc-cgmp-modal-section-color',
+                '--wc-cgmp-modal-section-font-size',
+                '--wc-cgmp-modal-section-font-weight',
+                '--wc-cgmp-modal-section-line-height',
+                '--wc-cgmp-modal-section-letter-spacing',
+                '--wc-cgmp-modal-section-margin',
+                '--wc-cgmp-modal-width',
+                '--wc-cgmp-modal-responsibilities-padding',
+                '--wc-cgmp-modal-responsibilities-margin',
+                '--wc-cgmp-modal-responsibility-item-gap',
+                '--wc-cgmp-modal-responsibility-item-padding',
+                '--wc-cgmp-modal-responsibility-item-icon-gap',
+                '--wc-cgmp-modal-responsibility-icon-padding',
+                '--wc-cgmp-modal-responsibility-text-color',
+                '--wc-cgmp-modal-responsibility-text-font-size',
+                '--wc-cgmp-modal-responsibility-text-font-weight',
+                '--wc-cgmp-modal-responsibility-text-font-style',
+                '--wc-cgmp-modal-responsibility-text-line-height',
+                '--wc-cgmp-modal-responsibility-text-letter-spacing',
+                '--wc-cgmp-modal-responsibility-text-font-family',
+                '--wc-cgmp-icon-size'
+            ];
+            
+            var computedStyle = window.getComputedStyle($marketplace.get(0));
+            var cachedVars = {};
+            
+            for (var i = 0; i < cssVarNames.length; i++) {
+                var varName = cssVarNames[i];
+                var value = computedStyle.getPropertyValue(varName);
+                if (value) {
+                    cachedVars[varName] = value.trim();
+                }
+            }
+            
+            WC_CGMP_Marketplace.cssVarsCache[marketplaceId] = cachedVars;
+            return cachedVars;
         },
 
         closeModal: function(e) {
