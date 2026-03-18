@@ -126,7 +126,8 @@ if ($repository && !empty($products)) {
               data-modal-icon-color="<?php echo esc_attr($atts['modal_icon_color'] ?? '#dc2626'); ?>"
                data-modal-icon-size="<?php echo esc_attr($atts['modal_icon_size'] ?? 16); ?>"
                data-modal-responsibilities-title="<?php echo esc_attr($atts['modal_responsibilities_title'] ?? 'Key Responsibilities'); ?>"
-               data-remove-price-decimals="<?php echo esc_attr($atts['remove_price_decimals'] ?? 'false'); ?>">
+               data-remove-price-decimals="<?php echo esc_attr($atts['remove_price_decimals'] ?? 'false'); ?>"
+               data-card-desc-limit="<?php echo esc_attr($atts['card_desc_limit'] ?? 75); ?>">
 
             <?php foreach ($products as $product_id) :
                 $product = wc_get_product($product_id);

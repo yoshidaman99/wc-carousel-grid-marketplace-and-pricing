@@ -299,6 +299,7 @@
                 above_link_open_new_tab: $grid.data('above-link-open-new-tab') ?? 'true',
                 orderby: $grid.data('orderby') ?? 'date',
                 order: $grid.data('order') ?? 'DESC',
+                card_desc_limit: $grid.data('card-desc-limit') ?? 75,
             };
         },
 
@@ -425,6 +426,7 @@
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
                     remove_price_decimals: gridAtts.remove_price_decimals,
+                    card_desc_limit: gridAtts.card_desc_limit,
                 },
                 beforeSend: function() {
                     $btn.addClass('loading').html('<span class="dashicons dashicons-update wc-cgmp-spin"></span> Loading...');
@@ -502,6 +504,7 @@
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
                     remove_price_decimals: gridAtts.remove_price_decimals,
+                    card_desc_limit: gridAtts.card_desc_limit,
                 },
                 success: function(response) {
                     if (response.success) {
