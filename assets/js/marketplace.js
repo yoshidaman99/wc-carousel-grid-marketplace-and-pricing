@@ -350,6 +350,7 @@
                     orderby: gridAtts.orderby,
                     order: gridAtts.order,
                     remove_price_decimals: gridAtts.remove_price_decimals,
+                    card_desc_limit: gridAtts.card_desc_limit,
                 },
                 beforeSend: function() {
                     $grid.addClass('loading');
