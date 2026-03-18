@@ -316,7 +316,7 @@ class Marketplace
     {
         $formatted = wc_price($price);
         if ($remove_decimals) {
-            $formatted = preg_replace('/\.00(<\/span>)?/', '$1', $formatted);
+            $formatted = preg_replace('/(\d)\.00/', '$1', $formatted);
         }
         return $formatted;
     }
