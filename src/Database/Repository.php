@@ -674,7 +674,8 @@ class Repository
         if (!empty($this->current_search_term)) {
             $search_term = '%' . $wpdb->esc_like($this->current_search_term) . '%';
             $where .= $wpdb->prepare(
-                " AND ({$wpdb->posts}.post_title LIKE %s)",
+                " AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s)",
+                $search_term,
                 $search_term
             );
 

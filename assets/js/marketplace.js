@@ -21,6 +21,7 @@
         modalCache: {},
         cssVarsCache: {},
         preloadQueue: {},
+        searchDebounceTimer: null,
 
         init: function() {
             if (this.initialized) {
@@ -94,6 +95,7 @@
             $(document).on('click', '.wc-cgmp-load-more', this.loadMore);
             $(document).on('click', '.wc-cgmp-search-btn', this.triggerSearch);
             $(document).on('keydown', '.wc-cgmp-search-input', this.handleSearchKeydown);
+            $(document).on('input', '.wc-cgmp-search-input', this.handleLiveSearch);
             $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
             $(document).on('click', '.wc-cgmp-cart-qty-btn', this.updateCartQuantity);
             $(document).on('click', '.wc-cgmp-modal-trigger', this.openModal);
@@ -116,7 +118,15 @@
 
             WC_CGMP_Marketplace.updateSectionTitle(categoryId, categoryName);
 
-            WC_CGMP_Marketplace.loadProducts();
+            var $marketplace = $this.closest('.wc-cgmp-marketplace');
+            var $input = $marketplace.find('.wc-cgmp-search-input');
+            var searchValue = $.trim($input.val());
+
+            if (searchValue.length >= 2) {
+                WC_CGMP_Marketplace.performSearch($input, $marketplace);
+            } else {
+                WC_CGMP_Marketplace.loadProducts();
+            }
         },
 
         filterByTier: function(e) {
@@ -468,6 +478,17 @@
             }
         },
 
+        handleLiveSearch: function(e) {
+            var $input = $(this);
+            var $marketplace = $input.closest('.wc-cgmp-marketplace');
+            
+            clearTimeout(WC_CGMP_Marketplace.searchDebounceTimer);
+            
+            WC_CGMP_Marketplace.searchDebounceTimer = setTimeout(function() {
+                WC_CGMP_Marketplace.performSearch($input, $marketplace);
+            }, 300);
+        },
+
         performSearch: function($input, $marketplace) {
             var search = $.trim($input.val());
             console.log('[WC_CGMP] Search triggered:', { value: search, length: search.length });
@@ -493,6 +514,7 @@
                     action: 'wc_cgmp_search_products',
                     nonce: wc_cgmp_ajax.nonce,
                     search: search,
+                    category: WC_CGMP_Marketplace.currentCategory,
                     tier: WC_CGMP_Marketplace.currentTier,
                     limit: limit,
                     show_tier_badge: gridAtts.show_tier_badge,

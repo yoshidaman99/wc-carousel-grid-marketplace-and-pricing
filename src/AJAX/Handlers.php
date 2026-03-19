@@ -242,6 +242,7 @@ class Handlers
             }
 
             $search = trim(sanitize_text_field($_POST['search'] ?? ''));
+            $category = isset($_POST['category']) ? (int) $_POST['category'] : 0;
             $tier = isset($_POST['tier']) ? (int) $_POST['tier'] : 0;
             $limit = isset($_POST['limit']) ? (int) $_POST['limit'] : 12;
             $orderby = sanitize_text_field($_POST['orderby'] ?? 'date');
@@ -251,6 +252,7 @@ class Handlers
                 'raw' => $_POST['search'] ?? '',
                 'sanitized' => $search,
                 'length' => mb_strlen($search),
+                'category' => $category,
                 'tier' => $tier,
             ]);
 
@@ -265,6 +267,7 @@ class Handlers
 
             $args = [
                 'search' => $search,
+                'category' => $category ?: '',
                 'tier' => $tier,
                 'limit' => $limit > 0 ? $limit : -1,
                 'orderby' => $orderby,
