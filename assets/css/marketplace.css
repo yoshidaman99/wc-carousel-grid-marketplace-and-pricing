@@ -26,6 +26,11 @@
     box-sizing: border-box;
 }
 
+.wc-cgmp-sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
 .wc-cgmp-sidebar-header h3 {
     margin: 0 0 4px 0;
     font-size: var(--wc-cgmp-sidebar-h3-size, 16px);
@@ -38,7 +43,7 @@
 }
 
 .wc-cgmp-sidebar-header p {
-    margin: 0 0 20px 0;
+    margin: 4px 0 0 0;
     font-size: var(--wc-cgmp-sidebar-p-size, 13px);
     font-weight: var(--wc-cgmp-sidebar-p-weight, 400);
     color: var(--wc-cgmp-sidebar-p-color, #6b7280);
