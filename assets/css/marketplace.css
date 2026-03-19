@@ -27,8 +27,12 @@
 }
 
 .wc-cgmp-sidebar-header {
-    padding: 20px;
+    padding: 20px 20px 5px 20px;
     border-bottom: 1px solid #e5e7eb;
+}
+
+.wc-cgmp-sidebar {
+    padding: 0 !important;
 }
 
 .wc-cgmp-sidebar-header h3 {
@@ -57,7 +61,7 @@
 .wc-cgmp-category-nav {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 20px 20px 15px 20px;
 }
 
 .wc-cgmp-category-item {
