@@ -62,13 +62,11 @@ if ($repository && !empty($products)) {
             </div>
         <?php if ($show_search) : ?>
         <div class="wc-cgmp-search-bar">
+            <span class="wc-cgmp-search-icon dashicons dashicons-search"></span>
             <input type="search"
                    class="wc-cgmp-search-input"
-                   placeholder="<?php esc_attr_e('Search...', 'wc-carousel-grid-marketplace'); ?>"
+                   placeholder="<?php esc_attr_e('Search services...', 'wc-carousel-grid-marketplace'); ?>"
                    aria-label="<?php esc_attr_e('Search services', 'wc-carousel-grid-marketplace'); ?>">
-            <button type="button" class="wc-cgmp-search-btn">
-                <span class="dashicons dashicons-search"></span>
-            </button>
         </div>
         <?php endif; ?>
 

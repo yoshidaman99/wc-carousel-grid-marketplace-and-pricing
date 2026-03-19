@@ -93,7 +93,6 @@
             $(document).on('change', '.wc-cgmp-tier-select', this.updateTierPrice);
             $(document).on('change', '.wc-cgmp-switch-input', this.updatePriceType);
             $(document).on('click', '.wc-cgmp-load-more', this.loadMore);
-            $(document).on('click', '.wc-cgmp-search-btn', this.triggerSearch);
             $(document).on('keydown', '.wc-cgmp-search-input', this.handleSearchKeydown);
             $(document).on('input', '.wc-cgmp-search-input', this.handleLiveSearch);
             $(document).on('click', '.wc-cgmp-remove-cart-item', this.removeFromCart);
@@ -459,14 +458,6 @@
                     $btn.removeClass('loading').text('Load More');
                 }
             });
-        },
-
-        triggerSearch: function(e) {
-            e.preventDefault();
-            var $btn = $(this);
-            var $marketplace = $btn.closest('.wc-cgmp-marketplace');
-            var $input = $marketplace.find('.wc-cgmp-search-input');
-            WC_CGMP_Marketplace.performSearch($input, $marketplace);
         },
 
         handleSearchKeydown: function(e) {
