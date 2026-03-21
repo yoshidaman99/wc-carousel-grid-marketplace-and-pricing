@@ -68,16 +68,9 @@ class Elementor_Integration
     public function register_styles(): void
     {
         \wp_register_style(
-            'fontawesome-free',
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-            [],
-            '6.5.1'
-        );
-
-        \wp_register_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
-            ['fontawesome-free'],
+            [],
             WC_CGMP_VERSION
         );
 
@@ -127,13 +120,12 @@ class Elementor_Integration
         $this->register_styles();
         \wp_enqueue_style('wc-cgmp-marketplace');
         \wp_enqueue_style('wc-cgmp-frontend');
+
+        \wp_add_inline_style('wc-cgmp-marketplace', '#elementor-panel-state-loading{display:none!important;}');
     }
 
     public function enqueue_editor_scripts(): void
     {
-        $this->register_scripts();
-        \wp_enqueue_script('wc-cgmp-marketplace');
-        \wp_enqueue_script('wc-cgmp-frontend');
     }
 
     public function enqueue_editor_debug(string $hook): void

@@ -8,9 +8,7 @@ class Category_Icon_Field
 {
     private const META_ICON_TYPE = 'wc_cgmp_icon_type';
     private const META_ICON_DASHICON = 'wc_cgmp_icon_dashicon';
-    private const META_ICON_IMAGE_ID = 'wc_cgmp_icon_image_id';
     private const META_ICON_FONTAWESOME = 'wc_cgmp_icon_fontawesome';
-    private const META_ICON_SVG_CODE = 'wc_cgmp_icon_svg_code';
 
     public function __construct()
     {
@@ -28,8 +26,6 @@ class Category_Icon_Field
         if (!$screen || strpos($screen->id, 'product_cat') === false) {
             return;
         }
-
-        wp_enqueue_media();
 
         wp_enqueue_style(
             'fontawesome-free',
@@ -56,8 +52,6 @@ class Category_Icon_Field
         wp_localize_script('wc-cgmp-category-icon', 'wcCgmpCategoryIcon', [
             'dashicons' => \WC_CGMP\Frontend\Category_Icon::get_available_dashicons(),
             'fontawesomeIcons' => self::get_available_fontawesome_icons(),
-            'chooseImage' => __('Choose Icon Image', 'wc-carousel-grid-marketplace-and-pricing'),
-            'useImage' => __('Use This Image', 'wc-carousel-grid-marketplace-and-pricing'),
             'searchPlaceholder' => __('Search icons...', 'wc-carousel-grid-marketplace-and-pricing'),
             'noResults' => __('No icons found', 'wc-carousel-grid-marketplace-and-pricing'),
         ]);
@@ -347,12 +341,8 @@ class Category_Icon_Field
                     <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                 </label>
                 <label class="wc-cgmp-icon-type-option">
-                    <input type="radio" name="wc_cgmp_icon_type" value="image" />
-                    <span><?php esc_html_e('Custom Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                </label>
-                <label class="wc-cgmp-icon-type-option">
-                    <input type="radio" name="wc_cgmp_icon_type" value="svg" />
-                    <span><?php esc_html_e('SVG Code', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                    <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" />
+                    <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                 </label>
             </div>
 
@@ -373,19 +363,6 @@ class Category_Icon_Field
                         <code class="wc-cgmp-preview-name">grid</code>
                     </div>
                 </div>
-            </div>
-
-            <div class="wc-cgmp-icon-field wc-cgmp-image-field" data-type="image" style="display:none;">
-                <label><?php esc_html_e('Upload Custom Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
-                <div class="wc-cgmp-image-uploader">
-                    <input type="hidden" name="wc_cgmp_icon_image_id" id="wc_cgmp_icon_image_id" value="" />
-                    <div class="wc-cgmp-image-preview">
-                        <span class="wc-cgmp-image-placeholder"><?php esc_html_e('No image selected', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                    </div>
-                    <button type="button" class="button wc-cgmp-upload-btn"><?php esc_html_e('Upload Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
-                    <button type="button" class="button wc-cgmp-remove-btn" style="display:none;"><?php esc_html_e('Remove', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
-                </div>
-                <p class="description"><?php esc_html_e('Recommended size: 64x64 pixels. Square images work best.', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
             </div>
 
             <div class="wc-cgmp-icon-field wc-cgmp-fontawesome-field" data-type="fontawesome" style="display:none;">
@@ -419,10 +396,6 @@ class Category_Icon_Field
                 </div>
             </div>
 
-            <div class="wc-cgmp-icon-field wc-cgmp-svg-field" data-type="svg" style="display:none;">
-                <label for="wc_cgmp_icon_svg_code"><?php esc_html_e('SVG Code', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
-                <textarea name="wc_cgmp_icon_svg_code" id="wc_cgmp_icon_svg_code" rows="5" class="large-text" placeholder="<svg viewBox=&quot;0 0 24 24&quot;>...</svg>"></textarea>
-                <p class="description"><?php esc_html_e('Paste your SVG code here. Example: <svg viewBox="0 0 24 24">...</svg>', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
             </div>
         </div>
         <?php
@@ -432,16 +405,9 @@ class Category_Icon_Field
     {
         $icon_type = get_term_meta($term->term_id, self::META_ICON_TYPE, true) ?: 'dashicon';
         $dashicon = get_term_meta($term->term_id, self::META_ICON_DASHICON, true) ?: 'grid';
-        $image_id = (int) get_term_meta($term->term_id, self::META_ICON_IMAGE_ID, true);
         $fontawesome = get_term_meta($term->term_id, self::META_ICON_FONTAWESOME, true) ?: 'fa-solid fa-store';
-        $svg_code = get_term_meta($term->term_id, self::META_ICON_SVG_CODE, true) ?: '';
         
         $legacy_icon = get_term_meta($term->term_id, 'wc_cgmp_icon', true);
-        if (!$dashicon && $legacy_icon) {
-            $dashicon = $legacy_icon;
-        }
-
-        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
         ?>
         <tr class="form-field wc-cgmp-icon-field-wrapper">
             <th scope="row">
@@ -459,12 +425,8 @@ class Category_Icon_Field
                         <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                     </label>
                     <label class="wc-cgmp-icon-type-option">
-                        <input type="radio" name="wc_cgmp_icon_type" value="image" <?php checked($icon_type, 'image'); ?> />
-                        <span><?php esc_html_e('Custom Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                    </label>
-                    <label class="wc-cgmp-icon-type-option">
-                        <input type="radio" name="wc_cgmp_icon_type" value="svg" <?php checked($icon_type, 'svg'); ?> />
-                        <span><?php esc_html_e('SVG Code', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
+                        <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" <?php checked($icon_type, 'fontawesome'); ?> />
+                        <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                     </label>
                 </div>
 
@@ -518,27 +480,6 @@ class Category_Icon_Field
                     </div>
                 </div>
 
-                <div class="wc-cgmp-icon-field wc-cgmp-image-field" data-type="image" <?php echo $icon_type !== 'image' ? 'style="display:none;"' : ''; ?>>
-                    <label><?php esc_html_e('Upload Custom Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
-                    <div class="wc-cgmp-image-uploader">
-                        <input type="hidden" name="wc_cgmp_icon_image_id" id="wc_cgmp_icon_image_id" value="<?php echo esc_attr($image_id); ?>" />
-                        <div class="wc-cgmp-image-preview">
-                            <?php if ($image_url) : ?>
-                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php esc_attr_e('Category icon preview', 'wc-carousel-grid-marketplace-and-pricing'); ?>" />
-                            <?php else : ?>
-                                <span class="wc-cgmp-image-placeholder"><?php esc_html_e('No image selected', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <button type="button" class="button wc-cgmp-upload-btn"><?php esc_html_e('Upload Image', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
-                        <button type="button" class="button wc-cgmp-remove-btn" <?php echo !$image_id ? 'style="display:none;"' : ''; ?>><?php esc_html_e('Remove', 'wc-carousel-grid-marketplace-and-pricing'); ?></button>
-                    </div>
-                    <p class="description"><?php esc_html_e('Recommended size: 64x64 pixels. Square images work best.', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
-                </div>
-
-                <div class="wc-cgmp-icon-field wc-cgmp-svg-field" data-type="svg" <?php echo $icon_type !== 'svg' ? 'style="display:none;"' : ''; ?>>
-                    <label for="wc_cgmp_icon_svg_code_edit"><?php esc_html_e('SVG Code', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
-                    <textarea name="wc_cgmp_icon_svg_code" id="wc_cgmp_icon_svg_code_edit" rows="5" class="large-text" placeholder="<svg viewBox=&quot;0 0 24 24&quot;>...</svg>"><?php echo esc_textarea($svg_code); ?></textarea>
-                    <p class="description"><?php esc_html_e('Paste your SVG code here. Example: <svg viewBox="0 0 24 24">...</svg>', 'wc-carousel-grid-marketplace-and-pricing'); ?></p>
                 </div>
             </td>
         </tr>
@@ -561,7 +502,7 @@ class Category_Icon_Field
 
         $icon_type = sanitize_text_field(wp_unslash($_POST['wc_cgmp_icon_type']));
         
-        if (!in_array($icon_type, ['dashicon', 'fontawesome', 'image', 'svg'], true)) {
+        if (!in_array($icon_type, ['dashicon', 'fontawesome'], true)) {
             $icon_type = 'dashicon';
         }
 
@@ -578,9 +519,7 @@ class Category_Icon_Field
             }
             
             update_term_meta($term_id, self::META_ICON_DASHICON, $dashicon);
-            delete_term_meta($term_id, self::META_ICON_IMAGE_ID);
             delete_term_meta($term_id, self::META_ICON_FONTAWESOME);
-            delete_term_meta($term_id, self::META_ICON_SVG_CODE);
         } elseif ($icon_type === 'fontawesome') {
             $fontawesome = isset($_POST['wc_cgmp_icon_fontawesome']) 
                 ? sanitize_text_field(wp_unslash($_POST['wc_cgmp_icon_fontawesome'])) 
@@ -590,50 +529,8 @@ class Category_Icon_Field
             
             update_term_meta($term_id, self::META_ICON_FONTAWESOME, $fontawesome);
             delete_term_meta($term_id, self::META_ICON_DASHICON);
-            delete_term_meta($term_id, self::META_ICON_IMAGE_ID);
-            delete_term_meta($term_id, self::META_ICON_SVG_CODE);
-        } elseif ($icon_type === 'image') {
-            $image_id = isset($_POST['wc_cgmp_icon_image_id']) 
-                ? absint($_POST['wc_cgmp_icon_image_id']) 
-                : 0;
-            
-            update_term_meta($term_id, self::META_ICON_IMAGE_ID, $image_id);
-            delete_term_meta($term_id, self::META_ICON_DASHICON);
-            delete_term_meta($term_id, self::META_ICON_FONTAWESOME);
-            delete_term_meta($term_id, self::META_ICON_SVG_CODE);
-        } elseif ($icon_type === 'svg') {
-            $svg_code = isset($_POST['wc_cgmp_icon_svg_code']) 
-                ? $this->sanitize_svg(wp_unslash($_POST['wc_cgmp_icon_svg_code'])) 
-                : '';
-            
-            update_term_meta($term_id, self::META_ICON_SVG_CODE, $svg_code);
-            delete_term_meta($term_id, self::META_ICON_DASHICON);
-            delete_term_meta($term_id, self::META_ICON_IMAGE_ID);
-            delete_term_meta($term_id, self::META_ICON_FONTAWESOME);
         }
 
         wp_cache_delete('wc_cgmp_categories_with_counts', 'wc_cgmp');
-    }
-
-    private function sanitize_svg(string $svg): string
-    {
-        $allowed_tags = [
-            'svg' => ['viewBox', 'xmlns', 'width', 'height', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'path' => ['d', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'class', 'style'],
-            'circle' => ['cx', 'cy', 'r', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'rect' => ['x', 'y', 'width', 'height', 'rx', 'ry', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'ellipse' => ['cx', 'cy', 'rx', 'ry', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'line' => ['x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width', 'stroke-linecap', 'class', 'style'],
-            'polygon' => ['points', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'polyline' => ['points', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
-            'g' => ['fill', 'stroke', 'stroke-width', 'class', 'style', 'transform'],
-            'defs' => [],
-            'clippath' => ['id'],
-            'use' => ['href', 'xlink:href', 'x', 'y', 'width', 'height'],
-            'title' => [],
-            'desc' => [],
-        ];
-        
-        return wp_kses($svg, $allowed_tags);
     }
 }

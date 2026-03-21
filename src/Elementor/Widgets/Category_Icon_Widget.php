@@ -41,12 +41,32 @@ class Category_Icon_Widget extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
+        $styles = [];
+
+        if (\wp_style_is('wc-cgmp-marketplace', 'registered')) {
+            $styles[] = 'wc-cgmp-marketplace';
+        }
+
+        if (\wp_style_is('wc-cgmp-frontend', 'registered')) {
+            $styles[] = 'wc-cgmp-frontend';
+        }
+
+        return $styles;
     }
 
     public function get_script_depends(): array
     {
-        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
+        $scripts = [];
+
+        if (\wp_script_is('wc-cgmp-marketplace', 'registered')) {
+            $scripts[] = 'wc-cgmp-marketplace';
+        }
+
+        if (\wp_script_is('wc-cgmp-frontend', 'registered')) {
+            $scripts[] = 'wc-cgmp-frontend';
+        }
+
+        return $scripts;
     }
 
     private function get_product_categories(): array
