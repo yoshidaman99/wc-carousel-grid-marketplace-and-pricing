@@ -9,9 +9,7 @@ class Category_Icon
     private static $instance = null;
     private const META_ICON_TYPE = 'wc_cgmp_icon_type';
     private const META_ICON_DASHICON = 'wc_cgmp_icon_dashicon';
-    private const META_ICON_IMAGE_ID = 'wc_cgmp_icon_image_id';
     private const META_ICON_FONTAWESOME = 'wc_cgmp_icon_fontawesome';
-    private const META_ICON_SVG_CODE = 'wc_cgmp_icon_svg_code';
 
     public static function get_instance(): self
     {
@@ -28,24 +26,11 @@ class Category_Icon
         $icon = [
             'type' => $type,
             'dashicon' => '',
-            'image_id' => 0,
-            'image_url' => '',
-            'image_alt' => '',
             'fontawesome' => '',
-            'svg_code' => '',
         ];
 
-        if ($type === 'image') {
-            $image_id = (int) get_term_meta($term_id, self::META_ICON_IMAGE_ID, true);
-            if ($image_id) {
-                $icon['image_id'] = $image_id;
-                $icon['image_url'] = wp_get_attachment_image_url($image_id, 'thumbnail') ?: '';
-                $icon['image_alt'] = get_post_meta($image_id, '_wp_attachment_image_alt', true) ?: '';
-            }
-        } elseif ($type === 'fontawesome') {
+        if ($type === 'fontawesome') {
             $icon['fontawesome'] = get_term_meta($term_id, self::META_ICON_FONTAWESOME, true) ?: 'fa-solid fa-store';
-        } elseif ($type === 'svg') {
-            $icon['svg_code'] = get_term_meta($term_id, self::META_ICON_SVG_CODE, true) ?: '';
         } else {
             $dashicon = get_term_meta($term_id, self::META_ICON_DASHICON, true) ?: 'grid';
             $icon['dashicon'] = $dashicon;
@@ -77,22 +62,12 @@ class Category_Icon
 
         $html = '<span class="' . esc_attr(trim($wrapper_class)) . '">';
 
-        if ($icon['type'] === 'image' && !empty($icon['image_url'])) {
-            $html .= sprintf(
-                '<img src="%s" alt="%s" width="%d" height="%d" class="wc-cgmp-cat-icon-img" />',
-                esc_url($icon['image_url']),
-                esc_attr($icon['image_alt']),
-                $size,
-                $size
-            );
-        } elseif ($icon['type'] === 'fontawesome' && !empty($icon['fontawesome'])) {
+        if ($icon['type'] === 'fontawesome' && !empty($icon['fontawesome'])) {
             $html .= sprintf(
                 '<i class="%s" style="font-size:%dpx;"></i>',
                 esc_attr($icon['fontawesome']),
                 $size
             );
-        } elseif ($icon['type'] === 'svg' && !empty($icon['svg_code'])) {
-            $html .= $icon['svg_code'];
         } else {
             $dashicon = $icon['dashicon'] ?: 'grid';
             $html .= sprintf(
@@ -131,12 +106,6 @@ class Category_Icon
 
     public function get_url(int $term_id): string
     {
-        $icon = $this->get_icon($term_id);
-
-        if ($icon['type'] === 'image' && !empty($icon['image_url'])) {
-            return $icon['image_url'];
-        }
-
         return '';
     }
 

@@ -41,7 +41,12 @@ class Category_Icon_Widget extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [];
+        return ['dashicons', 'fontawesome-free', 'wc-cgmp-marketplace', 'wc-cgmp-frontend'];
+    }
+
+    public function get_script_depends(): array
+    {
+        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
     }
 
     private function get_product_categories(): array
@@ -65,9 +70,12 @@ class Category_Icon_Widget extends Widget_Base
 
     protected function register_controls(): void
     {
-        $this->start_controls_section(
-            'content_section',
-            __('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+        $this->start_controls_section('content_section', [
+            'label' => __('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control(
+            'category',
             [
                 'label' => __('Choose Category', 'wc-carousel-grid-marketplace-and-pricing'),
                 'type' => Controls_Manager::SELECT,
@@ -113,13 +121,10 @@ class Category_Icon_Widget extends Widget_Base
             ]
         );
 
-        $this->start_controls_section(
-            'style_section',
-            __('Style', 'wc-carousel-grid-marketplace-and-pricing'),
-            [
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
+        $this->start_controls_section('style_section', [
+            'label' => __('Style', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+        ]);
 
         $this->add_control(
             'icon_color',
@@ -217,12 +222,6 @@ class Category_Icon_Widget extends Widget_Base
         $size = (int) $settings['icon_size'];
         $link = 'yes' === $settings['link_to_category'];
         $custom_class = sanitize_html_class($settings['custom_class']);
-
-        $this->add_render_attribute('icon_color', $settings);
-        $this->add_render_attribute('icon_bg_color', $settings);
-        $this->add_render_attribute('icon_padding', $settings);
-        $this->add_render_attribute('icon_border_radius', $settings);
-        $this->add_render_attribute('icon_border', $settings);
 
         $link_url = $link ? get_term_link($category_id, 'product_cat') : '';
         $wrapper_class = 'wc-cgmp-cat-icon-widget ' . $custom_class;

@@ -2,10 +2,10 @@
     'use strict';
 
     var WC_CGMP_Marketplace = {
-        debug: wc_cgmp_ajax?.debug || false,
+        debug: (typeof wc_cgmp_ajax !== 'undefined' && wc_cgmp_ajax.debug) || false,
         isLoading: true,
         initialized: false,
-        loadAll: wc_cgmp_ajax?.load_all || false,
+        loadAll: (typeof wc_cgmp_ajax !== 'undefined' && wc_cgmp_ajax.load_all) || false,
 
         log: function(...args) {
             if (this.debug) {
@@ -568,6 +568,15 @@
         addToCart: function(e) {
             e.preventDefault();
             var $btn = $(this);
+            
+            if ($btn.hasClass('wc-cgmp-override-button')) {
+                var href = $btn.attr('href');
+                if (href) {
+                    window.open(href, $btn.attr('target') || '_self');
+                }
+                return;
+            }
+            
             var $card = $btn.closest('.wc-cgmp-card');
             var $panel = $btn.closest('.wc-cgmp-pricing-panel');
 
@@ -576,6 +585,15 @@
             var tierLevel = parseInt(tierLevelAttr) || 0;
             var priceType = $panel.find('.wc-cgmp-switch-input').is(':checked') ? 'hourly' : ($panel.data('default-price-type') || 'monthly');
             var quantity = parseInt($panel.find('.wc-cgmp-quantity-input').val()) || 1;
+
+            var $grid = $card.closest('.wc-cgmp-grid');
+            var showFilter = $grid.attr('data-show-filter');
+            var defaultTier = parseInt($panel.attr('data-default-tier')) || 0;
+            
+            if (tierLevel <= 0 && showFilter === 'false' && defaultTier > 0) {
+                tierLevel = defaultTier;
+                $btn.attr('data-tier-level', tierLevel);
+            }
 
             // Extract tier details for WELP compatibility
             var tierName = $panel.attr('data-tier-' + tierLevel + '-name') || '';
@@ -600,12 +618,19 @@
 
             var hasTiers = $card.attr('data-has-tiers') || $panel.attr('data-has-tiers');
             WC_CGMP_Marketplace.log('hasTiers:', hasTiers);
+            WC_CGMP_Marketplace.log('showFilter:', showFilter);
             
-            if (hasTiers === 'true' || hasTiers === true) {
+            if ((hasTiers === 'true' || hasTiers === true) && showFilter !== 'false') {
                 if (tierLevel <= 0) {
-                    WC_CGMP_Marketplace.log('ERROR: tierLevel is 0 or negative, aborting');
-                    alert(wc_cgmp_ajax.i18n.select_tier || 'Please select an experience level.');
-                    return;
+                    if (defaultTier > 0) {
+                        tierLevel = defaultTier;
+                        $btn.attr('data-tier-level', tierLevel);
+                        WC_CGMP_Marketplace.log('Using default tier instead:', tierLevel);
+                    } else {
+                        WC_CGMP_Marketplace.log('ERROR: tierLevel is 0 or negative, aborting');
+                        alert(wc_cgmp_ajax.i18n.select_tier || 'Please select an experience level.');
+                        return;
+                    }
                 }
 
                 WC_CGMP_Marketplace.log('Tier prices - hourly:', hourlyPrice, 'monthly:', monthlyPrice, 'selected:', selectedPrice);

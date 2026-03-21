@@ -31,6 +31,8 @@ class Elementor_Integration
         
         add_action('elementor/frontend/after_register_styles', [$this, 'register_styles']);
         add_action('elementor/frontend/after_register_scripts', [$this, 'register_scripts']);
+
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_editor_debug']);
     }
 
     public function register_category(): void
@@ -75,7 +77,7 @@ class Elementor_Integration
         \wp_register_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
-            ['fontawesome-free'],
+            ['fontawesome-free', 'dashicons'],
             WC_CGMP_VERSION
         );
 
@@ -125,12 +127,31 @@ class Elementor_Integration
         $this->register_styles();
         \wp_enqueue_style('wc-cgmp-marketplace');
         \wp_enqueue_style('wc-cgmp-frontend');
+
+        \wp_add_inline_style('wc-cgmp-marketplace', '#elementor-panel-state-loading{display:none!important;}');
     }
 
     public function enqueue_editor_scripts(): void
     {
-        $this->register_scripts();
-        \wp_enqueue_script('wc-cgmp-marketplace');
-        \wp_enqueue_script('wc-cgmp-frontend');
+    }
+
+    public function enqueue_editor_debug(string $hook): void
+    {
+        if (!(\defined('WP_DEBUG') && \WP_DEBUG) && !(\defined('SCRIPT_DEBUG') && \SCRIPT_DEBUG)) {
+            return;
+        }
+
+        $is_elementor = (
+            isset($_GET['action']) && $_GET['action'] === 'elementor' ||
+            isset($_GET['elementor-preview']) ||
+            (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/elementor') !== false)
+        );
+
+        if (!$is_elementor && $hook !== 'toplevel_page_elementor') {
+            return;
+        }
+
+        $debug_js_url = WC_CGMP_PLUGIN_URL . 'assets/js/elementor-debug.js';
+        \wp_enqueue_script('wc-cgmp-elementor-debug', $debug_js_url, [], WC_CGMP_VERSION, true);
     }
 }

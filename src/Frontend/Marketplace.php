@@ -149,7 +149,9 @@ class Marketplace
             </div>
         </div>
 
-        <?php if ($has_multiple_tiers) : ?>
+        <?php 
+        $show_filter = ($atts['show_filter'] ?? 'true') === 'true';
+        if ($show_filter && $has_multiple_tiers) : ?>
         <div class="wc-cgmp-tier-selector-mini">
             <select class="wc-cgmp-tier-select" name="wc_cgmp_tier_level">
                 <?php foreach ($tiers as $tier) :

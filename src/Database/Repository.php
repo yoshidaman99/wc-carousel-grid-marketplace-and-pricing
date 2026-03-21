@@ -841,25 +841,22 @@ class Repository
 
             if ($count > 0) {
                 $icon_type = get_term_meta($category->term_id, 'wc_cgmp_icon_type', true) ?: 'dashicon';
+
+                if (!in_array($icon_type, ['dashicon', 'fontawesome'], true)) {
+                    $icon_type = 'dashicon';
+                }
+
                 $icon_data = [
                     'type' => $icon_type,
                     'dashicon' => '',
-                    'image_url' => '',
                     'fontawesome' => '',
-                    'svg_code' => '',
                 ];
 
-                if ($icon_type === 'image') {
-                    $image_id = (int) get_term_meta($category->term_id, 'wc_cgmp_icon_image_id', true);
-                    if ($image_id) {
-                        $icon_data['image_url'] = wp_get_attachment_image_url($image_id, 'thumbnail') ?: '';
-                    }
-                } elseif ($icon_type === 'fontawesome') {
+                if ($icon_type === 'fontawesome') {
                     $icon_data['fontawesome'] = get_term_meta($category->term_id, 'wc_cgmp_icon_fontawesome', true) ?: 'fa-solid fa-store';
-                } elseif ($icon_type === 'svg') {
-                    $icon_data['svg_code'] = get_term_meta($category->term_id, 'wc_cgmp_icon_svg_code', true) ?: '';
+                    $icon_data['dashicon'] = 'grid';
                 } else {
-                    $icon_data['dashicon'] = get_term_meta($category->term_id, 'wc_cgmp_icon_dashicon', true) 
+                    $icon_data['dashicon'] = get_term_meta($category->term_id, 'wc_cgmp_icon_dashicon', true)
                         ?: get_term_meta($category->term_id, 'wc_cgmp_icon', true)
                         ?: 'grid';
                 }
@@ -869,11 +866,9 @@ class Repository
                     'name' => $category->name,
                     'slug' => $category->slug,
                     'count' => $count,
-                    'icon' => $icon_data['dashicon'] ?: '',
+                    'icon' => $icon_data['dashicon'],
                     'icon_type' => $icon_data['type'],
-                    'icon_image_url' => $icon_data['image_url'],
                     'icon_fontawesome' => $icon_data['fontawesome'],
-                    'icon_svg_code' => $icon_data['svg_code'],
                 ];
 
                 $total_count += $count;
@@ -887,9 +882,7 @@ class Repository
             'count' => $total_count,
             'icon' => 'admin-generic',
             'icon_type' => 'dashicon',
-            'icon_image_url' => '',
             'icon_fontawesome' => '',
-            'icon_svg_code' => '',
         ]);
         
         wp_cache_set($cache_key, $result, 'wc_cgmp', HOUR_IN_SECONDS);
