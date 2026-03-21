@@ -88,12 +88,12 @@ class Marketplace_Widget extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [];
+        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
     }
 
     public function get_script_depends(): array
     {
-        return [];
+        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
     }
 
     protected function register_controls(): void
@@ -3043,6 +3043,15 @@ class Marketplace_Widget extends Widget_Base
 
     protected function render(): void
     {
+        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+            echo '<div class="wc-cgmp-marketplace wc-cgmp-editor-preview" style="background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px; padding: 40px; text-align: center;">';
+            echo '<div style="margin-bottom: 12px;"><span class="eicon-products" style="font-size: 40px; color: #9ca3af;"></span></div>';
+            echo '<p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #374151;">' . esc_html__('WC Marketplace', 'wc-carousel-grid-marketplace-and-pricing') . '</p>';
+            echo '<p style="margin: 0; font-size: 13px; color: #9ca3af;">' . esc_html__('Preview available on the frontend.', 'wc-carousel-grid-marketplace-and-pricing') . '</p>';
+            echo '</div>';
+            return;
+        }
+
         $settings = $this->get_settings_for_display();
 
         $category = '';

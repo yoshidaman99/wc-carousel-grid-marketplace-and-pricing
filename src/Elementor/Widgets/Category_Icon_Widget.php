@@ -41,12 +41,12 @@ class Category_Icon_Widget extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [];
+        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
     }
 
     public function get_script_depends(): array
     {
-        return [];
+        return ['wc-cgmp-marketplace', 'wc-cgmp-frontend'];
     }
 
     private function get_product_categories(): array
