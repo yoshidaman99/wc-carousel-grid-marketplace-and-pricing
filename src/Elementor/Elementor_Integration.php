@@ -31,6 +31,8 @@ class Elementor_Integration
         
         add_action('elementor/frontend/after_register_styles', [$this, 'register_styles']);
         add_action('elementor/frontend/after_register_scripts', [$this, 'register_scripts']);
+
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_editor_debug']);
     }
 
     public function register_category(): void
@@ -126,12 +128,23 @@ class Elementor_Integration
 
     public function enqueue_editor_scripts(): void
     {
-        \wp_enqueue_script(
-            'wc-cgmp-elementor-debug',
-            WC_CGMP_PLUGIN_URL . 'assets/js/elementor-debug.js',
-            [],
-            WC_CGMP_VERSION,
-            false
+    }
+
+    public function enqueue_editor_debug(string $hook): void
+    {
+        $is_elementor = (
+            isset($_GET['action']) && $_GET['action'] === 'elementor' ||
+            isset($_GET['elementor-preview']) ||
+            (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/elementor') !== false)
         );
+
+        if (!$is_elementor && $hook !== 'toplevel_page_elementor') {
+            return;
+        }
+
+        $debug_js = file_get_contents(WC_CGMP_PLUGIN_DIR . 'assets/js/elementor-debug.js');
+        if ($debug_js) {
+            \wp_add_inline_script('jquery', $debug_js);
+        }
     }
 }
