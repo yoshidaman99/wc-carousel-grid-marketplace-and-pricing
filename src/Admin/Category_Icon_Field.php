@@ -329,16 +329,11 @@ class Category_Icon_Field
         wp_nonce_field('wc_cgmp_save_category_icon', 'wc_cgmp_category_nonce');
         ?>
         <div class="form-field wc-cgmp-icon-field-wrapper">
-            <label><?php esc_html_e('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
-            
+            <label for="wc_cgmp_icon_type"><?php esc_html_e('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
             <div class="wc-cgmp-icon-type-selector">
                 <label class="wc-cgmp-icon-type-option">
                     <input type="radio" name="wc_cgmp_icon_type" value="dashicon" checked="checked" />
                     <span><?php esc_html_e('Dashicon', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                </label>
-                <label class="wc-cgmp-icon-type-option">
-                    <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" />
-                    <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                 </label>
                 <label class="wc-cgmp-icon-type-option">
                     <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" />
@@ -395,8 +390,6 @@ class Category_Icon_Field
                     </div>
                 </div>
             </div>
-
-            </div>
         </div>
         <?php
     }
@@ -410,8 +403,8 @@ class Category_Icon_Field
         $legacy_icon = get_term_meta($term->term_id, 'wc_cgmp_icon', true);
         ?>
         <tr class="form-field wc-cgmp-icon-field-wrapper">
-            <th scope="row">
-                <label><?php esc_html_e('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
+            <th scope="row" valign="top">
+                <label for="wc_cgmp_icon_type"><?php esc_html_e('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'); ?></label>
             </th>
             <td>
                 <?php wp_nonce_field('wc_cgmp_save_category_icon', 'wc_cgmp_category_nonce'); ?>
@@ -419,10 +412,6 @@ class Category_Icon_Field
                     <label class="wc-cgmp-icon-type-option">
                         <input type="radio" name="wc_cgmp_icon_type" value="dashicon" <?php checked($icon_type, 'dashicon'); ?> />
                         <span><?php esc_html_e('Dashicon', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
-                    </label>
-                    <label class="wc-cgmp-icon-type-option">
-                        <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" <?php checked($icon_type, 'fontawesome'); ?> />
-                        <span><?php esc_html_e('Font Awesome', 'wc-carousel-grid-marketplace-and-pricing'); ?></span>
                     </label>
                     <label class="wc-cgmp-icon-type-option">
                         <input type="radio" name="wc_cgmp_icon_type" value="fontawesome" <?php checked($icon_type, 'fontawesome'); ?> />
@@ -478,8 +467,6 @@ class Category_Icon_Field
                             <code class="wc-cgmp-preview-name"><?php echo esc_html($fontawesome); ?></code>
                         </div>
                     </div>
-                </div>
-
                 </div>
             </td>
         </tr>

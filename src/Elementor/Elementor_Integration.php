@@ -68,9 +68,16 @@ class Elementor_Integration
     public function register_styles(): void
     {
         \wp_register_style(
+            'fontawesome-free',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+            [],
+            '6.5.1'
+        );
+
+        \wp_register_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
-            [],
+            ['fontawesome-free', 'dashicons'],
             WC_CGMP_VERSION
         );
 

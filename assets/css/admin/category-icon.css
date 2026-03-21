@@ -1,22 +1,35 @@
 .wc-cgmp-icon-field-wrapper {
-    margin-top: 10px;
+    margin-top: 0;
+    padding: 0;
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-field .wc-cgmp-icon-field-wrapper label:first-child {
+    display: block;
+    margin: 0 0 5px;
+    padding: 0;
+    font-weight: 600;
 }
 
 .wc-cgmp-icon-type-selector {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding: 12px;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
     background: #f7f7f7;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .wc-cgmp-icon-type-option {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .wc-cgmp-icon-type-option input {
@@ -25,31 +38,43 @@
 
 .wc-cgmp-icon-type-option span {
     font-weight: 500;
+    font-size: 13px;
 }
 
 .wc-cgmp-icon-field {
-    margin-top: 10px;
-    padding: 12px;
+    margin-top: 8px;
+    padding: 10px;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.wc-cgmp-icon-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 
 .wc-cgmp-dashicon-picker {
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .wc-cgmp-dashicon-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
-    gap: 4px;
+    gap: 3px;
     max-height: 200px;
     overflow-y: auto;
-    padding: 8px;
+    padding: 6px;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .wc-cgmp-dashicon-btn {
@@ -64,6 +89,7 @@
     justify-content: center;
     border-radius: 3px;
     transition: all 0.15s ease;
+    flex-shrink: 0;
 }
 
 .wc-cgmp-dashicon-btn:hover {
@@ -95,6 +121,10 @@
     background: #e7f3ff;
     border-radius: 4px;
     font-size: 13px;
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 8px;
 }
 
 .wc-cgmp-preview-icon {
@@ -105,6 +135,7 @@
     height: 24px;
     background: #2271b1;
     border-radius: 3px;
+    flex-shrink: 0;
 }
 
 .wc-cgmp-preview-icon .dashicons {
@@ -127,20 +158,20 @@
 }
 
 .wc-cgmp-fontawesome-picker {
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .wc-cgmp-fontawesome-search {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .wc-cgmp-fontawesome-search-input {
     width: 100%;
-    max-width: 300px;
-    padding: 8px 12px;
+    padding: 7px 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 13px;
+    box-sizing: border-box;
 }
 
 .wc-cgmp-fontawesome-search-input:focus {
@@ -152,18 +183,19 @@
 .wc-cgmp-fontawesome-categories {
     display: flex;
     gap: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
 }
 
 .wc-cgmp-fontawesome-category-btn {
-    padding: 6px 12px;
+    padding: 5px 10px;
     border: 1px solid #ddd;
     background: #fff;
     cursor: pointer;
     border-radius: 3px;
     font-size: 12px;
     transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
 .wc-cgmp-fontawesome-category-btn:hover {
@@ -180,14 +212,16 @@
 .wc-cgmp-fontawesome-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    gap: 4px;
+    gap: 3px;
     max-height: 250px;
     overflow-y: auto;
-    padding: 10px;
+    padding: 8px;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .wc-cgmp-fontawesome-btn {
@@ -202,6 +236,7 @@
     justify-content: center;
     border-radius: 3px;
     transition: all 0.15s ease;
+    flex-shrink: 0;
 }
 
 .wc-cgmp-fontawesome-btn:hover {
@@ -268,6 +303,7 @@
     margin-top: 5px;
 }
 
+/* Edit form table layout */
 .form-field .wc-cgmp-icon-field-wrapper th {
     padding: 10px 0;
 }
@@ -281,29 +317,97 @@
     object-fit: contain;
 }
 
-.form-field .wc-cgmp-fontawesome-grid {
-    max-height: 200px;
-}
-
-.form-field .wc-cgmp-dashicon-grid {
-    max-height: 150px;
-}
+/* ============================================
+   Left column (Add New Category) overrides
+   ============================================ */
 
 #col-left .col-wrap {
     min-width: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
-#col-left .col-wrap .wc-cgmp-dashicon-grid,
+#col-left .col-wrap .form-wrap {
+    overflow: visible;
+}
+
+#col-left .col-wrap .form-field {
+    max-width: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+#col-left .col-wrap .wc-cgmp-icon-field-wrapper {
+    max-width: 100%;
+    overflow: visible;
+}
+
+#col-left .col-wrap .wc-cgmp-icon-type-selector {
+    padding: 8px;
+    gap: 8px;
+}
+
+#col-left .col-wrap .wc-cgmp-icon-field {
+    padding: 8px;
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    max-height: 180px;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-btn {
+    width: 32px;
+    height: 32px;
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
 #col-left .col-wrap .wc-cgmp-fontawesome-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    max-height: 200px;
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+}
+
+#col-left .col-wrap .wc-cgmp-fontawesome-btn {
+    width: 36px;
+    height: 36px;
+}
+
+#col-left .col-wrap .wc-cgmp-fontawesome-btn i {
+    font-size: 16px;
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-preview,
+#col-left .col-wrap .wc-cgmp-fontawesome-preview {
     width: 100%;
     min-width: 0;
 }
 
-#col-left .col-wrap .wc-cgmp-dashicon-grid {
-    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+/* ============================================
+   Edit form table layout fixes
+   ============================================ */
+
+tr.form-field .wc-cgmp-icon-field-wrapper td {
+    vertical-align: top;
 }
 
-#col-left .col-wrap .wc-cgmp-fontawesome-grid {
-    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+tr.form-field .wc-cgmp-icon-type-selector {
+    padding: 8px;
+}
+
+tr.form-field .wc-cgmp-dashicon-grid {
+    max-height: 200px;
+}
+
+tr.form-field .wc-cgmp-fontawesome-grid {
+    max-height: 220px;
 }
