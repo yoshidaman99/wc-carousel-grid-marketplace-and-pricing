@@ -126,5 +126,12 @@ class Elementor_Integration
 
     public function enqueue_editor_scripts(): void
     {
+        \wp_enqueue_script(
+            'wc-cgmp-elementor-debug',
+            WC_CGMP_PLUGIN_URL . 'assets/js/elementor-debug.js',
+            [],
+            WC_CGMP_VERSION,
+            false
+        );
     }
 }
