@@ -122,9 +122,6 @@ class Elementor_Integration
 
     public function enqueue_editor_styles(): void
     {
-        $this->register_styles();
-        \wp_enqueue_style('wc-cgmp-marketplace');
-        \wp_enqueue_style('wc-cgmp-frontend');
     }
 
     public function enqueue_editor_scripts(): void
