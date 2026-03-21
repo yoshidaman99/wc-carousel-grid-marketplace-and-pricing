@@ -41,7 +41,32 @@ class Category_Icon_Widget extends Widget_Base
 
     public function get_style_depends(): array
     {
-        return [];
+        $styles = [];
+
+        if (wp_style_is('wc-cgmp-marketplace', 'registered')) {
+            $styles[] = 'wc-cgmp-marketplace';
+        }
+
+        if (wp_style_is('wc-cgmp-frontend', 'registered')) {
+            $styles[] = 'wc-cgmp-frontend';
+        }
+
+        return $styles;
+    }
+
+    public function get_script_depends(): array
+    {
+        $scripts = [];
+
+        if (wp_script_is('wc-cgmp-marketplace', 'registered')) {
+            $scripts[] = 'wc-cgmp-marketplace';
+        }
+
+        if (wp_script_is('wc-cgmp-frontend', 'registered')) {
+            $scripts[] = 'wc-cgmp-frontend';
+        }
+
+        return $scripts;
     }
 
     private function get_product_categories(): array
@@ -65,9 +90,12 @@ class Category_Icon_Widget extends Widget_Base
 
     protected function register_controls(): void
     {
-        $this->start_controls_section(
-            'content_section',
-            __('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+        $this->start_controls_section('content_section', [
+            'label' => __('Category Icon', 'wc-carousel-grid-marketplace-and-pricing'),
+        ]);
+
+        $this->add_control(
+            'category',
             [
                 'label' => __('Choose Category', 'wc-carousel-grid-marketplace-and-pricing'),
                 'type' => Controls_Manager::SELECT,
@@ -113,13 +141,10 @@ class Category_Icon_Widget extends Widget_Base
             ]
         );
 
-        $this->start_controls_section(
-            'style_section',
-            __('Style', 'wc-carousel-grid-marketplace-and-pricing'),
-            [
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
+        $this->start_controls_section('style_section', [
+            'label' => __('Style', 'wc-carousel-grid-marketplace-and-pricing'),
+            'tab' => Controls_Manager::TAB_STYLE,
+        ]);
 
         $this->add_control(
             'icon_color',
