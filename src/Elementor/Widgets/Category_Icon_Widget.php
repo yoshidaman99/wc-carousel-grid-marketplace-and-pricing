@@ -243,12 +243,6 @@ class Category_Icon_Widget extends Widget_Base
         $link = 'yes' === $settings['link_to_category'];
         $custom_class = sanitize_html_class($settings['custom_class']);
 
-        $this->add_render_attribute('icon_color', $settings);
-        $this->add_render_attribute('icon_bg_color', $settings);
-        $this->add_render_attribute('icon_padding', $settings);
-        $this->add_render_attribute('icon_border_radius', $settings);
-        $this->add_render_attribute('icon_border', $settings);
-
         $link_url = $link ? get_term_link($category_id, 'product_cat') : '';
         $wrapper_class = 'wc-cgmp-cat-icon-widget ' . $custom_class;
         ?>

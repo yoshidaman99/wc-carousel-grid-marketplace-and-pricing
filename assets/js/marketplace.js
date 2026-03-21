@@ -2,10 +2,10 @@
     'use strict';
 
     var WC_CGMP_Marketplace = {
-        debug: wc_cgmp_ajax?.debug || false,
+        debug: (typeof wc_cgmp_ajax !== 'undefined' && wc_cgmp_ajax.debug) || false,
         isLoading: true,
         initialized: false,
-        loadAll: wc_cgmp_ajax?.load_all || false,
+        loadAll: (typeof wc_cgmp_ajax !== 'undefined' && wc_cgmp_ajax.load_all) || false,
 
         log: function(...args) {
             if (this.debug) {

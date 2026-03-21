@@ -129,8 +129,5 @@ class Elementor_Integration
 
     public function enqueue_editor_scripts(): void
     {
-        $this->register_scripts();
-        \wp_enqueue_script('wc-cgmp-marketplace');
-        \wp_enqueue_script('wc-cgmp-frontend');
     }
 }
