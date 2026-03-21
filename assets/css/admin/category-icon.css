@@ -288,3 +288,22 @@
 .form-field .wc-cgmp-dashicon-grid {
     max-height: 150px;
 }
+
+#col-left .col-wrap {
+    min-width: 0;
+    overflow: hidden;
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-grid,
+#col-left .col-wrap .wc-cgmp-fontawesome-grid {
+    width: 100%;
+    min-width: 0;
+}
+
+#col-left .col-wrap .wc-cgmp-dashicon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+}
+
+#col-left .col-wrap .wc-cgmp-fontawesome-grid {
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+}
