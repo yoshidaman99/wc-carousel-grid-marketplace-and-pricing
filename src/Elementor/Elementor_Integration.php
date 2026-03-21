@@ -124,14 +124,24 @@ class Elementor_Integration
 
     public function enqueue_editor_styles(): void
     {
+        $this->register_styles();
+        \wp_enqueue_style('wc-cgmp-marketplace');
+        \wp_enqueue_style('wc-cgmp-frontend');
     }
 
     public function enqueue_editor_scripts(): void
     {
+        $this->register_scripts();
+        \wp_enqueue_script('wc-cgmp-marketplace');
+        \wp_enqueue_script('wc-cgmp-frontend');
     }
 
     public function enqueue_editor_debug(string $hook): void
     {
+        if (!(\defined('WP_DEBUG') && \WP_DEBUG) && !(\defined('SCRIPT_DEBUG') && \SCRIPT_DEBUG)) {
+            return;
+        }
+
         $is_elementor = (
             isset($_GET['action']) && $_GET['action'] === 'elementor' ||
             isset($_GET['elementor-preview']) ||
@@ -142,9 +152,7 @@ class Elementor_Integration
             return;
         }
 
-        $debug_js = file_get_contents(WC_CGMP_PLUGIN_DIR . 'assets/js/elementor-debug.js');
-        if ($debug_js) {
-            \wp_add_inline_script('jquery', $debug_js);
-        }
+        $debug_js_url = WC_CGMP_PLUGIN_URL . 'assets/js/elementor-debug.js';
+        \wp_enqueue_script('wc-cgmp-elementor-debug', $debug_js_url, [], WC_CGMP_VERSION, true);
     }
 }
