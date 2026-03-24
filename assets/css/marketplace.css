@@ -40,14 +40,13 @@
 }
 
 .wc-cgmp-sidebar-close-btn {
-    display: none;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
-    border: none;
-    background: transparent;
-    color: #1f2937;
+    border: solid 1px #1f2937 !important;
+    background: transparent !important;
+    color: #1f2937 !important;
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
