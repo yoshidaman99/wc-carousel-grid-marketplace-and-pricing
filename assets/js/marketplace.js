@@ -102,7 +102,7 @@
             $(document).on('click', '.wc-cgmp-modal-close, .wc-cgmp-modal-overlay', this.closeModal);
             $(document).on('keydown', this.handleModalKeydown);
             $(document).on('click', '.wc-cgmp-filter-toggle-btn', this.toggleSidebar);
-            $(document).on('click', '.wc-cgmp-sidebar-overlay', this.closeSidebar);
+            $(document).on('click', '.wc-cgmp-sidebar-overlay, .wc-cgmp-sidebar-close-btn', this.closeSidebar);
         },
 
         filterByCategory: function(e) {
