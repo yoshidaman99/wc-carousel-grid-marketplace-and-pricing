@@ -397,7 +397,7 @@ class Marketplace_Widget extends Widget_Base
             'label' => __('Icon', 'wc-carousel-grid-marketplace-and-pricing'),
             'type' => Controls_Manager::ICONS,
             'default' => [
-                'value' => 'fas fa-info-circle',
+                'value' => 'fas fa-users',
                 'library' => 'fa-solid',
             ],
             'condition' => [

@@ -242,46 +242,48 @@ class Marketplace
                    <a href="<?php echo esc_url($above_link_url); ?>" 
                       class="wc-cgmp-link-above-btn"
                       <?php echo $above_link_open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-                         <?php 
-                         if (!empty($above_link_icon) && is_array($above_link_icon)) {
-                             $icon_value = $above_link_icon['value'] ?? null;
-                             $has_icon = !empty($icon_value);
-                             if ($has_icon) {
-                                 echo '<span class="wc-cgmp-link-icon">';
-                                 $icon_rendered = false;
-                                 if (class_exists('\Elementor\Icons_Manager')) {
-                                     ob_start();
-                                     \Elementor\Icons_Manager::render_icon($above_link_icon, ['aria-hidden' => 'true']);
-                                     $elementor_output = ob_get_clean();
-                                     if (!empty(trim($elementor_output))) {
-                                         echo $elementor_output;
-                                         $icon_rendered = true;
-                                     }
-                                 }
-                                 if (!$icon_rendered && is_array($icon_value) && isset($icon_value['url'])) {
-                                     echo '<img src="' . esc_url($icon_value['url']) . '" alt="" style="width:14px;height:14px;">';
-                                     $icon_rendered = true;
-                                 }
-                                 if (!$icon_rendered && is_string($icon_value)) {
-                                     $library = $above_link_icon['library'] ?? 'fa-solid';
-                                     $fa_class = $icon_value;
-                                     if (strpos($icon_value, 'fa-') === 0) {
-                                         $fa_shorthand = [
-                                             'fa-solid' => 'fas',
-                                             'fa-regular' => 'far',
-                                             'fa-brands' => 'fab',
-                                             'fa-light' => 'fal',
-                                             'fa-thin' => 'fat',
-                                         ];
-                                         $prefix = $fa_shorthand[$library] ?? 'fas';
-                                         $fa_class = $prefix . ' ' . $icon_value;
-                                     }
-                                     echo '<i class="' . esc_attr($fa_class) . '" aria-hidden="true"></i>';
-                                 }
-                                 echo '</span>';
-                             }
-                         }
-                         ?>
+                          <?php 
+                          $default_icon = ['value' => 'fas fa-users', 'library' => 'fa-solid'];
+                          if (!empty($above_link_icon) && is_array($above_link_icon) && !empty($above_link_icon['value'])) {
+                              $icon_value = $above_link_icon['value'];
+                              $active_icon = $above_link_icon;
+                          } else {
+                              $icon_value = $default_icon['value'];
+                              $active_icon = $default_icon;
+                          }
+                          echo '<span class="wc-cgmp-link-icon">';
+                          $icon_rendered = false;
+                          if (class_exists('\Elementor\Icons_Manager')) {
+                              ob_start();
+                              \Elementor\Icons_Manager::render_icon($active_icon, ['aria-hidden' => 'true']);
+                              $elementor_output = ob_get_clean();
+                              if (!empty(trim($elementor_output))) {
+                                  echo $elementor_output;
+                                  $icon_rendered = true;
+                              }
+                          }
+                          if (!$icon_rendered && is_array($icon_value) && isset($icon_value['url'])) {
+                              echo '<img src="' . esc_url($icon_value['url']) . '" alt="" style="width:14px;height:14px;">';
+                              $icon_rendered = true;
+                          }
+                          if (!$icon_rendered && is_string($icon_value)) {
+                              $library = $active_icon['library'] ?? 'fa-solid';
+                              $fa_class = $icon_value;
+                              if (strpos($icon_value, 'fa-') === 0) {
+                                  $fa_shorthand = [
+                                      'fa-solid' => 'fas',
+                                      'fa-regular' => 'far',
+                                      'fa-brands' => 'fab',
+                                      'fa-light' => 'fal',
+                                      'fa-thin' => 'fat',
+                                  ];
+                                  $prefix = $fa_shorthand[$library] ?? 'fas';
+                                  $fa_class = $prefix . ' ' . $icon_value;
+                              }
+                              echo '<i class="' . esc_attr($fa_class) . '" aria-hidden="true"></i>';
+                          }
+                          echo '</span>';
+                          ?>
                        <span class="wc-cgmp-link-text"><?php echo esc_html($above_link_text); ?> <?php if (!empty($above_link_highlight_text)) : ?><span class="wc-cgmp-link-highlight"><?php echo esc_html($above_link_highlight_text); ?></span><?php endif; ?></span>
                    </a>
                </div>
