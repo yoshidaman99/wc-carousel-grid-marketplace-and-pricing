@@ -1009,15 +1009,15 @@
     font-size: 0.875rem;
     font-weight: 500;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-    border: solid 1px #132339;
-    background-color: transparent;
+    border: solid 1px #132339 !important;
+    background-color: transparent !important;
     background-image: none !important;
     height: 2.75rem;
     width: 2.75rem;
     flex-shrink: 0;
     padding: 0;
     line-height: 1;
-    color: #132339;
+    color: #132339 !important;
 }
 
 .wc-cgmp-filter-toggle-btn:hover {
