@@ -101,6 +101,8 @@
             $(document).on('mouseenter', '.wc-cgmp-modal-trigger', this.preloadModal);
             $(document).on('click', '.wc-cgmp-modal-close, .wc-cgmp-modal-overlay', this.closeModal);
             $(document).on('keydown', this.handleModalKeydown);
+            $(document).on('click', '.wc-cgmp-filter-toggle-btn', this.toggleSidebar);
+            $(document).on('click', '.wc-cgmp-sidebar-overlay', this.closeSidebar);
         },
 
         filterByCategory: function(e) {
@@ -126,6 +128,8 @@
             } else {
                 WC_CGMP_Marketplace.loadProducts();
             }
+
+            WC_CGMP_Marketplace.closeSidebar();
         },
 
         filterByTier: function(e) {
@@ -1176,7 +1180,36 @@
                         $modal.remove();
                         $('body').removeClass('wc-cgmp-modal-open');
                     }, 300);
+                } else if (WC_CGMP_Marketplace.sidebarOpen) {
+                    WC_CGMP_Marketplace.closeSidebar();
                 }
+            }
+        },
+
+        sidebarOpen: false,
+
+        openSidebar: function() {
+            WC_CGMP_Marketplace.sidebarOpen = true;
+            $('.wc-cgmp-sidebar').addClass('wc-cgmp-sidebar-open');
+            $('.wc-cgmp-sidebar-overlay').addClass('active');
+            $('body').addClass('wc-cgmp-sidebar-body-open');
+            WC_CGMP_Marketplace.log('Sidebar opened');
+        },
+
+        closeSidebar: function() {
+            WC_CGMP_Marketplace.sidebarOpen = false;
+            $('.wc-cgmp-sidebar').removeClass('wc-cgmp-sidebar-open');
+            $('.wc-cgmp-sidebar-overlay').removeClass('active');
+            $('body').removeClass('wc-cgmp-sidebar-body-open');
+            WC_CGMP_Marketplace.log('Sidebar closed');
+        },
+
+        toggleSidebar: function(e) {
+            e.preventDefault();
+            if (WC_CGMP_Marketplace.sidebarOpen) {
+                WC_CGMP_Marketplace.closeSidebar();
+            } else {
+                WC_CGMP_Marketplace.openSidebar();
             }
         },
 

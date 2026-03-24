@@ -62,11 +62,18 @@ if ($repository && !empty($products)) {
             </div>
         <?php if ($show_search) : ?>
         <div class="wc-cgmp-search-bar">
-            <span class="wc-cgmp-search-icon dashicons dashicons-search"></span>
-            <input type="search"
-                   class="wc-cgmp-search-input"
-                   placeholder="<?php esc_attr_e('Search services...', 'wc-carousel-grid-marketplace'); ?>"
-                   aria-label="<?php esc_attr_e('Search services', 'wc-carousel-grid-marketplace'); ?>">
+            <div class="wc-cgmp-search-input-wrap">
+                <span class="wc-cgmp-search-icon dashicons dashicons-search"></span>
+                <input type="search"
+                       class="wc-cgmp-search-input"
+                       placeholder="<?php esc_attr_e('Search services...', 'wc-carousel-grid-marketplace'); ?>"
+                       aria-label="<?php esc_attr_e('Search services', 'wc-carousel-grid-marketplace'); ?>">
+            </div>
+            <?php if ($show_sidebar && !empty($categories)) : ?>
+            <button type="button" class="wc-cgmp-filter-toggle-btn" aria-label="<?php esc_attr_e('Filter categories', 'wc-carousel-grid-marketplace'); ?>">
+                <span class="dashicons dashicons-filter"></span>
+            </button>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
 
@@ -150,4 +157,8 @@ if ($repository && !empty($products)) {
         <?php endif; ?>
         </div>
     </main>
+
+    <?php if ($show_sidebar && !empty($categories)) : ?>
+    <div class="wc-cgmp-sidebar-overlay"></div>
+    <?php endif; ?>
 </div>
