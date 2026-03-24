@@ -118,18 +118,28 @@ class Frontend_Manager
             '6.5.1'
         );
 
+        $css_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/css/marketplace.css')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/css/marketplace.css')
+            : WC_CGMP_VERSION;
+        $frontend_css_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/css/frontend.css')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/css/frontend.css')
+            : WC_CGMP_VERSION;
+        $js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/marketplace.js')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/marketplace.js')
+            : WC_CGMP_VERSION;
+
         wp_enqueue_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
             ['fontawesome-free', 'dashicons'],
-            WC_CGMP_VERSION
+            $css_ver
         );
 
         wp_enqueue_style(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/css/frontend.css',
             ['wc-cgmp-marketplace'],
-            WC_CGMP_VERSION
+            $frontend_css_ver
         );
 
         if (!wp_script_is('wc-cgmp-marketplace', 'enqueued')) {
@@ -137,7 +147,7 @@ class Frontend_Manager
                 'wc-cgmp-marketplace',
                 WC_CGMP_PLUGIN_URL . 'assets/js/marketplace.js',
                 ['jquery'],
-                WC_CGMP_VERSION,
+                $js_ver,
                 true
             );
 
