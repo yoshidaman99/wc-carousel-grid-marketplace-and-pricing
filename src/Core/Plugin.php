@@ -102,32 +102,33 @@ class Plugin
             return;
         }
 
-        if (did_action('elementor/loaded') && !wp_doing_ajax()) {
-            return;
-        }
-
         global $post;
         $should_load = false;
 
         if ($post instanceof \WP_Post) {
-            // Check for shortcode in post content
             if (has_shortcode($post->post_content, 'wc_cgmp_marketplace')
                 || has_shortcode($post->post_content, 'wc_cgm_marketplace')) {
                 $should_load = true;
             }
 
-            // Check for Elementor widget
             if (!$should_load && strpos($post->post_content, 'wc_cgmp_marketplace') !== false) {
                 $should_load = true;
             }
+
+            if (!$should_load) {
+                $elementor_data = get_post_meta($post->ID, '_elementor_data', true);
+                if ($elementor_data && is_string($elementor_data) && strpos($elementor_data, 'wc_cgmp_marketplace') !== false) {
+                    $should_load = true;
+                } elseif (is_array($elementor_data) && $this->elementor_data_has_widget($elementor_data)) {
+                    $should_load = true;
+                }
+            }
         }
 
-        // Allow other code to force-load assets (e.g., template tags, widgets)
         if (apply_filters('wc_cgmp_force_load_assets', false)) {
             $should_load = true;
         }
 
-        // On AJAX requests, always load (needed for fragment refresh)
         if (wp_doing_ajax()) {
             $should_load = true;
         }
@@ -135,6 +136,19 @@ class Plugin
         if ($should_load) {
             $this->enqueue_frontend_assets();
         }
+    }
+
+    private function elementor_data_has_widget(array $data): bool
+    {
+        foreach ($data as $item) {
+            if (isset($item['widgetType']) && $item['widgetType'] === 'wc_cgmp_marketplace') {
+                return true;
+            }
+            if (isset($item['elements']) && is_array($item['elements']) && $this->elementor_data_has_widget($item['elements'])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function maybe_enqueue_admin(string $hook): void
