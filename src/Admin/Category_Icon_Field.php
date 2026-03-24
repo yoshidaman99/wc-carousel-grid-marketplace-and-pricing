@@ -34,18 +34,25 @@ class Category_Icon_Field
             '6.5.1'
         );
 
+        $category_css_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/css/admin/category-icon.css')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/css/admin/category-icon.css')
+            : WC_CGMP_VERSION;
+        $category_js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/admin/category-icon.js')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/admin/category-icon.js')
+            : WC_CGMP_VERSION;
+
         wp_enqueue_style(
             'wc-cgmp-category-icon',
             WC_CGMP_PLUGIN_URL . 'assets/css/admin/category-icon.css',
             ['fontawesome-free'],
-            WC_CGMP_VERSION
+            $category_css_ver
         );
 
         wp_enqueue_script(
             'wc-cgmp-category-icon',
             WC_CGMP_PLUGIN_URL . 'assets/js/admin/category-icon.js',
             ['jquery'],
-            WC_CGMP_VERSION,
+            $category_js_ver,
             true
         );
 

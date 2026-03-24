@@ -214,11 +214,15 @@ class Plugin
             ],
         ]);
 
+        $frontend_js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/frontend.js')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/frontend.js')
+            : WC_CGMP_VERSION;
+
         wp_enqueue_script(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
             ['jquery', 'wc-cgmp-marketplace'],
-            WC_CGMP_VERSION,
+            $frontend_js_ver,
             true
         );
     }
@@ -227,19 +231,26 @@ class Plugin
     {
         $screen = get_current_screen();
 
+        $admin_css_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/css/admin.css')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/css/admin.css')
+            : WC_CGMP_VERSION;
+        $admin_js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/admin.js')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/admin.js')
+            : WC_CGMP_VERSION;
+
         if ($screen && $screen->post_type === 'product') {
             wp_enqueue_style(
                 'wc-cgmp-admin',
                 WC_CGMP_PLUGIN_URL . 'assets/css/admin.css',
                 [],
-                WC_CGMP_VERSION
+                $admin_css_ver
             );
 
             wp_enqueue_script(
                 'wc-cgmp-admin',
                 WC_CGMP_PLUGIN_URL . 'assets/js/admin.js',
                 ['jquery'],
-                WC_CGMP_VERSION,
+                $admin_js_ver,
                 true
             );
 
@@ -254,7 +265,7 @@ class Plugin
         }
 
         if (strpos($hook, 'wc-carousel-grid-marketplace-and-pricing') !== false) {
-            wp_enqueue_style('wc-cgmp-admin', WC_CGMP_PLUGIN_URL . 'assets/css/admin.css', [], WC_CGMP_VERSION);
+            wp_enqueue_style('wc-cgmp-admin', WC_CGMP_PLUGIN_URL . 'assets/css/admin.css', [], $admin_css_ver);
         }
     }
 

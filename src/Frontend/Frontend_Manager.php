@@ -167,11 +167,15 @@ class Frontend_Manager
         }
 
         if (!wp_script_is('wc-cgmp-frontend', 'enqueued')) {
+            $frontend_js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/frontend.js')
+                ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/frontend.js')
+                : WC_CGMP_VERSION;
+
             wp_enqueue_script(
                 'wc-cgmp-frontend',
                 WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
                 ['jquery', 'wc-cgmp-marketplace'],
-                WC_CGMP_VERSION,
+                $frontend_js_ver,
                 true
             );
         }

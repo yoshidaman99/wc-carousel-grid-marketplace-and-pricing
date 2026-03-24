@@ -30,18 +30,25 @@ class Admin_Manager
             return;
         }
 
+        $admin_css_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/css/admin.css')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/css/admin.css')
+            : WC_CGMP_VERSION;
+        $admin_js_ver = file_exists(WC_CGMP_PLUGIN_DIR . 'assets/js/admin.js')
+            ? (string) filemtime(WC_CGMP_PLUGIN_DIR . 'assets/js/admin.js')
+            : WC_CGMP_VERSION;
+
         wp_enqueue_style(
             'wc-cgmp-admin',
             WC_CGMP_PLUGIN_URL . 'assets/css/admin.css',
             [],
-            WC_CGMP_VERSION
+            $admin_css_ver
         );
 
         wp_enqueue_script(
             'wc-cgmp-admin-settings',
             WC_CGMP_PLUGIN_URL . 'assets/js/admin.js',
             ['jquery'],
-            WC_CGMP_VERSION,
+            $admin_js_ver,
             true
         );
     }
