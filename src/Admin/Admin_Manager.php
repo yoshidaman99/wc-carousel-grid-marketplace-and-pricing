@@ -57,7 +57,28 @@ class Admin_Manager
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Settings saved successfully.', 'wc-carousel-grid-marketplace-and-pricing') . '</p></div>';
         }
 
+        if (isset($_POST['wc_cgmp_clear_cache']) && check_admin_referer('wc_cgmp_clear_cache_nonce')) {
+            $this->handle_clear_cache();
+        }
+
         $this->render_settings_form();
+    }
+
+    private function handle_clear_cache(): void
+    {
+        $plugin = wc_cgmp();
+        $repository = $plugin->get_service('repository');
+
+        if ($repository && method_exists($repository, 'clear_all_cache')) {
+            $result = $repository->clear_all_cache();
+            $transients = $result['transients'] ?? 0;
+            echo '<div class="notice notice-success is-dismissible"><p>';
+            printf(
+                esc_html__('Cache cleared successfully. %d transient(s) deleted, object cache flushed.', 'wc-carousel-grid-marketplace-and-pricing'),
+                $transients
+            );
+            echo '</p></div>';
+        }
     }
 
     private function save_settings(): void
@@ -236,6 +257,19 @@ class Admin_Manager
                             </td>
                         </tr>
                     </table>
+                </div>
+
+                <div class="wc-cgmp-settings-section">
+                    <h2><?php esc_html_e('Cache Management', 'wc-carousel-grid-marketplace-and-pricing'); ?></h2>
+
+                    <p class="description">
+                        <?php esc_html_e('Clear cached product data, modal HTML, and rate limit records. Use this if changes to products, pricing, or categories are not reflecting on the frontend.', 'wc-carousel-grid-marketplace-and-pricing'); ?>
+                    </p>
+
+                    <form method="post" action="" style="margin-top:15px;">
+                        <?php wp_nonce_field('wc_cgmp_clear_cache_nonce'); ?>
+                        <input type="submit" name="wc_cgmp_clear_cache" class="button button-secondary" value="<?php esc_attr_e('Clear All Cache', 'wc-carousel-grid-marketplace-and-pricing'); ?>" onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear all cache? This will not affect your settings or data.', 'wc-carousel-grid-marketplace-and-pricing'); ?>');">
+                    </form>
                 </div>
 
                 <div class="wc-cgmp-settings-section">

@@ -97,6 +97,27 @@ class Repository
         }
     }
 
+    public function clear_all_cache(): array
+    {
+        $cleared = [];
+
+        if (function_exists('wp_cache_flush_group')) {
+            wp_cache_flush_group('wc_cgmp');
+            $cleared['object_cache'] = true;
+        }
+
+        global $wpdb;
+        $deleted = $wpdb->query(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wc_cgmp_%' OR option_name LIKE '_transient_timeout_wc_cgmp_%'"
+        );
+        $cleared['transients'] = (int) $deleted;
+
+        $this->tier_cache = [];
+        $this->popular_ids_cache = null;
+
+        return $cleared;
+    }
+
     /**
      * In-memory tier cache to avoid repeated queries within a single request.
      * @var array<int, array>
