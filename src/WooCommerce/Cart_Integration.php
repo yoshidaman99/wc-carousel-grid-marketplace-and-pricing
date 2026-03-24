@@ -326,14 +326,14 @@ class Cart_Integration
 
         // Batch preload tiers to eliminate N+1 queries
         if (!empty($products)) {
-            $repository->preload_tiers(array_map('intval', $products));
+            $repository->preload_tiers(array_map('intval', wp_list_pluck($products, 'ID')));
         }
 
         ob_start();
 
         if (!empty($products)) {
-            foreach ($products as $product_id) {
-                $product = wc_get_product($product_id);
+            foreach ($products as $product_post) {
+                $product = wc_get_product($product_post->ID);
                 if ($product) {
                     echo \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
                 }
@@ -536,12 +536,12 @@ class Cart_Integration
 
         // Batch preload tiers to eliminate N+1 queries
         if (!empty($products)) {
-            $repository->preload_tiers(array_map('intval', $products));
+            $repository->preload_tiers(array_map('intval', wp_list_pluck($products, 'ID')));
         }
 
         ob_start();
-        foreach ($products as $product_id) {
-            $product = wc_get_product($product_id);
+        foreach ($products as $product_post) {
+            $product = wc_get_product($product_post->ID);
             if ($product) {
                 echo \WC_CGMP\Frontend\Marketplace::render_product_card($product, $atts, $repository);
             }

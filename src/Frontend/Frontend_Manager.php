@@ -19,7 +19,7 @@ class Frontend_Manager
 
     public function render_marketplace_shortcode(array $atts = []): string
     {
-        $load_all = (bool) get_option('wc_cgmp_load_all_products', false);
+        $this->ensure_frontend_assets();
 
         $defaults = [
             'columns' => (int) get_option('wc_cgmp_grid_columns', 3),
@@ -107,6 +107,64 @@ class Frontend_Manager
         ];
 
         return $this->load_template('marketplace/marketplace.php', $data);
+    }
+
+    private function ensure_frontend_assets(): void
+    {
+        wp_enqueue_style(
+            'fontawesome-free',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+            [],
+            '6.5.1'
+        );
+
+        wp_enqueue_style(
+            'wc-cgmp-marketplace',
+            WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
+            ['fontawesome-free', 'dashicons'],
+            WC_CGMP_VERSION
+        );
+
+        wp_enqueue_style(
+            'wc-cgmp-frontend',
+            WC_CGMP_PLUGIN_URL . 'assets/css/frontend.css',
+            ['wc-cgmp-marketplace'],
+            WC_CGMP_VERSION
+        );
+
+        if (!wp_script_is('wc-cgmp-marketplace', 'enqueued')) {
+            wp_enqueue_script(
+                'wc-cgmp-marketplace',
+                WC_CGMP_PLUGIN_URL . 'assets/js/marketplace.js',
+                ['jquery'],
+                WC_CGMP_VERSION,
+                true
+            );
+
+            wp_localize_script('wc-cgmp-marketplace', 'wc_cgmp_ajax', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('wc_cgmp_frontend_nonce'),
+                'debug' => (defined('WP_DEBUG') && WP_DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG),
+                'load_all' => (bool) get_option('wc_cgmp_load_all_products', false),
+                'i18n' => [
+                    'added_to_cart' => __('Added to cart!', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'error' => __('An error occurred. Please try again.', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'select_tier' => __('Please select an experience level before adding to cart.', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'invalid_tier' => __('Invalid experience level.', 'wc-carousel-grid-marketplace-and-pricing'),
+                    'invalid_price_type' => __('Invalid pricing option.', 'wc-carousel-grid-marketplace-and-pricing'),
+                ],
+            ]);
+        }
+
+        if (!wp_script_is('wc-cgmp-frontend', 'enqueued')) {
+            wp_enqueue_script(
+                'wc-cgmp-frontend',
+                WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
+                ['jquery', 'wc-cgmp-marketplace'],
+                WC_CGMP_VERSION,
+                true
+            );
+        }
     }
 
     private function get_empty_products_notice(bool $marketplace_only): string
