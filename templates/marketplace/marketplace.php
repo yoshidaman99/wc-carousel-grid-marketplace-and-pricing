@@ -51,7 +51,7 @@ if ($repository && !empty($products)) {
                 <p><?php esc_html_e('Browse by expertise area', 'wc-carousel-grid-marketplace'); ?></p>
             </div>
             <button type="button" class="wc-cgmp-sidebar-close-btn" aria-label="<?php esc_attr_e('Close sidebar', 'wc-carousel-grid-marketplace'); ?>">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                <span aria-hidden="true">&times;</span>
             </button>
         </div>
 
