@@ -1160,6 +1160,19 @@ body.wc-cgmp-sidebar-body-open {
     }
 }
 
+/* Compensate for WordPress admin bar when user is logged in */
+@media (max-width: 1024px) {
+    .admin-bar .wc-cgmp-sidebar {
+        top: 32px;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .admin-bar .wc-cgmp-sidebar {
+        top: 46px;
+    }
+}
+
 @media (max-width: 768px) {
     .wc-cgmp-marketplace {
         flex-direction: column;
@@ -1442,6 +1455,7 @@ body.wc-cgmp-sidebar-body-open {
 
 .wc-cgmp-question-icon {
     line-height: 1;
+    -webkit-user-select: none;
     user-select: none;
     margin-top: 2px;
 }
