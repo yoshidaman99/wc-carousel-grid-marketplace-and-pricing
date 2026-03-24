@@ -102,7 +102,10 @@ class Plugin
             return;
         }
 
-        // Only load assets on pages that use our shortcode or Elementor widget
+        if (did_action('elementor/loaded') && !wp_doing_ajax()) {
+            return;
+        }
+
         global $post;
         $should_load = false;
 

@@ -30,10 +30,20 @@
             this.initialized = true;
             
             this.bindEvents();
-            this.initCarousel();
-            this.initDefaultTier();
-            this.syncInitialPrices();
-            this.syncAllPanelsFromDropdowns();
+            try {
+                this.initCarousel();
+                this.initDefaultTier();
+                this.syncInitialPrices();
+                this.syncAllPanelsFromDropdowns();
+            } catch(e) {
+                if (this.debug) console.error('[WC_CGMP] Init error:', e);
+                this.hideLoading();
+            }
+
+            setTimeout(function() {
+                $('.wc-cgmp-loading-overlay').addClass('hidden');
+                $('.wc-cgmp-content-inner').removeClass('wc-cgmp-loading').addClass('wc-cgmp-loaded');
+            }, 2000);
         },
 
         syncAllPanelsFromDropdowns: function() {

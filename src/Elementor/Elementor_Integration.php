@@ -67,21 +67,21 @@ class Elementor_Integration
 
     public function register_styles(): void
     {
-        \wp_register_style(
+        \wp_enqueue_style(
             'fontawesome-free',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
             [],
             '6.5.1'
         );
 
-        \wp_register_style(
+        \wp_enqueue_style(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/css/marketplace.css',
             ['fontawesome-free', 'dashicons'],
             WC_CGMP_VERSION
         );
 
-        \wp_register_style(
+        \wp_enqueue_style(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/css/frontend.css',
             ['wc-cgmp-marketplace'],
@@ -91,7 +91,7 @@ class Elementor_Integration
 
     public function register_scripts(): void
     {
-        \wp_register_script(
+        \wp_enqueue_script(
             'wc-cgmp-marketplace',
             WC_CGMP_PLUGIN_URL . 'assets/js/marketplace.js',
             ['jquery'],
@@ -113,7 +113,7 @@ class Elementor_Integration
             ],
         ]);
 
-        \wp_register_script(
+        \wp_enqueue_script(
             'wc-cgmp-frontend',
             WC_CGMP_PLUGIN_URL . 'assets/js/frontend.js',
             ['jquery', 'wc-cgmp-marketplace'],
